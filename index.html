@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>easyssf · Shared Signals Framework receivers for Java</title>
-<meta name="description" content="easyssf is a Java library and Spring Boot starter that turns an application into an OpenID Shared Signals Framework (SSF) receiver: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
+<meta name="description" content="easyssf is a Java library with a Spring Boot starter and a Quarkus extension that turn an application into an OpenID Shared Signals Framework (SSF) receiver: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://easyssf.org/">
 <meta property="og:title" content="easyssf">
-<meta property="og:description" content="Shared Signals Framework receivers for Java">
+<meta property="og:description" content="Shared Signals Framework receivers for Java, Spring Boot and Quarkus">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="site.css">
@@ -25,7 +25,7 @@
       <a href="#how">How it works</a>
       <a href="#start" class="hide-xs">Getting started</a>
       <a href="#modules" class="hide-sm">Modules</a>
-      <a href="#plain" class="hide-sm">Without Spring</a>
+      <a href="#plain" class="hide-sm">Plain Java</a>
       <a href="#specs" class="hide-sm">Specifications</a>
       <a href="#news">News</a>
       <a href="https://github.com/easyssf/easyssf">GitHub</a>
@@ -40,11 +40,13 @@
   <p class="lead">easyssf lets your application react when your identity provider revokes a session,
     changes a credential or signals a risk. It verifies the security events of the
     <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID Shared Signals Framework</a>,
-    rejects the access tokens and ends the sessions concerned, and hands everything else to your code.</p>
+    rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
+    A Spring Boot starter and a Quarkus extension wire it into your application.</p>
   <div class="badges">
     <span class="badge warn">Experimental</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
+    <span class="badge">Quarkus 3.27</span>
     <span class="badge">Apache 2.0</span>
     <span class="badge">OpenID conformance suite tested</span>
   </div>
@@ -128,8 +130,9 @@
       </div>
       <div class="card">
         <h3>Resource server integration</h3>
-        <p>A CAEP <code>session-revoked</code> event makes Spring Security reject the access tokens of that session,
-          or all tokens of the user issued before the event.</p>
+        <p>A CAEP <code>session-revoked</code> event makes the application reject the access tokens of that session,
+          or all tokens of the user issued before the event: built into the Spring Boot starter, a few lines with
+          <code>quarkus-oidc</code>.</p>
       </div>
       <div class="card">
         <h3>OIDC client integration</h3>
@@ -144,8 +147,8 @@
       </div>
       <div class="card">
         <h3>Production details covered</h3>
-        <p>State in your database when there is one, Micrometer metrics, a health indicator for Actuator,
-          retries with backoff, and the application starts even while the transmitter is down.</p>
+        <p>State in your database when there is one, Micrometer metrics, a health indicator for Actuator or
+          SmallRye Health, retries with backoff, and the application starts even while the transmitter is down.</p>
       </div>
     </div>
   </div>
@@ -154,6 +157,16 @@
 <section id="start">
   <div class="wrap">
     <h2>Getting started</h2>
+    <p class="muted" style="max-width:70ch">easyssf comes as a starter for Spring Boot and, through the Quarkiverse extension
+      <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
+      Both are built on the same receiver library and verify, de-duplicate and dispatch events the same way.</p>
+
+    <div class="switch" role="tablist" aria-label="Framework">
+      <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
+      <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
+    </div>
+
+    <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
     <p class="muted">Three steps for a Spring Boot application with the servlet stack.</p>
     <div class="two steps">
       <div class="step">
@@ -203,6 +216,65 @@ class StepUpHandler implements SsfEventHandler {
 }</code></pre>
     <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the
       transmitter is expected to deliver the SET again.</p>
+    </div>
+
+    <div id="start-quarkus" class="framework" role="tabpanel" aria-labelledby="tab-quarkus" hidden>
+    <p class="muted">Three steps for a Quarkus application.</p>
+    <div class="two steps">
+      <div class="step">
+        <h3>Add the extension</h3>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
+    &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
+    &lt;version&gt;0.2.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+        <p class="muted">Or <code>quarkus ext add io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver</code>.
+          No release yet: 0.2.0 is the first version built on easyssf and follows the easyssf 0.1.0 release.
+          Until then, build the extension from
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf">source</a>.</p>
+      </div>
+      <div class="step">
+        <h3>Name the transmitter</h3>
+<pre><code>quarkus.openid-ssf.receiver.transmitter-issuer=https://idp.example/realms/demo
+quarkus.openid-ssf.receiver.events-requested=CaepSessionRevoked,CaepCredentialChange
+quarkus.openid-ssf.receiver.push.delivery-endpoint-url=https://my-app.example/ssf/push
+quarkus.openid-ssf.receiver.push.expected-auth-header=Bearer ${SSF_PUSH_SECRET}</code></pre>
+      </div>
+    </div>
+    <div class="step" style="margin-top:20px">
+      <h3>Create the stream</h3>
+      <p class="muted">By default the application creates or updates its stream at the transmitter on startup
+        and tells the transmitter to send the configured header. It authenticates at the stream management API
+        with a client of the transmitter:</p>
+<pre><code>quarkus.openid-ssf.receiver.oauth2.token-endpoint=https://idp.example/realms/demo/protocol/openid-connect/token
+quarkus.openid-ssf.receiver.oauth2.client-id=my-app
+quarkus.openid-ssf.receiver.oauth2.client-secret=${SSF_CLIENT_SECRET}</code></pre>
+      <p class="muted" style="margin-top:12px">Or set <code>quarkus.openid-ssf.receiver.stream-management=TRANSMITTER</code>
+        and the <code>stream-id</code> of a stream an operator created. With <code>quarkus-oidc</code> in the same
+        application, set <code>quarkus.http.auth.proactive=false</code>, so that the header the transmitter sends to
+        the push endpoint is not taken for an access token. Rejecting revoked access tokens and ending revoked sessions
+        take a few lines on top of <code>SsfTokenRevocationEventHandler</code>, a <code>SecurityIdentityAugmentor</code>
+        in a resource server and a <code>TokenStateManager</code> in a web application; the
+        <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples">examples</a> show both.</p>
+    </div>
+
+    <h3 style="margin-top:28px">React to any event</h3>
+<pre><code>@ApplicationScoped
+public class StepUpHandler implements SsfEventHandler {
+
+    @Override
+    public void handle(SsfEventContext eventContext) {
+        if (eventContext.hasEvent("CaepAssuranceLevelChange")) {
+            SsfSubject subject = eventContext.subjectFor("CaepAssuranceLevelChange");
+            Map&lt;String, Object&gt; event = eventContext.eventFor("CaepAssuranceLevelChange");
+            // subject.subject(), subject.sessionId(), subject.email() ...
+        }
+    }
+
+}</code></pre>
+    <p class="muted" style="margin-top:12px">Every <code>SsfEventHandler</code> bean is invoked for every verified SET,
+      before the transmitter gets its answer. If one throws, the transmitter is expected to deliver the SET again.</p>
+    </div>
 
     <div class="grid">
       <div class="card">
@@ -222,20 +294,24 @@ class StepUpHandler implements SsfEventHandler {
       <div class="card">
         <h3>Test your receiver</h3>
         <p><code>easyssf-test</code> brings a transmitter that runs inside your test JVM: it signs SETs, serves metadata
-          and keys, hands out tokens and emulates the stream and poll endpoints. Push a revocation, assert the effect.</p>
+          and keys, hands out tokens and emulates the stream and poll endpoints. Push a revocation, assert the effect.
+          The tests of the Spring Boot starter and of the Quarkus extension use it.</p>
       </div>
     </div>
 
     <div class="note">easyssf is experimental and not yet published to Maven Central. Build it from source with
       <code>./mvnw install</code> and see the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
-      complete configuration reference.</div>
+      complete configuration reference of the Spring Boot starter, and the
+      <a href="https://github.com/quarkiverse/quarkus-openid-ssf#readme">README of quarkus-openid-ssf</a> for the one
+      of the Quarkus extension.</div>
   </div>
 </section>
 
 <section id="modules">
   <div class="wrap">
     <h2>Modules</h2>
-    <p class="muted">Everything is published under the group id <code>org.easyssf</code>.</p>
+    <p class="muted">Everything is published under the group id <code>org.easyssf</code>. The Quarkus extension is a
+      Quarkiverse project with its own coordinates.</p>
     <div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>What it is</th><th>Depends on</th></tr></thead>
@@ -248,6 +324,7 @@ class StepUpHandler implements SsfEventHandler {
         <tr><td><code>easyssf-receiver-spring-boot-examples</code></td><td>An example resource server and OIDC client with a Keycloak setup.</td><td></td></tr>
         <tr><td><code>easyssf-test-conformance</code></td><td>Runs the OpenID conformance suite's SSF receiver test plans against a receiver under test, in any framework: the suite via Testcontainers, the scenarios the receiver plays, and the plan tests to extend.</td><td>easyssf-receiver, Testcontainers, JUnit</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-conformance-tests</code></td><td>The Spring Boot receiver under test and the four plan tests for it.</td><td></td></tr>
+        <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
       </tbody>
     </table>
     </div>
@@ -256,9 +333,10 @@ class StepUpHandler implements SsfEventHandler {
 
 <section id="plain">
   <div class="wrap">
-    <h2>Without Spring Boot</h2>
+    <h2>Without Spring Boot or Quarkus</h2>
     <p class="muted" style="max-width:70ch"><code>easyssf-receiver</code> has no framework dependencies. Assemble the parts you need
-      and call them from the endpoint or scheduler of your framework. The Spring Boot starter is one such integration.</p>
+      and call them from the endpoint or scheduler of your framework. The Spring Boot starter and the Quarkus extension
+      are two such integrations.</p>
 <pre><code>SsfHttpClient httpClient = new JdkSsfHttpClient();
 String issuer = "https://idp.example/realms/demo";
 
@@ -305,7 +383,7 @@ poller.start();</code></pre>
           <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each.</p>
       </div>
     </div>
-    <p class="muted" style="margin-top:20px">Not included yet: WebFlux applications and long polling.</p>
+    <p class="muted" style="margin-top:20px">Not included yet: Spring WebFlux applications and long polling.</p>
   </div>
 </section>
 
@@ -393,5 +471,6 @@ poller.start();</code></pre>
 </footer>
 
 <script src="news.js"></script>
+<script src="start.js"></script>
 </body>
 </html>

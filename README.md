@@ -8,6 +8,7 @@ The project website, static files without a build step or external resources:
 | `news.html` | all news items |
 | `news.json` | the news items, see below |
 | `news.js` | renders `news.json` into both pages |
+| `start.js` | the Spring Boot / Quarkus switch of the getting started section, deep-linkable as `index.html#start-quarkus` |
 | `site.css` | the stylesheet of both pages, light and dark theme |
 | `easyssf-icon.svg` | the icon, used as favicon and in the header |
 | `CNAME`, `.nojekyll` | the custom domain for GitHub Pages, and no Jekyll |
