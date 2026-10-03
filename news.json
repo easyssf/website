@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-03-several-transmitters",
+    "date": "2026-10-03",
+    "title": "Several transmitters per application",
+    "body": "<p>A receiver can now take events from more than one transmitter, several Keycloak realms for instance. The settings at <code>easyssf.receiver.*</code> keep configuring the one transmitter most applications have; further ones go under <code>easyssf.receiver.transmitters.&lt;name&gt;.*</code>, each complete on its own.</p><ul><li>The issuer of a SET selects the transmitter that verifies it, so one push endpoint serves all of them, each authenticating with its own header. Polled transmitters are polled independently.</li><li>The beans of the single-transmitter setup are unchanged; the new <code>SsfTransmitters</code> bean holds every transmitter by name and issuer, and <code>SsfTransmitterCustomizer</code> beans adjust them before they are built.</li><li>Metrics carry a <code>transmitter</code> tag, and the health indicator lists every transmitter.</li><li>For receivers without Spring Boot: <code>SsfTransmitter</code>, <code>SsfTransmitters</code> and the issuer-routing verifier are in <code>easyssf-receiver</code>.</li></ul>"
+  },
+  {
     "id": "2026-10-03-subjects-health-test-support",
     "date": "2026-10-03",
     "title": "Full subject identifiers, a health indicator and test support",

@@ -139,7 +139,8 @@
       <div class="card">
         <h3>Stream management</h3>
         <p>Let the application create or update its stream at the transmitter on startup, verify it, and use the
-          whole stream management API through <code>SsfStreamClient</code>.</p>
+          whole stream management API through <code>SsfStreamClient</code>. Several transmitters, several Keycloak
+          realms say, are each configured by name; the issuer of a SET selects the one that verifies it.</p>
       </div>
       <div class="card">
         <h3>Production details covered</h3>
@@ -299,7 +300,7 @@ poller.start();</code></pre>
           <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each.</p>
       </div>
     </div>
-    <p class="muted" style="margin-top:20px">Not included yet: WebFlux applications, more than one transmitter per application, and long polling.</p>
+    <p class="muted" style="margin-top:20px">Not included yet: WebFlux applications and long polling.</p>
   </div>
 </section>
 
