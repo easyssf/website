@@ -123,7 +123,8 @@
       <div class="card">
         <h3>Every SET verified<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8417">RFC 8417</a></span></h3>
         <p>Signature against the transmitter's JWK Set, discovered from its <code>.well-known/ssf-configuration</code>,
-          plus <code>typ</code>, <code>iss</code>, <code>aud</code>, <code>jti</code>, <code>iat</code> and <code>events</code>.</p>
+          plus <code>typ</code>, <code>iss</code>, <code>aud</code>, <code>jti</code>, <code>iat</code> and <code>events</code>.
+          The transmitter and every endpoint it publishes must use HTTPS.</p>
       </div>
       <div class="card">
         <h3>Resource server integration</h3>
@@ -142,8 +143,8 @@
       </div>
       <div class="card">
         <h3>Production details covered</h3>
-        <p>State in your database when there is one, Micrometer metrics, retries with backoff, and the
-          application starts even while the transmitter is down.</p>
+        <p>State in your database when there is one, Micrometer metrics, a health indicator for Actuator,
+          retries with backoff, and the application starts even while the transmitter is down.</p>
       </div>
     </div>
   </div>
@@ -198,6 +199,28 @@ class StepUpHandler implements SsfEventHandler {
 }</code></pre>
     <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the
       transmitter is expected to deliver the SET again.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Subjects as the spec defines them</h3>
+        <p><code>SsfSubject</code> is the <code>sub_id</code> of the SET: a subject identifier in any RFC 9493 format
+          (<code>iss_sub</code>, <code>email</code>, <code>opaque</code>, <code>account</code>, <code>phone_number</code>,
+          <code>did</code>, <code>uri</code>, <code>aliases</code>) or a complex subject with its <code>user</code>,
+          <code>session</code>, <code>device</code>, <code>tenant</code> and other members. Shortcuts cover the common
+          cases, nothing is lost.</p>
+      </div>
+      <div class="card">
+        <h3>Your own event type aliases</h3>
+        <p>The SSF, CAEP and RISC event types have built-in aliases such as <code>CaepSessionRevoked</code>. Register
+          aliases for vendor specific event types, in configuration or in code, and use them wherever an event type is
+          named. The URIs stay canonical; an alias can never redefine another.</p>
+      </div>
+      <div class="card">
+        <h3>Test your receiver</h3>
+        <p><code>easyssf-test</code> brings a transmitter that runs inside your test JVM: it signs SETs, serves metadata
+          and keys, hands out tokens and emulates the stream and poll endpoints. Push a revocation, assert the effect.</p>
+      </div>
+    </div>
 
     <div class="note">easyssf is experimental and not yet published to Maven Central. Build it from source with
       <code>./mvnw install</code> and see the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
@@ -325,8 +348,8 @@ poller.start();</code></pre>
         </tr>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc9493">RFC 9493</a></td>
-          <td>Subject identifiers for SETs: <code>iss_sub</code>, <code>email</code>, <code>complex</code> and the other formats</td>
-          <td><code>SsfSubject</code> and the matching of events to sessions and users</td>
+          <td>Subject identifiers for SETs: <code>account</code>, <code>email</code>, <code>iss_sub</code>, <code>opaque</code>, <code>phone_number</code>, <code>did</code>, <code>uri</code>, <code>aliases</code></td>
+          <td><code>SsfSubjectIdentifier</code>, every format, and <code>SsfSubject</code> for complex subjects; the matching of events to sessions and users</td>
         </tr>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc7515">RFC 7515</a> / <a href="https://www.rfc-editor.org/rfc/rfc7517">RFC 7517</a></td>

@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-03-subjects-health-test-support",
+    "date": "2026-10-03",
+    "title": "Full subject identifiers, a health indicator and test support",
+    "body": "<p>A round of changes after a review of the API, before the first release.</p><ul><li><strong>Subjects as RFC 9493 defines them.</strong> <code>SsfSubjectIdentifier</code> represents every format, and <code>SsfSubject</code> exposes all members of a complex subject. The shortcuts for user, session and email are unchanged. Matching an <code>iss_sub</code> identifier now requires the issuer as well as the subject, and token revocations are scoped to the issuer of the token.</li><li><strong>HTTPS for the transmitter.</strong> The issuer and every endpoint in its metadata must use HTTPS; loopback addresses may use HTTP for local development, and <code>easyssf.receiver.allow-insecure-http</code> lifts the rule for test setups, with a warning at startup.</li><li><strong>Your own event type aliases</strong>, registered in configuration or with <code>SsfEventTypes.registerAlias</code>, without redefining the built-in ones.</li><li><strong>Typed transmitter metadata</strong>: <code>specVersion()</code>, <code>deliveryMethodsSupported()</code>, <code>criticalSubjectMembers()</code>, <code>authorizationSchemes()</code> and <code>defaultSubjects()</code>.</li><li><strong>Immutable value objects.</strong> Tokens, subjects, stream configurations and metadata copy what they are given and cannot be changed afterwards.</li><li><strong>Health indicator</strong> <code>easyssf</code> for Spring Boot Actuator: whether the transmitter was reached, the stream is registered and the last poll succeeded, without calling the transmitter.</li><li><strong><code>easyssf-test</code></strong>: the transmitter the easyssf tests use, as a module for the tests of your own receiver.</li><li>Every artifact ships with a CycloneDX SBOM, a self-contained POM and an automatic module name.</li></ul><p>The schema of the <code>EASYSSF_REVOCATION</code> table gained an <code>ISSUER</code> column; nothing was released yet, so there is no migration.</p>"
+  },
+  {
     "id": "2026-10-03-hello",
     "date": "2026-10-03",
     "title": "Welcome to easyssf.org",
