@@ -12,6 +12,8 @@ The project website, static files without a build step or external resources:
 | `site.css` | the stylesheet of both pages, light and dark theme |
 | `easyssf-icon.svg` | the icon, used as favicon and in the header |
 | `CNAME`, `.nojekyll` | the custom domain for GitHub Pages, and no Jekyll |
+| `og-image.png` | the preview image for links shared on social media and chat, 1200×630; rendered from the icon with `rsvg-convert`, see below |
+| `robots.txt`, `sitemap.xml` | for search engines; add new pages to the sitemap and bump `lastmod` |
 
 ## Adding a news item
 
@@ -33,6 +35,12 @@ Add an object to the top of `news.json`:
 
 The home page shows the three newest items, the news page all of them. The items are fetched by
 `news.js`, so preview the site over HTTP (below) rather than by opening the file.
+
+## Search engines
+
+`index.html` carries a `google-site-verification` meta tag for Google Search Console, Open Graph
+and Twitter card tags, and JSON-LD structured data (`WebSite`, `SoftwareSourceCode`). After a
+deployment that adds a page, update `sitemap.xml` and resubmit it in Search Console.
 
 ## Preview
 
