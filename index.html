@@ -43,7 +43,7 @@
     rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
     A Spring Boot starter and a Quarkus extension wire it into your application.</p>
   <div class="badges">
-    <span class="badge warn">Experimental</span>
+    <span class="badge">0.1.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -174,11 +174,11 @@
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.1.0-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;0.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-        <p class="muted">No release yet: the snapshots of <code>main</code> are on the
-          <a href="https://central.sonatype.com/repository/maven-snapshots/org/easyssf/">Maven Central snapshot repository</a>,
-          which your build has to enable.</p>
+        <p class="muted">From <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, where
+          all modules are listed. Snapshots of <code>main</code> are on the
+          <a href="https://central.sonatype.com/repository/maven-snapshots/org/easyssf/">Central snapshot repository</a>.</p>
       </div>
       <div class="step">
         <h3>Name the transmitter</h3>
@@ -299,8 +299,9 @@ public class StepUpHandler implements SsfEventHandler {
       </div>
     </div>
 
-    <div class="note">easyssf is experimental and not yet published to Maven Central. Build it from source with
-      <code>./mvnw install</code> and see the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
+    <div class="note">easyssf is pre-1.0 and its API may still change. The modules are on
+      <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a> and the source on
+      <a href="https://github.com/easyssf/easyssf">GitHub</a>. See the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
       complete configuration reference of the Spring Boot starter, and the
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf#readme">README of quarkus-openid-ssf</a> for the one
       of the Quarkus extension.</div>
