@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-03-quarkus-openid-ssf-0-2-0",
+    "date": "2026-10-03",
+    "title": "Quarkus support: quarkus-openid-ssf 0.2.0 is built on easyssf",
+    "body": "<p>The Quarkiverse extension <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf\">quarkus-openid-ssf</a> 0.2.0 is on Maven Central as <code>io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver:0.2.0</code>. Its protocol code is replaced by easyssf 0.1.0: SET verification, metadata discovery, stream management, push and poll delivery, de-duplication and the OAuth2 client credentials. The extension keeps what is Quarkus, the configuration, the CDI wiring, the Vert.x push route, the poll scheduler, the token providers, Micrometer, the Dev UI and native image support. The <a href=\"index.html#start-quarkus\">getting started guide</a> has a Quarkus tab.</p><p>New with the release:</p><ul><li>Built and tested against Quarkus 3.27 LTS.</li><li>Several transmitters per application, a JDBC de-duplication store over the default datasource and a SmallRye Health check, the same features the Spring Boot starter has.</li><li>The strict SET validation of easyssf: the top-level <code>sub_id</code> of SSF 1.0 with a <code>legacy</code> mode for older transmitters, critical subject members, HTTPS for the transmitter.</li><li>The four receiver plans of the OpenID conformance suite run against the extension, and two new examples, a resource server and a web application with Keycloak, mirror the Spring Boot examples.</li></ul><p>0.2.0 changes the event handler SPI, the push and poll semantics and the metric names of the extension; the <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.2.0\">release notes</a> walk through the migration from 0.1.x.</p>"
+  },
+  {
     "id": "2026-10-03-release-0-1-0",
     "date": "2026-10-03",
     "title": "easyssf 0.1.0, the first release",
