@@ -42,12 +42,25 @@ python3 -m http.server 8000
 
 ## Deploy with GitHub Pages
 
-1. Push this directory as a repository (for example `easyssf/easyssf.org`) and enable Pages for the
-   `main` branch, root folder, under Settings > Pages.
-2. At the DNS provider of `easyssf.org`, add the `A` records for GitHub Pages
-   (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` from
-   `www` to `<org>.github.io`.
-3. Enter `easyssf.org` as the custom domain under Settings > Pages (the `CNAME` file keeps it across
-   deployments) and enable "Enforce HTTPS" once the certificate is issued.
+The site is served from the `main` branch of [easyssf/website](https://github.com/easyssf/website)
+(public, as GitHub Pages is not available for private repositories of an organization on the free
+plan). Once:
 
-Any other static host works the same way: serve the directory as it is.
+```sh
+gh repo edit easyssf/website --visibility public --accept-visibility-change-consequences
+git push -u origin main
+gh api -X POST repos/easyssf/website/pages -f build_type=legacy -f 'source[branch]=main' -f 'source[path]=/'
+```
+
+Then, at the DNS provider of `easyssf.org`, add the `A` records for GitHub Pages
+(`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` from
+`www` to `easyssf.github.io`. The `CNAME` file in this repository registers `easyssf.org` as the
+custom domain on every deployment. When the certificate has been issued (Settings > Pages shows it,
+usually within an hour of the DNS change), enforce HTTPS:
+
+```sh
+gh api -X PUT repos/easyssf/website/pages -F https_enforced=true
+gh api repos/easyssf/website/pages --jq '{status, html_url, cname, https_enforced}'
+```
+
+Every later `git push` to `main` deploys within a minute.
