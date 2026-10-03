@@ -1,0 +1,8 @@
+[
+  {
+    "id": "2026-10-03-hello",
+    "date": "2026-10-03",
+    "title": "Welcome to easyssf.org",
+    "body": "<p>easyssf has a home. The project is a Java library and a Spring Boot 4.1 starter that turn an application into a receiver for the OpenID Shared Signals Framework: it verifies Security Event Tokens, rejects the access tokens and ends the sessions a CAEP event revokes, and hands every event to your own handlers.</p><p>Where things stand:</p><ul><li>The receiver library has no framework dependencies; the Spring Boot starter covers the servlet stack, resource servers and OIDC clients.</li><li>Tested against the SSF transmitter of Keycloak 26.8 and the receiver test plans of the OpenID conformance suite.</li><li>The code is experimental and not yet published to Maven Central. Build it from source with <code>./mvnw install</code>.</li></ul><p>The source is on <a href=\"https://github.com/easyssf/easyssf\">GitHub</a>.</p>"
+  }
+]
