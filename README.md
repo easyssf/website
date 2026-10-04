@@ -9,9 +9,9 @@ The project website, static files without a build step or external resources:
 | `news.json` | the news items, see below |
 | `news.js` | renders `news.json` into both pages |
 | `tools.html`, `tools.js` | the tools page, one tool at a time behind a switcher like jwt.io's, each linkable as `tools.html#inspector` etc.: the listing of all event types with their claims and easyssf aliases, links to other tools such as caep.dev, a Security Event Token generator for the CAEP, RISC, SCIM and SSF event types with RFC 9493 subjects, signed in the browser with Web Crypto (the key is kept in `localStorage`), and a SET inspector; "Copy as link" encodes the form state into a URL fragment, so a SET can be linked to; custom JSON claims can be merged into the SET and the event payload; named token presets (issuer, audience, signature, legacy subject, custom SET claims) are kept in `localStorage` only |
-| `site.js` | keeps the height of the sticky header in a CSS variable, the scroll margin of the sections on every page |
+| `site.js` | shared by every page: the theme toggle of the header (system, light, dark, kept in `localStorage` and applied by an inline script in the head before the first paint) and the height of the sticky header as a CSS variable, the scroll margin of the sections |
 | `start.js` | the Spring Boot / Quarkus / plain Java switch of the getting started section, deep-linkable as `index.html#start-quarkus` or `index.html#start-plain` |
-| `site.css` | the stylesheet of all pages, light and dark theme |
+| `site.css` | the stylesheet of all pages; light and dark theme by `prefers-color-scheme`, or forced with `data-theme` on the root element |
 | `easyssf-icon.svg` | the icon, used as favicon and in the header |
 | `CNAME`, `.nojekyll` | the custom domain for GitHub Pages, and no Jekyll |
 | `og-image.png` | the preview image for links shared on social media and chat, 1200×630; rendered from the icon with `rsvg-convert`, see below |

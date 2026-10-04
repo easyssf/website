@@ -118,10 +118,59 @@ nav.top a:hover { color: var(--fg); text-decoration: none; }
   nav.top { gap: 14px; font-size: .9rem; flex-wrap: wrap; }
 }
 @media (max-width: 640px) { nav.top a.hide-sm { display: none; } }
+nav.top { align-items: center; }
+.theme-toggle {
+  appearance: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--bg-raised); color: var(--fg-muted);
+}
+.theme-toggle:hover { color: var(--fg); border-color: var(--fg-muted); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle svg { width: 17px; height: 17px; display: none; }
+.theme-toggle .icon-auto { display: block; }
+:root[data-theme="light"] .theme-toggle .icon-auto, :root[data-theme="dark"] .theme-toggle .icon-auto { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 @media (max-width: 480px) { nav.top a.hide-xs { display: none; } }
 
 /* hero */
-.hero { padding-block: 72px 56px; }
+.hero { padding-block: 72px 56px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; align-items: center; }
+@media (min-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr) 360px; } }
+.hero-art { display: none; }
+@media (min-width: 900px) { .hero-art { display: block; } }
+.hero-art svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; }
+.hero-art .node rect { fill: var(--bg-raised); stroke: var(--line); stroke-width: 1.2; }
+.hero-art .node.receiver rect { fill: var(--accent-soft); stroke: var(--accent); }
+.hero-art text { fill: var(--fg); font-size: 12px; text-anchor: middle; }
+.hero-art text.title { font-weight: 700; }
+.hero-art text.small { fill: var(--fg-muted); font-size: 10px; }
+.hero-art .wire { fill: none; stroke: var(--line); stroke-width: 1.4; }
+.hero-art .ring { fill: none; stroke: var(--accent); stroke-width: 1.2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.hero-art .token { fill: var(--accent); offset-rotate: 0deg; opacity: .9; offset-distance: 50%; }
+.hero-art .token.in { offset-path: path("M112,140 L152,140"); }
+.hero-art .token.out-1 { offset-path: path("M248,140 C266,140 266,46 284,46"); }
+.hero-art .token.out-2 { offset-path: path("M248,140 L284,140"); }
+.hero-art .token.out-3 { offset-path: path("M248,140 C266,140 266,234 284,234"); }
+/* one signal every four seconds: rings leave the transmitter, a token travels to the receiver,
+   which lights up and hands it on to the three targets */
+@keyframes hero-ring { 0% { transform: scale(.4); opacity: .55; } 70% { opacity: 0; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes hero-travel { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: .9; } 40% { offset-distance: 100%; opacity: .9; } 46%, 100% { offset-distance: 100%; opacity: 0; } }
+@keyframes hero-receive { 0%, 36% { stroke-width: 1.2; filter: none; } 46% { stroke-width: 2.2; filter: drop-shadow(0 0 6px var(--accent)); } 70%, 100% { stroke-width: 1.2; filter: none; } }
+.hero-art .ring { animation: hero-ring 4s ease-out infinite; }
+.hero-art .ring:nth-child(2) { animation-delay: .5s; }
+.hero-art .ring:nth-child(3) { animation-delay: 1s; }
+.hero-art .token.in { animation: hero-travel 4s ease-in-out infinite; animation-delay: .6s; }
+.hero-art .token.out { animation: hero-travel 4s ease-in-out infinite; animation-delay: 2.4s; }
+.hero-art .token.out-2 { animation-delay: 2.5s; }
+.hero-art .token.out-3 { animation-delay: 2.6s; }
+.hero-art .node.receiver rect { animation: hero-receive 4s ease-in-out infinite; animation-delay: .6s; }
+/* no motion when the user asked for none: the picture stays, the tokens rest mid-way */
+@media (prefers-reduced-motion: reduce) {
+  .hero-art .ring, .hero-art .token.in, .hero-art .token.out, .hero-art .node.receiver rect { animation: none; }
+  .hero-art .ring { opacity: .25; transform: scale(1); }
+  .hero-art .ring:nth-child(2) { transform: scale(.75); }
+  .hero-art .ring:nth-child(3) { display: none; }
+}
 .hero h1 { font-size: clamp(2rem, 5vw, 3rem); max-width: 18ch; }
 .hero .lead { font-size: 1.2rem; max-width: 60ch; color: var(--fg-muted); margin-top: 18px; }
 .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }

@@ -27,6 +27,7 @@
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="stylesheet" href="site.css">
+<script>/* the chosen theme, before the first paint */try{var t=localStorage.getItem('easyssf.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -76,6 +77,11 @@
       <a href="tools.html">Tools</a>
       <a href="#news">News</a>
       <a href="https://github.com/easyssf/easyssf">GitHub</a>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Theme: follows the system" title="Theme: follows the system">
+        <svg class="icon-auto" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"/></svg>
+        <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.5v2.5M10 16v2.5M1.5 10H4M16 10h2.5M4 4l1.8 1.8M14.2 14.2 16 16M4 16l1.8-1.8M14.2 5.8 16 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </button>
     </nav>
   </div>
 </header>
@@ -83,6 +89,7 @@
 <main id="top">
 
 <div class="hero wrap">
+<div class="hero-text">
   <h1>Shared Signals Framework support for Java</h1>
   <p class="lead">easyssf lets your application react when your identity provider revokes a session,
     changes a credential or signals a risk. It verifies the security events of the
@@ -105,6 +112,51 @@
       Source on GitHub
     </a>
   </div>
+</div>
+<!-- decorative: signals travel from the identity provider through the receiver to the application -->
+<div class="hero-art" aria-hidden="true">
+  <svg viewBox="0 0 360 280" focusable="false">
+    <g class="rings">
+      <circle class="ring" cx="64" cy="140" r="36"/>
+      <circle class="ring" cx="64" cy="140" r="36"/>
+      <circle class="ring" cx="64" cy="140" r="36"/>
+    </g>
+    <path class="wire" d="M112,140 L152,140"/>
+    <path class="wire" d="M248,140 C266,140 266,46 284,46"/>
+    <path class="wire" d="M248,140 L284,140"/>
+    <path class="wire" d="M248,140 C266,140 266,234 284,234"/>
+    <g class="node">
+      <rect x="16" y="112" width="96" height="56" rx="12"/>
+      <text x="64" y="136" class="title">Transmitter</text>
+      <text x="64" y="154" class="small">identity provider</text>
+    </g>
+    <g class="node receiver">
+      <rect x="152" y="100" width="96" height="80" rx="14"/>
+      <text x="200" y="130" class="title">easyssf</text>
+      <text x="200" y="149" class="small">verify · dedupe</text>
+      <text x="200" y="164" class="small">dispatch</text>
+    </g>
+    <g class="node">
+      <rect x="284" y="24" width="64" height="44" rx="10"/>
+      <text x="316" y="43" class="title">API</text>
+      <text x="316" y="58" class="small">tokens</text>
+    </g>
+    <g class="node">
+      <rect x="284" y="118" width="64" height="44" rx="10"/>
+      <text x="316" y="137" class="title">Web app</text>
+      <text x="316" y="152" class="small">sessions</text>
+    </g>
+    <g class="node">
+      <rect x="284" y="212" width="64" height="44" rx="10"/>
+      <text x="316" y="231" class="title">Your code</text>
+      <text x="316" y="246" class="small">handlers</text>
+    </g>
+    <circle class="token in" r="6"/>
+    <circle class="token out out-1" r="5"/>
+    <circle class="token out out-2" r="5"/>
+    <circle class="token out out-3" r="5"/>
+  </svg>
+</div>
 </div>
 
 <section id="how">

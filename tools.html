@@ -8,6 +8,8 @@
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://easyssf.org/tools.html">
 <meta name="robots" content="index, follow">
+<meta name="theme-color" content="#fdf8f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
 <meta property="og:title" content="Tools · easyssf">
 <meta property="og:description" content="Generate Security Event Tokens for the OpenID CAEP, RISC and SCIM Events profiles, signed in your browser, and inspect SETs you received.">
@@ -19,6 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="stylesheet" href="site.css">
+<script>/* the chosen theme, before the first paint */try{var t=localStorage.getItem('easyssf.theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
 </head>
 <body>
 
@@ -35,6 +38,11 @@
       <a href="tools.html">Tools</a>
       <a href="news.html">News</a>
       <a href="https://github.com/easyssf/easyssf">GitHub</a>
+      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Theme: follows the system" title="Theme: follows the system">
+        <svg class="icon-auto" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"/></svg>
+        <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.5v2.5M10 16v2.5M1.5 10H4M16 10h2.5M4 4l1.8 1.8M14.2 14.2 16 16M4 16l1.8-1.8M14.2 5.8 16 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </button>
     </nav>
   </div>
 </header>
