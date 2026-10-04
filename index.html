@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>easyssf · Shared Signals Framework support for Java</title>
-<meta name="description" content="easyssf is a Java library with a Spring Boot starter and a Quarkus extension that turn an application into an OpenID Shared Signals Framework (SSF) receiver: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
+<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to JVM-based applications, with a Spring Boot starter and a Quarkus extension: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://easyssf.org/">
 <meta name="google-site-verification" content="a7IMdQaPry9uSsgeSoEvLAKS5D6eS8xMz1yToHgwkIQ">
@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
 <meta property="og:title" content="easyssf · Shared Signals Framework support for Java">
-<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to a Spring Boot, Quarkus or plain Java application: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
+<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your JVM-based application, Spring Boot and Quarkus included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
@@ -23,7 +23,7 @@
 <meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, as a Spring Boot starter, a Quarkus extension and a plain Java library">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java">
-<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to a Spring Boot or Quarkus application, tested with the OpenID conformance suite.">
+<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your JVM-based application, Spring Boot and Quarkus included, tested with the OpenID conformance suite.">
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="stylesheet" href="site.css">
@@ -49,7 +49,7 @@
       "programmingLanguage": "Java",
       "runtimePlatform": ["Java 21", "Spring Boot 4.1", "Quarkus 3.27"],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
-      "description": "A Java library with a Spring Boot starter and a Quarkus extension that turn an application into an OpenID Shared Signals Framework (SSF) receiver: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
+      "description": "A Java library that adds an OpenID Shared Signals Framework (SSF) receiver to JVM-based applications, with a Spring Boot starter and a Quarkus extension: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
       "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", "Keycloak"],
       "about": [
         {"@type": "Thing", "name": "OpenID Shared Signals Framework 1.0", "url": "https://openid.net/specs/openid-sharedsignals-framework-1_0.html"},
@@ -91,18 +91,19 @@
 <div class="hero wrap">
 <div class="hero-text">
   <h1>Shared Signals Framework support for Java</h1>
-  <p class="lead">easyssf lets your application react when your identity provider revokes a session,
-    changes a credential or signals a risk. It verifies the security events of the
-    <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID Shared Signals Framework</a>,
-    rejects the access tokens and ends the sessions concerned, and hands everything else to your code,
-    SCIM Events about your users included. Use it as a Spring Boot starter, as a Quarkus extension or as a plain
-    Java library in any other application.</p>
+  <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
+    Shared Signals Framework</a> receiver to your JVM-based application, so that it reacts when your identity
+    provider revokes a session, changes a credential or signals a risk. The receiver verifies the security events,
+    the CAEP events about sessions and credentials, the RISC events about accounts and the SCIM Events about your
+    users, rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
+    Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
+    directly.</p>
   <div class="badges">
     <span class="badge">0.2.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
-    <span class="badge">Apache 2.0</span>
+    <span class="badge">Apache License 2.0</span>
     <span class="badge">OpenID conformance suite tested</span>
   </div>
   <div class="cta">
@@ -167,52 +168,74 @@
       easyssf verifies each token, skips duplicates and routes the events to the integrations that act on them.</p>
 
     <div class="diagram">
-      <svg viewBox="0 0 960 300" role="img" aria-labelledby="diag-title">
-        <title id="diag-title">Events flow from the transmitter through the easyssf receiver to the resource server, OIDC client and custom handlers</title>
+      <svg viewBox="0 0 960 320" role="img" aria-labelledby="diag-title">
+        <title id="diag-title">The transmitter pushes signed Security Event Tokens to your application, or the application polls for them periodically; inside the application the easyssf receiver library verifies them and acts on the resource server, the OIDC client and your handlers</title>
         <defs>
-          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker>
+          <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#5e4d44"/></marker>
+          <marker id="arrowhead-accent" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path class="accent" d="M0,0 L8,4 L0,8 z" fill="#c43f1a"/></marker>
+          <marker id="arrowhead-small" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="#5e4d44"/></marker>
         </defs>
 
-        <!-- transmitter -->
-        <rect class="box" x="20" y="100" width="190" height="100" rx="10"/>
-        <text class="title" x="115" y="135" text-anchor="middle">Transmitter</text>
-        <text class="small" x="115" y="156" text-anchor="middle">identity provider, e.g. Keycloak</text>
-        <text class="small" x="115" y="176" text-anchor="middle">signs SETs with its JWK Set</text>
+        <!-- transmitter, outside the application -->
+        <rect class="box" x="14" y="110" width="176" height="100" rx="10"/>
+        <text class="title" x="102" y="145" text-anchor="middle">Transmitter</text>
+        <text class="small" x="102" y="166" text-anchor="middle">identity provider, e.g. Keycloak</text>
+        <text class="small" x="102" y="186" text-anchor="middle">signs SETs with its JWK Set</text>
 
-        <!-- arrows transmitter -> receiver -->
-        <path class="arrow accent" d="M210,130 L330,130"/>
-        <text class="small" x="270" y="120" text-anchor="middle">push · RFC 8935</text>
-        <path class="arrow accent" d="M330,172 L210,172"/>
-        <text class="small" x="270" y="192" text-anchor="middle">poll · RFC 8936</text>
+        <!-- your application: everything on the right runs inside it -->
+        <rect class="box app" x="300" y="20" width="640" height="280" rx="14"/>
+        <text class="title" x="320" y="48">Your application</text>
+        <text class="small" x="320" y="66">Spring Boot, Quarkus or any other JVM application; easyssf-receiver is a library inside it</text>
 
-        <!-- receiver -->
-        <rect class="box accent" x="330" y="40" width="300" height="220" rx="12"/>
-        <text class="title" x="480" y="68" text-anchor="middle">easyssf receiver</text>
-        <rect class="box" x="350" y="84" width="260" height="34" rx="7"/>
-        <text x="480" y="106" text-anchor="middle">verify the SET · RFC 8417</text>
-        <rect class="box" x="350" y="126" width="260" height="34" rx="7"/>
-        <text x="480" y="148" text-anchor="middle">skip duplicates (jti)</text>
-        <rect class="box" x="350" y="168" width="260" height="34" rx="7"/>
-        <text x="480" y="190" text-anchor="middle">dispatch to event handlers</text>
-        <text class="small" x="480" y="236" text-anchor="middle">stream management · metrics · JDBC state</text>
+        <!-- the receiver library -->
+        <rect class="box accent" x="330" y="84" width="280" height="196" rx="12"/>
+        <text class="title" x="470" y="110" text-anchor="middle">easyssf receiver</text>
+        <rect class="box" x="350" y="124" width="240" height="32" rx="7"/>
+        <text x="470" y="145" text-anchor="middle">verify the SET · RFC 8417</text>
+        <rect class="box" x="350" y="164" width="240" height="32" rx="7"/>
+        <text x="470" y="185" text-anchor="middle">skip duplicates (jti)</text>
+        <rect class="box" x="350" y="204" width="240" height="32" rx="7"/>
+        <text x="470" y="225" text-anchor="middle">dispatch to event handlers</text>
+        <text class="small" x="470" y="256" text-anchor="middle">stream management · metrics</text>
+        <text class="small" x="470" y="271" text-anchor="middle">state in memory or in your database</text>
 
-        <!-- arrows receiver -> effects -->
-        <path class="arrow" d="M630,150 C690,150 690,70 740,70"/>
-        <path class="arrow" d="M630,150 L740,150"/>
-        <path class="arrow" d="M630,150 C690,150 690,230 740,230"/>
+        <!-- the parts of the application the receiver acts on -->
+        <rect class="box" x="720" y="84" width="200" height="56" rx="10"/>
+        <text class="title" x="820" y="107" text-anchor="middle">Resource server</text>
+        <text class="small" x="820" y="127" text-anchor="middle">rejects revoked access tokens</text>
 
-        <!-- effects -->
-        <rect class="box" x="740" y="40" width="200" height="60" rx="10"/>
-        <text class="title" x="840" y="64" text-anchor="middle">Resource server</text>
-        <text class="small" x="840" y="84" text-anchor="middle">rejects revoked access tokens</text>
+        <rect class="box" x="720" y="154" width="200" height="56" rx="10"/>
+        <text class="title" x="820" y="177" text-anchor="middle">OIDC client</text>
+        <text class="small" x="820" y="197" text-anchor="middle">ends the sessions concerned</text>
 
-        <rect class="box" x="740" y="120" width="200" height="60" rx="10"/>
-        <text class="title" x="840" y="144" text-anchor="middle">OIDC client</text>
-        <text class="small" x="840" y="164" text-anchor="middle">ends the sessions concerned</text>
+        <rect class="box" x="720" y="224" width="200" height="56" rx="10"/>
+        <text class="title" x="820" y="247" text-anchor="middle">Your handlers</text>
+        <text class="small" x="820" y="267" text-anchor="middle">step-up, audit, anything else</text>
 
-        <rect class="box" x="740" y="200" width="200" height="60" rx="10"/>
-        <text class="title" x="840" y="224" text-anchor="middle">Your handlers</text>
-        <text class="small" x="840" y="244" text-anchor="middle">step-up, audit, anything else</text>
+        <!-- arrows, drawn last so that their heads lie on top of the boxes -->
+        <!-- push: the transmitter delivers a signed SET to the application's endpoint -->
+        <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M190,134 L329,134"/>
+        <text class="small" x="245" y="112" text-anchor="middle">push · RFC 8935</text>
+        <!-- poll: the application fetches the SETs periodically -->
+        <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M330,188 L191,188"/>
+        <path class="cycle" marker-end="url(#arrowhead-small)" d="M222,210.2 A6.5,6.5 0 1 1 221.2,201"/>
+        <text class="small" x="229" y="210">periodically</text>
+        <text class="small" x="245" y="228" text-anchor="middle">poll · RFC 8936</text>
+        <!-- a Security Event Token on each way: a signed JWT -->
+        <g class="set" transform="translate(222,122)">
+          <rect width="46" height="24" rx="6"/>
+          <text x="18" y="16.5" text-anchor="middle">SET</text>
+          <path class="seal" d="M35,8.5 a4,4 0 1 1 0,8 a4,4 0 1 1 0,-8 M35,10.5 v2.5 l1.6,1.2"/>
+        </g>
+        <g class="set" transform="translate(222,176)">
+          <rect width="46" height="24" rx="6"/>
+          <text x="18" y="16.5" text-anchor="middle">SET</text>
+          <path class="seal" d="M35,8.5 a4,4 0 1 1 0,8 a4,4 0 1 1 0,-8 M35,10.5 v2.5 l1.6,1.2"/>
+        </g>
+        <!-- the receiver acts on the application -->
+        <path class="arrow" marker-end="url(#arrowhead)" d="M610,182 C670,182 670,112 719,112"/>
+        <path class="arrow" marker-end="url(#arrowhead)" d="M610,182 L719,182"/>
+        <path class="arrow" marker-end="url(#arrowhead)" d="M610,182 C670,182 670,252 719,252"/>
       </svg>
     </div>
 
@@ -265,7 +288,7 @@
     <h2>Getting started</h2>
     <p class="muted" style="max-width:70ch">easyssf comes with a starter for Spring Boot and, through the Quarkiverse extension
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
-      Both are built on the same receiver library, which any other Java application can use on its own; all three
+      Both are built on the same receiver library, which other JVM applications use on their own; all three
       verify, de-duplicate and dispatch events the same way.</p>
 
     <div class="switch" role="tablist" aria-label="Framework">

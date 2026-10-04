@@ -198,12 +198,20 @@ section:first-of-type { border-top: 0; }
 .diagram svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
 .diagram .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
 .diagram .box.accent { fill: var(--accent-soft); stroke: var(--accent); }
+.diagram .box.app { fill: var(--bg-raised); stroke: var(--fg-muted); stroke-dasharray: 6 4; }
 .diagram text { fill: var(--fg); font-size: 13px; }
 .diagram text.small { fill: var(--fg-muted); font-size: 11.5px; }
 .diagram text.title { font-weight: 700; font-size: 14px; }
-.diagram .arrow { stroke: var(--fg-muted); stroke-width: 1.4; fill: none; marker-end: url(#arrowhead); }
+/* the arrowheads are referenced by attributes in the SVG itself: a url(#id) in an external stylesheet
+   is not resolved against the page by every browser */
+.diagram .arrow { stroke: var(--fg-muted); stroke-width: 1.4; fill: none; }
 .diagram .arrow.accent { stroke: var(--accent); }
 .diagram marker path { fill: var(--fg-muted); }
+.diagram marker path.accent { fill: var(--accent); }
+.diagram .cycle { fill: none; stroke: var(--fg-muted); stroke-width: 1.4; }
+.diagram .set rect { fill: var(--bg-raised); stroke: var(--accent); stroke-width: 1.2; }
+.diagram .set text { font-size: 11px; font-weight: 700; fill: var(--accent); }
+.diagram .set .seal { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-linecap: round; }
 
 /* grids and cards */
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 20px; }
