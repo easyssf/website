@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tools · easyssf</title>
+<meta name="description" content="Generate Security Event Tokens for the OpenID CAEP, RISC and SCIM Events profiles with any subject identifier, signed in your browser, and inspect SETs you received.">
+<link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://easyssf.org/tools.html">
+<meta name="robots" content="index, follow">
+<meta property="og:site_name" content="easyssf">
+<meta property="og:title" content="Tools · easyssf">
+<meta property="og:description" content="Generate Security Event Tokens for the OpenID CAEP, RISC and SCIM Events profiles, signed in your browser, and inspect SETs you received.">
+<meta property="og:url" content="https://easyssf.org/tools.html">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://easyssf.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://easyssf.org/og-image.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="easyssf">
+      <img src="easyssf-icon.svg" alt="" width="26" height="26">
+      easyssf
+    </a>
+    <nav class="top">
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#start" class="hide-xs">Getting started</a>
+      <a href="index.html#modules" class="hide-sm">Modules</a>
+      <a href="index.html#specs" class="hide-sm">Specifications</a>
+      <a href="tools.html">Tools</a>
+      <a href="news.html">News</a>
+      <a href="https://github.com/easyssf/easyssf">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap page-title">
+    <h1>Tools</h1>
+    <p class="muted" style="max-width:70ch">Security Event Tokens to try a receiver with, or to show what a CAEP, RISC or SCIM
+      event looks like.</p>
+    <div class="note" style="max-width:70ch"><strong>Runs in your browser only.</strong> This page is static: the tokens are built and
+      signed by the JavaScript of the page, and nothing you enter, no claim, subject or token, is sent to any server. The
+      signing key is generated in your browser and kept in its local storage; the JWT tab shows it and lets you replace it.</div>
+    <div class="switch tools-switch" role="tablist" aria-label="Tool" id="tools">
+      <button type="button" role="tab" aria-selected="true" aria-controls="generator">SET generator</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="inspector" tabindex="-1">SET inspector</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="events" tabindex="-1">Event types</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="more" tabindex="-1">Other tools</button>
+    </div>
+  </div>
+
+  <section id="generator" class="tool-panel" role="tabpanel">
+    <div class="wrap">
+      <h2>Security Event Token generator</h2>
+      <p class="muted" style="max-width:70ch">Pick an event type and get a complete example right away, as the SET's JSON and signed as a JWT with
+        a key generated in your browser; then change the subject, the claims and the token as you need. The event types
+        and their claims follow <a href="https://openid.net/specs/openid-caep-1_0.html">CAEP 1.0</a>,
+        <a href="https://openid.net/specs/openid-risc-1_0.html">RISC 1.0</a>,
+        <a href="https://www.rfc-editor.org/rfc/rfc9967">RFC 9967</a> (SCIM Events) and
+        <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">SSF 1.0</a>; the subject identifiers
+        <a href="https://www.rfc-editor.org/rfc/rfc9493">RFC 9493</a> and the additional formats of SSF.
+        The <a href="#events">event types</a> below list them all with their claims and the alias easyssf accepts for each.</p>
+
+      <div class="tool">
+        <form id="gen" class="tool-form" autocomplete="off" novalidate>
+          <div class="tool-actions">
+            <button type="button" class="btn small" data-action="fresh" title="New jti, iat and event timestamps">Fresh jti and timestamps</button>
+            <button type="button" class="btn small" data-action="link" title="A link that opens this page with this SET">Copy as link</button>
+            <button type="button" class="btn small" data-action="reset">Reset</button>
+          </div>
+
+          <fieldset>
+            <legend>Event</legend>
+            <div class="switch" role="tablist" aria-label="Event profile" id="profiles"></div>
+            <div class="field-row">
+              <div class="field" style="margin-top:0">
+                <label for="event-type">Event type</label>
+                <select id="event-type" data-path="event" data-rebuild></select>
+              </div>
+              <div class="field" style="margin-top:0">
+                <label for="spec-version">Specification version</label>
+                <select id="spec-version" data-rebuild></select>
+              </div>
+            </div>
+            <p class="event-info" id="event-info"></p>
+            <div id="event-fields"></div>
+            <div class="tool-actions" style="margin-top:16px;margin-bottom:0">
+              <button type="button" class="btn small" data-action="example" title="The example values of this event type">Example values</button>
+              <button type="button" class="btn small" data-action="minimal" title="Clear the optional claims">Required claims only</button>
+            </div>
+            <details class="extra">
+              <summary>Custom claims of the event payload</summary>
+              <div class="field">
+                <label for="ev-extra">A JSON object, merged into the payload of the event</label>
+                <textarea id="ev-extra" data-path="ev.$extra" spellcheck="false" placeholder='{"risk_score": 87}'></textarea>
+                <span class="hint">For claims a specification does not define yet, or to try a value: a claim with the name
+                  of a standard one replaces it.</span>
+              </div>
+            </details>
+          </fieldset>
+
+          <fieldset>
+            <legend>Subject</legend>
+            <p class="muted" style="font-size:.9rem;margin:0">The <code>sub_id</code> claim of the SET: a simple identifier,
+              or a complex subject with a member per aspect of the same principal.</p>
+            <div id="subject"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Token</legend>
+            <div class="preset-bar">
+              <div class="field" style="margin-top:0">
+                <label for="tok-preset">Preset</label>
+                <div class="with-btn">
+                  <select id="tok-preset"><option value="">None saved yet</option></select>
+                  <button type="button" class="btn small" data-action="preset-delete" title="Delete the selected preset">Delete</button>
+                </div>
+              </div>
+              <div class="field" style="margin-top:0">
+                <label for="tok-preset-name">Save the token settings as</label>
+                <div class="with-btn">
+                  <input type="text" id="tok-preset-name" placeholder="A name for this setup">
+                  <button type="button" class="btn small" data-action="preset-save">Save</button>
+                </div>
+              </div>
+            </div>
+            <p class="hint" style="margin:6px 0 0;font-size:.8rem;color:var(--fg-muted)">A preset holds the issuer, audience, signature, the
+              legacy subject option and the custom claims of the SET, for a demo setup you come back to. Presets stay in this
+              browser's storage. Saving under an existing name replaces it.</p>
+            <div class="field">
+              <label for="tok-iss">Issuer <code>iss</code><span class="req" title="required">*</span></label>
+              <input type="text" id="tok-iss" data-path="token.iss" placeholder="https://idp.example/realms/demo">
+              <span class="hint">The transmitter. A receiver verifies the signature with the keys this issuer publishes.</span>
+            </div>
+            <div class="field">
+              <label for="tok-aud">Audience <code>aud</code><span class="req" title="required">*</span></label>
+              <input type="text" id="tok-aud" data-path="token.aud" placeholder="https://my-app.example">
+              <span class="hint">The receiver. Several, separated by commas, become an array.</span>
+            </div>
+            <div class="field">
+              <label for="tok-jti">Token id <code>jti</code><span class="req" title="required">*</span></label>
+              <div class="with-btn">
+                <input type="text" id="tok-jti" class="mono" data-path="token.jti">
+                <button type="button" class="btn small" data-action="jti">New</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="tok-iat">Issued at <code>iat</code><span class="req" title="required">*</span></label>
+              <div class="with-btn">
+                <input type="number" id="tok-iat" data-path="token.iat" step="1">
+                <button type="button" class="btn small" data-action="iat">Now</button>
+              </div>
+              <span class="hint" id="iat-human"></span>
+            </div>
+            <div class="field">
+              <label for="tok-txn">Transaction <code>txn</code></label>
+              <div class="with-btn">
+                <input type="text" id="tok-txn" class="mono" data-path="token.txn">
+                <button type="button" class="btn small" data-action="txn">New</button>
+              </div>
+              <span class="hint">Groups the SETs of one underlying cause. SSF recommends it, SCIM Events need it for asynchronous requests.</span>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="tok-alg">Signature</label>
+                <select id="tok-alg" data-path="token.alg">
+                  <option value="RS256">RS256, RSA key</option>
+                  <option value="ES256">ES256, P-256 key</option>
+                  <option value="none">Unsigned</option>
+                </select>
+                <span class="hint">With a key generated in your browser and kept in its storage.</span>
+              </div>
+              <div class="field check" style="align-self:end">
+                <label><input type="checkbox" data-path="token.legacySubject"> Repeat the subject inside the event as <code>subject</code></label>
+                <span class="hint">As transmitters built on the drafts did. The receiver's legacy subject mode accepts it.</span>
+              </div>
+            </div>
+            <details class="extra">
+              <summary>Custom claims of the SET</summary>
+              <div class="field">
+                <label for="tok-extra">A JSON object, merged into the top-level claims</label>
+                <textarea id="tok-extra" data-path="token.extra" spellcheck="false" placeholder='{"toe": 1700000000, "exp": 1700000300}'></textarea>
+                <span class="hint">Added next to <code>iss</code>, <code>jti</code>, <code>aud</code> and the others; a claim with the
+                  name of a standard one replaces it. Receivers ignore claims they do not know, SSF 1.0 section 4.2.3.</span>
+              </div>
+            </details>
+          </fieldset>
+        </form>
+
+        <div class="tool-output">
+          <div class="note" id="problems" aria-live="polite"></div>
+          <div class="switch" role="tablist" aria-label="Output" id="outputs">
+            <button type="button" role="tab" aria-selected="true" aria-controls="out-set">SET</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="out-jwt" tabindex="-1">JWT</button>
+          </div>
+
+          <div id="out-set" class="out-panel" role="tabpanel">
+            <pre><code id="set-json"></code></pre>
+            <div class="copy">
+              <button type="button" class="btn small" data-copy="set-json" data-copy-attr="eventText" data-copied-label="Event copied" title="The payload of the event only, the object under its type URI">Copy event</button>
+              <button type="button" class="btn small" data-copy="set-json" data-copied-label="SET copied">Copy</button>
+            </div>
+            <p class="after">The claims of the SET, RFC 8417: the event under its type URI in <code>events</code>, the subject in
+              <code>sub_id</code>. The JWT tab has it signed. "Copy event" copies the payload of the event alone, for a
+              transmitter that wraps it in a SET itself.</p>
+          </div>
+
+          <div id="out-jwt" class="out-panel" role="tabpanel" hidden>
+            <pre><code id="jwt-compact" class="jwt"></code></pre>
+            <div class="copy"><button type="button" class="btn small" data-copy="jwt-compact" data-copied-label="JWT copied">Copy</button></div>
+            <div class="after">
+              <p>Header, <code>typ</code> <code>secevent+jwt</code> as SSF requires:</p>
+              <pre><code id="jwt-header"></code></pre>
+              <p id="jwt-note" style="margin-top:12px"></p>
+              <p>A receiver verifies the signature with the keys the issuer publishes at the <code>jwks_uri</code> of its
+                <code>.well-known/ssf-configuration</code>, so it accepts this token only if that key set contains the
+                browser key. Set an <code>iss</code> you control and serve the key set there, or use the inspector below
+                to read the token.</p>
+              <details>
+                <summary>The key, as a JWK Set and as a private JWK</summary>
+                <pre><code id="jwks"></code></pre>
+                <pre><code id="jwk-private"></code></pre>
+                <div class="tool-actions" style="margin-top:12px;margin-bottom:0">
+                  <button type="button" class="btn small" data-action="newkey">Generate a new key</button>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="inspector" class="tool-panel" role="tabpanel" hidden>
+    <div class="wrap">
+      <h2>Security Event Token inspector</h2>
+      <p class="muted" style="max-width:70ch">Paste a SET you received, or one from the generator, to read its header and claims.
+        Event types are shown with their easyssf alias. The signature is not verified here.</p>
+      <div class="tool">
+        <div class="field" style="margin-top:0">
+          <label for="inspect-in">Compact JWT, or the claims as JSON</label>
+          <textarea id="inspect-in" spellcheck="false" placeholder="eyJhbGciOi..." style="min-height:12em"></textarea>
+        </div>
+        <div class="tool-output" style="position:static">
+          <div class="note" id="inspect-problems"></div>
+          <dl class="summary" id="inspect-summary" hidden></dl>
+          <div class="out-panel" id="inspect-out" hidden>
+            <pre><code id="inspect-json"></code></pre>
+            <div class="copy"><button type="button" class="btn small" data-copy="inspect-json">Copy</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="events" class="tool-panel" role="tabpanel" hidden>
+    <div class="wrap">
+      <h2>Event types</h2>
+      <p class="muted" style="max-width:70ch">Every event type the specifications define and easyssf knows, with its claims. The
+        specifications identify event types by URI; easyssf accepts those URIs everywhere, and additionally the short alias
+        shown with each event, usable in <code>events-requested</code>, in <code>SsfEventContext.hasEvent()</code> and wherever
+        else an event type is named. The aliases are an easyssf convention, not part of the specifications; a SET always
+        carries the URI. You can register your own aliases for vendor-specific types, see the
+        <a href="https://github.com/easyssf/easyssf#readme">README</a>.</p>
+      <div id="event-list"></div>
+    </div>
+  </section>
+
+  <section id="more" class="tool-panel" role="tabpanel" hidden>
+    <div class="wrap">
+      <h2>Other tools</h2>
+      <p class="muted" style="max-width:70ch">The generator shows what a SET looks like; to see a receiver react, it needs a
+        transmitter whose keys it can fetch. These do that.</p>
+      <div class="grid">
+        <div class="card">
+          <h3><a href="https://caep.dev">caep.dev</a></h3>
+          <p>A free, hosted Shared Signals transmitter by SGNL, made for trying receivers: sign in, create a stream with push
+            or poll delivery to your application, and send CAEP events to it from the browser. It publishes its transmitter
+            metadata and keys, so an easyssf receiver verifies the SETs like those of any identity provider. It can play the
+            receiver as well, for when easyssf gains a transmitter.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://openid.net/certification/">OpenID conformance suite</a></h3>
+          <p>The official test plans for SSF receivers, default and CAEP interoperability profile, with push and poll
+            delivery. <code>easyssf-test-conformance</code> runs them against a receiver from a JUnit test, with the suite in
+            a container.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://github.com/easyssf/easyssf#readme">easyssf-test</a></h3>
+          <p>A transmitter inside your test JVM: it signs SETs, serves metadata and keys, hands out tokens and emulates the
+            stream and poll endpoints, for the integration tests of your own receiver.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>easyssf is open source under the Apache License 2.0. Contact: <a href="mailto:oss@easyssf.org">oss@easyssf.org</a></span>
+    <span>
+      <a href="https://github.com/easyssf/easyssf">GitHub</a> ·
+      <a href="https://github.com/easyssf/easyssf/issues">Issues</a> ·
+      <a href="https://github.com/easyssf/easyssf#readme">Documentation</a>
+    </span>
+  </div>
+</footer>
+
+<script src="tools.js"></script>
+</body>
+</html>

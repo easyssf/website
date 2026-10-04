@@ -49,11 +49,12 @@
       "runtimePlatform": ["Java 21", "Spring Boot 4.1", "Quarkus 3.27"],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
       "description": "A Java library with a Spring Boot starter and a Quarkus extension that turn an application into an OpenID Shared Signals Framework (SSF) receiver: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
-      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", "Keycloak"],
+      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", "Keycloak"],
       "about": [
         {"@type": "Thing", "name": "OpenID Shared Signals Framework 1.0", "url": "https://openid.net/specs/openid-sharedsignals-framework-1_0.html"},
         {"@type": "Thing", "name": "OpenID CAEP 1.0", "url": "https://openid.net/specs/openid-caep-1_0.html"},
-        {"@type": "Thing", "name": "OpenID RISC Profile 1.0", "url": "https://openid.net/specs/openid-risc-1_0.html"}
+        {"@type": "Thing", "name": "OpenID RISC Profile 1.0", "url": "https://openid.net/specs/openid-risc-1_0.html"},
+        {"@type": "Thing", "name": "RFC 9967 SCIM Events", "url": "https://www.rfc-editor.org/rfc/rfc9967"}
       ]
     }
   ]
@@ -74,6 +75,7 @@
       <a href="#modules" class="hide-sm">Modules</a>
       <a href="#plain" class="hide-sm">Plain Java</a>
       <a href="#specs" class="hide-sm">Specifications</a>
+      <a href="tools.html">Tools</a>
       <a href="#news">News</a>
       <a href="https://github.com/easyssf/easyssf">GitHub</a>
     </nav>
@@ -87,10 +89,11 @@
   <p class="lead">easyssf lets your application react when your identity provider revokes a session,
     changes a credential or signals a risk. It verifies the security events of the
     <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID Shared Signals Framework</a>,
-    rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
-    A Spring Boot starter and a Quarkus extension wire it into your application.</p>
+    rejects the access tokens and ends the sessions concerned, and hands everything else to your code,
+    SCIM Events about your users included. A Spring Boot starter and a Quarkus extension wire it into your
+    application.</p>
   <div class="badges">
-    <span class="badge">0.1.0 on Maven Central</span>
+    <span class="badge">0.2.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -187,6 +190,12 @@
           sessions, by session id, subject or email.</p>
       </div>
       <div class="card">
+        <h3>SCIM Events<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc9967">RFC 9967</a></span></h3>
+        <p>The provisioning changes of a SCIM service provider, users created, patched, deactivated or deleted, arrive
+          as SETs with a <code>scim</code> subject. <code>SsfScimEventHandler</code> hands them to a method per
+          operation, and a deactivation ends the user's sessions.</p>
+      </div>
+      <div class="card">
         <h3>Stream management</h3>
         <p>Let the application create or update its stream at the transmitter on startup, verify it, and use the
           whole stream management API through <code>SsfStreamClient</code>. Several transmitters, several Keycloak
@@ -221,7 +230,7 @@
 <pre><code>&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.1.0&lt;/version&gt;
+    &lt;version&gt;0.2.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">From <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, where
           all modules are listed. Snapshots of <code>main</code> are on the
@@ -328,7 +337,7 @@ public class StepUpHandler implements SsfEventHandler {
         <h3>Subjects as the spec defines them</h3>
         <p><code>SsfSubject</code> is the <code>sub_id</code> of the SET: a subject identifier in any RFC 9493 format
           (<code>iss_sub</code>, <code>email</code>, <code>opaque</code>, <code>account</code>, <code>phone_number</code>,
-          <code>did</code>, <code>uri</code>, <code>aliases</code>) or a complex subject with its <code>user</code>,
+          <code>did</code>, <code>uri</code>, <code>aliases</code>), the <code>scim</code> format of RFC 9967, or a complex subject with its <code>user</code>,
           <code>session</code>, <code>device</code>, <code>tenant</code> and other members. Shortcuts cover the common
           cases, nothing is lost.</p>
       </div>
@@ -364,12 +373,12 @@ public class StepUpHandler implements SsfEventHandler {
     <table>
       <thead><tr><th>Module</th><th>What it is</th><th>Depends on</th></tr></thead>
       <tbody>
-        <tr><td><code>easyssf-core</code></td><td>The data structures of SSF shared by receivers and, later, transmitters: SETs, subjects, event types, stream configuration, transmitter metadata.</td><td>nothing</td></tr>
+        <tr><td><code>easyssf-core</code></td><td>The data structures of SSF shared by receivers and, later, transmitters: SETs, subjects, event types, stream configuration, transmitter metadata, and the typed SCIM Events of RFC 9967.</td><td>nothing</td></tr>
         <tr><td><code>easyssf-receiver</code></td><td>The receiver, independent of any framework: SET verification, de-duplication, event handlers, push handling, polling, stream management, token revocation and session termination logic.</td><td>easyssf-core, Nimbus JOSE + JWT, SLF4J</td></tr>
         <tr><td><code>easyssf-receiver-jdbc</code></td><td>The database-backed stores of the receiver, processed SETs and revocations, independent of any framework: the SQL, the schema and a small execution interface implemented over a <code>DataSource</code> or a framework's template.</td><td>easyssf-receiver</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-starter</code></td><td>The receiver for Spring Boot 4.1 with Spring Security 7.1 on the servlet stack: configuration properties, auto-configuration, push endpoint, resource server and OIDC client integration.</td><td>easyssf-receiver, Spring Boot</td></tr>
         <tr><td><code>easyssf-test</code></td><td>Test support: a transmitter on a loopback port that signs and delivers SETs, serves metadata and keys and emulates the stream and poll endpoints, for the tests of your receiver.</td><td>easyssf-core, Nimbus JOSE + JWT</td></tr>
-        <tr><td><code>easyssf-receiver-spring-boot-examples</code></td><td>An example resource server and OIDC client with a Keycloak setup.</td><td></td></tr>
+        <tr><td><code>easyssf-receiver-spring-boot-examples</code></td><td>An example resource server and OIDC client with a Keycloak setup, and a SCIM provisioning example that mirrors users from SCIM Events.</td><td></td></tr>
         <tr><td><code>easyssf-test-conformance</code></td><td>Runs the OpenID conformance suite's SSF receiver test plans against a receiver under test, in any framework: the suite via Testcontainers, the scenarios the receiver plays, and the plan tests to extend.</td><td>easyssf-receiver, Testcontainers, JUnit</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-conformance-tests</code></td><td>The Spring Boot receiver under test and the four plan tests for it.</td><td></td></tr>
         <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
@@ -419,6 +428,11 @@ poller.start();</code></pre>
         <h3>Keycloak</h3>
         <p>Tested with the SSF transmitter of Keycloak 26.8 (<code>--features=ssf</code>). The examples ship a
           pre-configured realm, and the README documents Keycloak's audience, scopes and single-stream rule.</p>
+      </div>
+      <div class="card">
+        <h3>caep.dev</h3>
+        <p>Point the receiver at <a href="https://caep.dev">caep.dev</a>, SGNL's free hosted transmitter, to receive CAEP
+          events sent from a browser without running an identity provider. See <a href="tools.html#more">Tools</a>.</p>
       </div>
       <div class="card">
         <h3>OpenID conformance suite</h3>
@@ -482,6 +496,11 @@ poller.start();</code></pre>
           <td><a href="https://www.rfc-editor.org/rfc/rfc9493">RFC 9493</a></td>
           <td>Subject identifiers for SETs: <code>account</code>, <code>email</code>, <code>iss_sub</code>, <code>opaque</code>, <code>phone_number</code>, <code>did</code>, <code>uri</code>, <code>aliases</code></td>
           <td><code>SsfSubjectIdentifier</code>, every format, and <code>SsfSubject</code> for complex subjects; the matching of events to sessions and users</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.rfc-editor.org/rfc/rfc9967">RFC 9967</a></td>
+          <td>SCIM Events: the provisioning changes of a SCIM service provider as SETs, the <code>scim</code> subject identifier, full and notice events</td>
+          <td>Event type aliases, <code>SsfScimSubject</code>, <code>SsfScimEvent</code> and <code>SsfScimEventHandler</code>; session termination for deactivated and deleted users</td>
         </tr>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc7515">RFC 7515</a> / <a href="https://www.rfc-editor.org/rfc/rfc7517">RFC 7517</a></td>

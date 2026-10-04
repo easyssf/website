@@ -8,12 +8,27 @@ The project website, static files without a build step or external resources:
 | `news.html` | all news items |
 | `news.json` | the news items, see below |
 | `news.js` | renders `news.json` into both pages |
+| `tools.html`, `tools.js` | the tools page, one tool at a time behind a switcher like jwt.io's, each linkable as `tools.html#inspector` etc.: the listing of all event types with their claims and easyssf aliases, links to other tools such as caep.dev, a Security Event Token generator for the CAEP, RISC, SCIM and SSF event types with RFC 9493 subjects, signed in the browser with Web Crypto (the key is kept in `localStorage`), and a SET inspector; "Copy as link" encodes the form state into a URL fragment, so a SET can be linked to; custom JSON claims can be merged into the SET and the event payload; named token presets (issuer, audience, signature, legacy subject, custom SET claims) are kept in `localStorage` only |
 | `start.js` | the Spring Boot / Quarkus switch of the getting started section, deep-linkable as `index.html#start-quarkus` |
-| `site.css` | the stylesheet of both pages, light and dark theme |
+| `site.css` | the stylesheet of all pages, light and dark theme |
 | `easyssf-icon.svg` | the icon, used as favicon and in the header |
 | `CNAME`, `.nojekyll` | the custom domain for GitHub Pages, and no Jekyll |
 | `og-image.png` | the preview image for links shared on social media and chat, 1200×630; rendered from the icon with `rsvg-convert`, see below |
 | `robots.txt`, `sitemap.xml` | for search engines; add new pages to the sitemap and bump `lastmod` |
+
+## The tools page
+
+The event catalog at the top of `tools.js` has one entry per profile (CAEP, RISC, SCIM, SSF), per
+version of its specification (currently 1.0, and RFC 9967 for SCIM Events), per event type, with the
+claims the specification defines and the alias of `SsfEventTypes`. A field's `default` is the example
+value the event opens with, so every event type yields a complete example without typing. A new version of a profile is one
+more entry in its `versions`, offered by the version selector of the generator; the first entry is
+the default. The event type listing merges the versions of a profile and marks the events that are
+not in every version with the version they come from, so SSF 1.1 adding an event is one entry with
+the 1.1 events, the existing ones included. Field types are `text`,
+`number`, `timestamp`, `select` (with `other: true` for a free value), `i18n` (a string that becomes
+`{"en": ...}`), `list` (comma separated) and `json`. Signing needs a secure context, so preview over
+`localhost` (below), not from a LAN address.
 
 ## Adding a news item
 
