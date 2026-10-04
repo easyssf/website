@@ -110,13 +110,14 @@ header.site .wrap { display: flex; align-items: center; justify-content: space-b
 .brand:hover { text-decoration: none; }
 .brand img { width: 26px; height: 26px; }
 nav.top { display: flex; gap: 20px; font-size: .95rem; }
-nav.top a { color: var(--fg-muted); }
+nav.top a { color: var(--fg-muted); white-space: nowrap; }
 nav.top a:hover { color: var(--fg); text-decoration: none; }
-@media (max-width: 640px) {
+/* below 680px the links no longer fit next to the brand: the header wraps into two rows */
+@media (max-width: 680px) {
   header.site .wrap { height: auto; flex-wrap: wrap; padding-block: 10px; row-gap: 6px; }
   nav.top { gap: 14px; font-size: .9rem; flex-wrap: wrap; }
-  nav.top a.hide-sm { display: none; }
 }
+@media (max-width: 640px) { nav.top a.hide-sm { display: none; } }
 @media (max-width: 480px) { nav.top a.hide-xs { display: none; } }
 
 /* hero */
@@ -137,9 +138,10 @@ nav.top a:hover { color: var(--fg); text-decoration: none; }
 .btn.primary:hover { filter: brightness(1.07); }
 .btn svg { width: 18px; height: 18px; }
 
-section { padding-block: 48px; border-top: 1px solid var(--line); scroll-margin-top: 56px; }
-  article.news { scroll-margin-top: 72px; }
-@media (max-width: 640px) { section { scroll-margin-top: 96px; } }
+/* --header-h is the height of the sticky header, kept current by site.js, so that a link to a
+   section lands below the header whether it is one row or two */
+section { padding-block: 48px; border-top: 1px solid var(--line); scroll-margin-top: var(--header-h, 56px); }
+article.news { scroll-margin-top: calc(var(--header-h, 56px) + 16px); }
 section:first-of-type { border-top: 0; }
 
 /* diagram */
@@ -299,7 +301,7 @@ details.event summary:focus-visible { outline: 2px solid var(--accent); outline-
 .tool details.extra .field { margin-top: 8px; }
 
 /* the tool switcher of the tools page */
-.tools-switch { margin: 20px 0 0; scroll-margin-top: 72px; }
+.tools-switch { margin: 20px 0 0; scroll-margin-top: calc(var(--header-h, 56px) + 16px); }
 .tools-switch [role="tab"] { padding: 9px 20px; font-size: 1rem; }
 @media (max-width: 640px) { .tools-switch { display: flex; flex-wrap: wrap; } .tools-switch [role="tab"] { flex: 1 1 auto; padding: 8px 12px; font-size: .9rem; } }
 section.tool-panel { border-top: 0; padding-top: 36px; }
