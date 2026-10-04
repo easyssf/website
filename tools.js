@@ -974,8 +974,9 @@
   var showTool = tablist(document.getElementById('tools'));
 
   // Shows the tool that holds the element the fragment names, opens it if it is a card, and
-  // scrolls to it. Returns whether the fragment named something.
-  function revealHash() {
+  // scrolls to it, instantly on load and smoothly on a click. Returns whether the fragment
+  // named something.
+  function revealHash(instant) {
     var id = location.hash.slice(1);
     if (!id || /^set=/.test(id)) { return false; }
     var target = document.getElementById(id);
@@ -983,10 +984,10 @@
     var panel = target.closest('.tool-panel');
     if (panel) { showTool(panel.id); }
     if (target.tagName === 'DETAILS') { target.open = true; }
-    target.scrollIntoView();
+    target.scrollIntoView(instant === true ? { behavior: 'instant' } : undefined);
     return true;
   }
-  window.addEventListener('hashchange', revealHash);
+  window.addEventListener('hashchange', function () { revealHash(false); });
 
   // Buttons: actions in the form and copy buttons in the output.
   document.addEventListener('click', function (e) {
@@ -1238,10 +1239,10 @@
 
   state = fromHash() || defaultState();
   rebuild();
-  if (revealHash()) {
+  if (revealHash(true)) {
     // The browser scrolls to the fragment again when the page has loaded; do so too, then.
     if (document.readyState !== 'complete') {
-      window.addEventListener('load', function () { setTimeout(revealHash, 0); }, { once: true });
+      window.addEventListener('load', function () { setTimeout(function () { revealHash(true); }, 0); }, { once: true });
     }
   } else {
     showTool('generator');

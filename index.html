@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
 <meta property="og:title" content="easyssf · Shared Signals Framework support for Java">
-<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to a Spring Boot or Quarkus application: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
+<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to a Spring Boot, Quarkus or plain Java application: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
@@ -88,8 +88,8 @@
     changes a credential or signals a risk. It verifies the security events of the
     <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID Shared Signals Framework</a>,
     rejects the access tokens and ends the sessions concerned, and hands everything else to your code,
-    SCIM Events about your users included. A Spring Boot starter and a Quarkus extension wire it into your
-    application.</p>
+    SCIM Events about your users included. Use it as a Spring Boot starter, as a Quarkus extension or as a plain
+    Java library in any other application.</p>
   <div class="badges">
     <span class="badge">0.2.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
@@ -213,11 +213,13 @@
     <h2>Getting started</h2>
     <p class="muted" style="max-width:70ch">easyssf comes with a starter for Spring Boot and, through the Quarkiverse extension
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
-      Both are built on the same receiver library and verify, de-duplicate and dispatch events the same way.</p>
+      Both are built on the same receiver library, which any other Java application can use on its own; all three
+      verify, de-duplicate and dispatch events the same way.</p>
 
     <div class="switch" role="tablist" aria-label="Framework">
       <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
       <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
+      <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
     </div>
 
     <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
@@ -330,6 +332,63 @@ public class StepUpHandler implements SsfEventHandler {
       before the transmitter gets its answer. If one throws, the transmitter is expected to deliver the SET again.</p>
     </div>
 
+    <div id="start-plain" class="framework" role="tabpanel" aria-labelledby="tab-plain" hidden>
+    <p class="muted">For any other framework, or none: <code>easyssf-receiver</code> has no framework dependencies. Add it,
+      assemble the parts you need and call them from the endpoint or scheduler of your application. The Spring Boot
+      starter and the Quarkus extension are two such integrations.</p>
+    <div class="two steps">
+      <div class="step">
+        <h3>Add the library</h3>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
+    &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
+    &lt;version&gt;0.2.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+        <p class="muted">A Java module that depends on <code>easyssf-core</code>, Nimbus JOSE + JWT and SLF4J only. Add
+          <code>easyssf-receiver-jdbc</code> for database-backed stores.</p>
+      </div>
+      <div class="step">
+        <h3>Assemble the receiver</h3>
+        <p class="muted">A metadata resolver and a verifier for the transmitter, a processor that de-duplicates and
+          dispatches to your handlers, and a push handler or a poller for the delivery method of your stream. The
+          code below is the whole of it.</p>
+      </div>
+    </div>
+    <div class="step" style="margin-top:20px">
+      <h3>Wire it into your framework</h3>
+      <p class="muted">Call the push handler from the endpoint the transmitter posts SETs to and return its status
+        and body, or start the poller from your scheduler. Create the stream at the transmitter, or let
+        <code>SsfStreamClient</code> do it.</p>
+    </div>
+
+    <h3 style="margin-top:28px">All of it in one place</h3>
+<pre><code>SsfHttpClient httpClient = new JdkSsfHttpClient();
+String issuer = "https://idp.example/realms/demo";
+
+SsfTransmitterMetadataResolver metadata = new SsfTransmitterMetadataResolver(issuer, null, httpClient);
+NimbusSsfSetVerifier verifier = new NimbusSsfSetVerifier(issuer,
+        () -&gt; metadata.resolve().jwksUri().toString(), httpClient);
+verifier.setExpectedAudience("https://my-app.example");
+
+SsfEventHandler handler = (eventContext) -&gt; {
+    if (eventContext.hasEvent("CaepSessionRevoked")) {
+        SsfSubject subject = eventContext.subjectFor("CaepSessionRevoked");
+        // end the session subject.sessionId() of the user subject.subject()
+    }
+};
+SsfSetProcessor processor = new SsfSetProcessor(verifier, new InMemorySsfJtiDedupStore(10_000), List.of(handler));
+
+// PUSH: call this from the endpoint the transmitter posts SETs to
+SsfPushHandler pushHandler = new SsfPushHandler(processor, "Bearer " + pushSecret);
+SsfPushResponse response = pushHandler.handle(authorizationHeader, requestBody);
+
+// POLL: fetch SETs from the transmitter instead
+SsfPoller poller = new SsfPoller(httpClient, tokenProvider, () -&gt; pollEndpoint, processor);
+poller.start();</code></pre>
+    <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the push handler
+      answers with an error and the poller does not acknowledge the SET, so the transmitter delivers it again.</p>
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3>Subjects as the spec defines them</h3>
@@ -383,38 +442,6 @@ public class StepUpHandler implements SsfEventHandler {
       </tbody>
     </table>
     </div>
-  </div>
-</section>
-
-<section id="plain">
-  <div class="wrap">
-    <h2>Without Spring Boot or Quarkus</h2>
-    <p class="muted" style="max-width:70ch"><code>easyssf-receiver</code> has no framework dependencies. Assemble the parts you need
-      and call them from the endpoint or scheduler of your framework. The Spring Boot starter and the Quarkus extension
-      are two such integrations.</p>
-<pre><code>SsfHttpClient httpClient = new JdkSsfHttpClient();
-String issuer = "https://idp.example/realms/demo";
-
-SsfTransmitterMetadataResolver metadata = new SsfTransmitterMetadataResolver(issuer, null, httpClient);
-NimbusSsfSetVerifier verifier = new NimbusSsfSetVerifier(issuer,
-        () -&gt; metadata.resolve().jwksUri().toString(), httpClient);
-verifier.setExpectedAudience("https://my-app.example");
-
-SsfEventHandler handler = (eventContext) -&gt; {
-    if (eventContext.hasEvent("CaepSessionRevoked")) {
-        SsfSubject subject = eventContext.subjectFor("CaepSessionRevoked");
-        // end the session subject.sessionId() of the user subject.subject()
-    }
-};
-SsfSetProcessor processor = new SsfSetProcessor(verifier, new InMemorySsfJtiDedupStore(10_000), List.of(handler));
-
-// PUSH: call this from the endpoint the transmitter posts SETs to
-SsfPushHandler pushHandler = new SsfPushHandler(processor, "Bearer " + pushSecret);
-SsfPushResponse response = pushHandler.handle(authorizationHeader, requestBody);
-
-// POLL: fetch SETs from the transmitter instead
-SsfPoller poller = new SsfPoller(httpClient, tokenProvider, () -&gt; pollEndpoint, processor);
-poller.start();</code></pre>
   </div>
 </section>
 

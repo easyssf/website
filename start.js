@@ -38,25 +38,28 @@
 
   // A link to a panel selects it and scrolls to the section, as the panel itself was hidden
   // when the browser tried to scroll to it.
-  function fromHash() {
+  // On load the scroll is instant, like the browser's own jump to a fragment; a click on a link
+  // to a panel scrolls smoothly.
+  function fromHash(instant) {
     var tab = location.hash && byPanelId(location.hash.slice(1));
     if (!tab) { return false; }
     select(tab, false);
     var section = tab.closest('section') || panelOf(tab);
-    section.scrollIntoView();
+    var options = instant ? { behavior: 'instant' } : undefined;
+    section.scrollIntoView(options);
     // The browser scrolls to the fragment again once the panel is visible, to the panel rather
     // than the section; it stops doing so when the page has loaded, so scroll once more then.
     if (document.readyState !== 'complete') {
-      window.addEventListener('load', function () { setTimeout(function () { section.scrollIntoView(); }, 0); }, { once: true });
+      window.addEventListener('load', function () { setTimeout(function () { section.scrollIntoView(options); }, 0); }, { once: true });
     }
     return true;
   }
 
-  if (!fromHash()) {
+  if (!fromHash(true)) {
     var remembered = null;
     try { remembered = localStorage.getItem(key); } catch (e) { /* storage unavailable */ }
     var tab = remembered && byPanelId(remembered);
     if (tab) { select(tab, false); }
   }
-  window.addEventListener('hashchange', fromHash);
+  window.addEventListener('hashchange', function () { fromHash(false); });
 })();

@@ -10,7 +10,8 @@
   if (window.ResizeObserver) { new ResizeObserver(update).observe(header); } else { window.addEventListener('resize', update); }
   var target = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
   if (target) {
-    target.scrollIntoView();
-    window.addEventListener('load', function () { setTimeout(function () { target.scrollIntoView(); }, 0); }, { once: true });
+    // instant, like the browser's own jump to a fragment; smooth scrolling is for clicks
+    target.scrollIntoView({ behavior: 'instant' });
+    window.addEventListener('load', function () { setTimeout(function () { target.scrollIntoView({ behavior: 'instant' }); }, 0); }, { once: true });
   }
 })();

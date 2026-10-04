@@ -25,7 +25,7 @@
     // short, so scroll again: to an item, or to the section that holds the list.
     var target = location.hash && document.getElementById(location.hash.slice(1));
     if (target && (container.contains(target) || target.contains(container))) {
-      target.scrollIntoView();
+      target.scrollIntoView({ behavior: 'instant' });
     }
   }
 
