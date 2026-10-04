@@ -347,6 +347,15 @@ class StepUpHandler implements SsfEventHandler {
 }</code></pre>
     <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the
       transmitter is expected to deliver the SET again.</p>
+
+    <h3 style="margin-top:28px">Example applications</h3>
+    <p class="muted">Complete Spring Boot applications with a Keycloak setup, in the
+      <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples">examples module</a>:</p>
+    <ul class="examples">
+      <li><a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-resource-server">OAuth2 resource server</a>: rejects the access tokens of revoked sessions.</li>
+      <li><a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-oidc-client">OIDC relying party</a>: ends the local sessions the events concern.</li>
+      <li><a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-scim-provisioning">SCIM provisioning</a>: mirrors SCIM users into a local directory from SCIM Events.</li>
+    </ul>
     </div>
 
     <div id="start-quarkus" class="framework" role="tabpanel" aria-labelledby="tab-quarkus" hidden>
@@ -405,6 +414,15 @@ public class StepUpHandler implements SsfEventHandler {
 }</code></pre>
     <p class="muted" style="margin-top:12px">Every <code>SsfEventHandler</code> bean is invoked for every verified SET,
       before the transmitter gets its answer. If one throws, the transmitter is expected to deliver the SET again.</p>
+
+    <h3 style="margin-top:28px">Example applications</h3>
+    <p class="muted">Complete Quarkus applications with a Keycloak setup, in the
+      <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples">examples of quarkus-openid-ssf</a>:</p>
+    <ul class="examples">
+      <li><a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">OAuth2 resource server</a>: rejects the access tokens of revoked sessions.</li>
+      <li><a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-oidc-client">OIDC relying party</a>: ends the local sessions the events concern.</li>
+      <li><a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-scim-provisioning">SCIM provisioning</a>: mirrors SCIM users into a local directory from SCIM Events.</li>
+    </ul>
     </div>
 
     <div id="start-plain" class="framework" role="tabpanel" aria-labelledby="tab-plain" hidden>
@@ -462,6 +480,9 @@ SsfPoller poller = new SsfPoller(httpClient, tokenProvider, () -&gt; pollEndpoin
 poller.start();</code></pre>
     <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the push handler
       answers with an error and the poller does not acknowledge the SET, so the transmitter delivers it again.</p>
+    <p class="muted" style="margin-top:12px">There is no example application for plain Java yet; the
+      <a href="https://github.com/easyssf/easyssf#readme">README</a> walks through the assembly, and the handlers of the
+      Spring Boot and Quarkus examples are plain Java you can reuse.</p>
     </div>
 
     <div class="grid">
