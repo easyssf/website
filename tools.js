@@ -1155,6 +1155,59 @@
     });
   })();
 
+  // ---- the divider between form and output ----------------------------------------------------
+
+  // Dragging the divider sets the width of the form column; the output takes the rest. Arrow
+  // keys move it when focused, a double-click resets it, the width is kept per tool.
+  document.querySelectorAll('.tool-splitter').forEach(function (splitter) {
+    var tool = splitter.parentElement;
+    var key = 'easyssf.tools.split.' + tool.closest('.tool-panel').id;
+    var min = 280, minOutput = 320;
+    function apply(width, remember) {
+      var max = tool.getBoundingClientRect().width - minOutput - 14 - 24;
+      width = Math.max(min, Math.min(max, width));
+      tool.style.setProperty('--form-w', width + 'px');
+      splitter.setAttribute('aria-valuenow', Math.round(width));
+      if (remember) { try { localStorage.setItem(key, String(Math.round(width))); } catch (e) { /* storage unavailable */ } }
+    }
+    function reset() {
+      tool.style.removeProperty('--form-w');
+      splitter.removeAttribute('aria-valuenow');
+      try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+    }
+    function formWidth() { return tool.firstElementChild.getBoundingClientRect().width; }
+    splitter.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) { return; }
+      e.preventDefault();
+      splitter.setPointerCapture(e.pointerId);
+      splitter.classList.add('dragging'); tool.classList.add('dragging');
+      var left = tool.getBoundingClientRect().left;
+      function move(ev) { apply(ev.clientX - left, false); }
+      function up() {
+        splitter.classList.remove('dragging'); tool.classList.remove('dragging');
+        splitter.removeEventListener('pointermove', move);
+        splitter.removeEventListener('pointerup', up);
+        splitter.removeEventListener('pointercancel', up);
+        apply(formWidth(), true);
+      }
+      splitter.addEventListener('pointermove', move);
+      splitter.addEventListener('pointerup', up);
+      splitter.addEventListener('pointercancel', up);
+    });
+    splitter.addEventListener('dblclick', reset);
+    splitter.addEventListener('keydown', function (e) {
+      var step = e.shiftKey ? 80 : 20;
+      if (e.key === 'ArrowLeft') { apply(formWidth() - step, true); }
+      else if (e.key === 'ArrowRight') { apply(formWidth() + step, true); }
+      else if (e.key === 'Home' || e.key === 'Enter') { reset(); }
+      else { return; }
+      e.preventDefault();
+    });
+    var stored = null;
+    try { stored = localStorage.getItem(key); } catch (e) { /* ignore */ }
+    if (stored && window.innerWidth > 900) { apply(Number(stored), false); }
+  });
+
   // ---- the inspector --------------------------------------------------------------------------
 
   var ALIASES = {};

@@ -82,7 +82,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font: 16px/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font: 1rem/1.6 ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 a { color: var(--accent); text-decoration: none; }
@@ -115,6 +115,10 @@ h3 { font-size: 1.05rem; margin-bottom: .35rem; }
 p { margin: 0 0 1rem; }
 .muted { color: var(--fg-muted); }
 .wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; }
+/* wide screens: a wider column for the diagram, tables, code and the tools; prose keeps its measure
+   through the max-width in ch of the paragraphs, and from 1800px the type grows a step */
+@media (min-width: 1400px) { .wrap { max-width: 1240px; } }
+@media (min-width: 1800px) { html { font-size: 17px; } .wrap { max-width: 1360px; } }
 
 /* header */
 header.site {
@@ -159,6 +163,7 @@ nav.top { align-items: center; }
 /* hero */
 .hero { padding-block: 72px 56px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; align-items: center; }
 @media (min-width: 900px) { .hero { grid-template-columns: minmax(0, 1fr) 360px; } }
+@media (min-width: 1400px) { .hero { grid-template-columns: minmax(0, 1fr) 440px; gap: 64px; } }
 .hero-art { display: none; }
 @media (min-width: 900px) { .hero-art { display: block; } }
 .hero-art svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; }
@@ -194,7 +199,7 @@ nav.top { align-items: center; }
   .hero-art .ring:nth-child(2) { transform: scale(.75); }
   .hero-art .ring:nth-child(3) { display: none; }
 }
-.hero h1 { font-size: clamp(2rem, 5vw, 3rem); max-width: 18ch; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3rem); max-width: 26ch; }
 .hero .lead { font-size: 1.2rem; max-width: 60ch; color: var(--fg-muted); margin-top: 18px; }
 .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .badge { font-size: .8rem; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--fg); border: 1px solid transparent; }
@@ -218,7 +223,7 @@ section:first-of-type { border-top: 0; }
 
 /* diagram */
 .diagram { margin-top: 20px; background: var(--bg-raised); border: 1px solid var(--line); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); overflow-x: auto; }
-.diagram svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+.diagram svg { display: block; width: 100%; min-width: 640px; max-width: 1100px; margin-inline: auto; height: auto; font-family: inherit; }
 .diagram .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
 .diagram .box.accent { fill: var(--accent-soft); stroke: var(--accent); }
 .diagram .box.app { fill: var(--bg-raised); stroke: var(--fg-muted); stroke-dasharray: 6 4; }
@@ -292,8 +297,14 @@ article.news .body pre { margin: 0 0 1rem; }
 .framework .two { margin-top: 16px; }
 
 /* tools page: the SET generator and inspector */
-.tool { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: 20px; align-items: start; }
-@media (max-width: 900px) { .tool { grid-template-columns: 1fr; } }
+.tool { display: grid; gap: 12px; grid-template-columns: minmax(280px, var(--form-w, 1fr)) 14px minmax(320px, 1fr); margin-top: 20px; align-items: start; }
+@media (max-width: 900px) { .tool { grid-template-columns: 1fr; gap: 24px; } .tool-splitter { display: none; } }
+/* the divider between form and output: drag it, or focus it and use the arrow keys */
+.tool-splitter { align-self: stretch; cursor: col-resize; border-radius: 7px; position: relative; touch-action: none; }
+.tool-splitter::before { content: ""; position: absolute; top: 0; bottom: 0; left: 6px; width: 2px; border-radius: 1px; background: var(--line); transition: background .15s; }
+.tool-splitter:hover::before, .tool-splitter.dragging::before, .tool-splitter:focus-visible::before { background: var(--accent); }
+.tool-splitter:focus-visible { outline: none; }
+.tool.dragging, .tool.dragging * { user-select: none; cursor: col-resize; }
 .tool-output { position: sticky; top: 72px; }
 @media (max-width: 900px) { .tool-output { position: static; } }
 .tool fieldset { border: 1px solid var(--line); border-radius: 12px; background: var(--bg-raised); padding: 14px 18px 18px; margin: 0 0 16px; min-width: 0; }
@@ -326,7 +337,8 @@ article.news .body pre { margin: 0 0 1rem; }
 .event-info code { font-size: .85em; }
 
 .out-panel { position: relative; }
-.out-panel pre { min-height: 8em; max-height: 60vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+/* the output panes start at most 60vh tall and can be dragged taller or shorter by their corner */
+.out-panel pre { min-height: 8em; max-height: 85vh; height: auto; overflow: auto; resize: vertical; white-space: pre-wrap; overflow-wrap: anywhere; }
 .out-panel pre code { white-space: inherit; }
 .out-panel .copy { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
 .out-panel button[data-copied] { color: var(--accent); border-color: var(--accent); }
