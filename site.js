@@ -48,3 +48,92 @@
   });
   apply(current());
 })();
+
+// Minimal syntax highlighting for the code examples: a few token rules per language, applied
+// to <code class="language-..."> blocks (the language is guessed when the class is missing).
+// No library, no external request; the colours are theme variables in site.css.
+(function () {
+  var rules = {
+    java: [
+      ['c', '\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/'],
+      ['s', '"(?:[^"\\\\\\n]|\\\\.)*"'],
+      ['a', '@[A-Za-z_]\\w*'],
+      ['k', '\\b(?:abstract|boolean|break|case|catch|class|continue|default|do|else|enum|extends|final|finally|for|if|implements|import|instanceof|interface|new|null|package|private|protected|public|record|return|static|super|switch|this|throw|throws|true|false|try|var|void|while|yield)\\b'],
+      ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
+      ['n', '\\b\\d[\\d_]*L?\\b']
+    ],
+    xml: [
+      ['c', '<!--[\\s\\S]*?-->'],
+      ['s', '"[^"]*"'],
+      ['t', '<\\/?[\\w.:-]+|\\/?>'],
+      ['a', '[\\w.:-]+(?==)']
+    ],
+    yaml: [
+      ['c', '#[^\\n]*'],
+      ['p', '^[ \\t-]*[\\w.-]+(?=:)'],
+      ['v', '\\$\\{[^}]*\\}'],
+      ['s', '"[^"\\n]*"|\'[^\'\\n]*\''],
+      ['n', '\\b\\d+\\b|\\b(?:true|false|null)\\b']
+    ],
+    properties: [
+      ['c', '^[ \\t]*[#!][^\\n]*'],
+      ['p', '^[^=\\s][^=\\n]*(?==)'],
+      ['v', '\\$\\{[^}]*\\}'],
+      ['n', '\\b(?:true|false)\\b']
+    ],
+    json: [
+      ['p', '"(?:[^"\\\\]|\\\\.)*"(?=\\s*:)'],
+      ['s', '"(?:[^"\\\\]|\\\\.)*"'],
+      ['n', '-?\\b\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b'],
+      ['k', '\\b(?:true|false|null)\\b']
+    ]
+  };
+  var compiled = {};
+  function regex(lang) {
+    if (!compiled[lang]) {
+      compiled[lang] = new RegExp(rules[lang].map(function (r) { return '(' + r[1] + ')'; }).join('|'), 'gm');
+    }
+    compiled[lang].lastIndex = 0;
+    return compiled[lang];
+  }
+  function escape(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  // The language of a block without a class, from its first lines.
+  function detect(text) {
+    var t = text.replace(/^\s+/, '');
+    if (t.charAt(0) === '<') { return 'xml'; }
+    if (t.charAt(0) === '{' || t.charAt(0) === '[') { return 'json'; }
+    if (/^\s*@|;\s*$/m.test(t) && /\b(?:class|new|implements|import)\b/.test(t)) { return 'java'; }
+    if (/^[\w.-]+=/m.test(t)) { return 'properties'; }
+    if (/^[\w.-]+:\s*$|^\s+[\w.-]+:\s/m.test(t)) { return 'yaml'; }
+    return null;
+  }
+  // Highlights text of a language as HTML.
+  function highlight(text, lang) {
+    if (!rules[lang]) { return escape(text); }
+    var re = regex(lang), out = '', last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m[0] === '') { re.lastIndex++; continue; }
+      var kind = null;
+      for (var i = 1; i < m.length; i++) { if (m[i] !== undefined) { kind = rules[lang][i - 1][0]; break; } }
+      out += escape(text.slice(last, m.index)) + '<span class="tok-' + kind + '">' + escape(m[0]) + '</span>';
+      last = m.index + m[0].length;
+    }
+    return out + escape(text.slice(last));
+  }
+  // Highlights every code block within the root, once.
+  function highlightAll(root) {
+    (root || document).querySelectorAll('pre > code').forEach(function (code) {
+      if (code.dataset.highlighted) { return; }
+      var match = /language-(\w+)/.exec(code.className);
+      var lang = match ? match[1] : detect(code.textContent);
+      if (!lang || !rules[lang]) { return; }
+      code.innerHTML = highlight(code.textContent, lang);
+      code.dataset.highlighted = lang;
+    });
+  }
+  window.easyssfHighlight = highlight;
+  window.easyssfHighlightAll = highlightAll;
+  highlightAll(document);
+})();

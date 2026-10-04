@@ -728,7 +728,7 @@
     var built = buildSet();
     var seq = ++renderSeq;
     var setNode = document.getElementById('set-json');
-    setNode.textContent = JSON.stringify(built.claims, null, 2);
+    setNode.innerHTML = window.easyssfHighlight(JSON.stringify(built.claims, null, 2), 'json');
     // the payload of the event alone, for "Copy event"
     setNode.dataset.eventText = JSON.stringify(built.claims.events[currentEvent().uri], null, 2);
     var problems = document.getElementById('problems');
@@ -751,7 +751,7 @@
       jwtNode.appendChild(el('span', { class: 'p', text: parts[1] }));
       jwtNode.appendChild(document.createTextNode('.' + parts[2]));
       jwtNode.dataset.copyText = signed.jwt;
-      document.getElementById('jwt-header').textContent = JSON.stringify(signed.header, null, 2);
+      document.getElementById('jwt-header').innerHTML = window.easyssfHighlight(JSON.stringify(signed.header, null, 2), 'json');
       document.getElementById('jwt-note').textContent = alg === 'none'
         ? 'Unsigned: shows the structure only, every receiver rejects a SET without a signature.'
         : 'Signed with an ' + alg + ' key generated in this browser, kid ' + signed.header.kid + '.';
@@ -1211,7 +1211,7 @@
       });
     }
     summary.hidden = false;
-    document.getElementById('inspect-json').textContent = (header ? JSON.stringify(header, null, 2) + '\n.\n' : '') + JSON.stringify(claims, null, 2);
+    document.getElementById('inspect-json').innerHTML = window.easyssfHighlight((header ? JSON.stringify(header, null, 2) + '\n.\n' : '') + JSON.stringify(claims, null, 2), 'json');
     out.hidden = false;
   }
 

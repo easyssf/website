@@ -21,6 +21,7 @@
       article.querySelector(heading + ' a').textContent = item.title;
       container.appendChild(article);
     });
+    if (window.easyssfHighlightAll) { window.easyssfHighlightAll(container); }
     // The browser scrolled to the hash before the items existed, when the section was still
     // short, so scroll again: to an item, or to the section that holds the list.
     var target = location.hash && document.getElementById(location.hash.slice(1));

@@ -302,7 +302,7 @@
     <div class="two steps">
       <div class="step">
         <h3>Add the starter</h3>
-<pre><code>&lt;dependency&gt;
+<pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
     &lt;version&gt;0.2.0&lt;/version&gt;
@@ -313,7 +313,7 @@
       </div>
       <div class="step">
         <h3>Name the transmitter</h3>
-<pre><code>easyssf:
+<pre><code class="language-yaml">easyssf:
   receiver:
     transmitter-issuer: https://idp.example/realms/demo
     expected-audience: https://my-app.example
@@ -332,7 +332,7 @@
     </div>
 
     <h3 style="margin-top:28px">React to any event</h3>
-<pre><code>@Component
+<pre><code class="language-java">@Component
 class StepUpHandler implements SsfEventHandler {
 
     @Override
@@ -354,7 +354,7 @@ class StepUpHandler implements SsfEventHandler {
     <div class="two steps">
       <div class="step">
         <h3>Add the extension</h3>
-<pre><code>&lt;dependency&gt;
+<pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
     &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
     &lt;version&gt;0.3.0&lt;/version&gt;
@@ -366,7 +366,7 @@ class StepUpHandler implements SsfEventHandler {
       </div>
       <div class="step">
         <h3>Name the transmitter</h3>
-<pre><code>quarkus.openid-ssf.receiver.transmitter-issuer=https://idp.example/realms/demo
+<pre><code class="language-properties">quarkus.openid-ssf.receiver.transmitter-issuer=https://idp.example/realms/demo
 quarkus.openid-ssf.receiver.events-requested=CaepSessionRevoked,CaepCredentialChange
 quarkus.openid-ssf.receiver.push.delivery-endpoint-url=https://my-app.example/ssf/push
 quarkus.openid-ssf.receiver.push.expected-auth-header=Bearer ${SSF_PUSH_SECRET}</code></pre>
@@ -377,7 +377,7 @@ quarkus.openid-ssf.receiver.push.expected-auth-header=Bearer ${SSF_PUSH_SECRET}<
       <p class="muted">By default the application creates or updates its stream at the transmitter on startup
         and tells the transmitter to send the configured header. It authenticates at the stream management API
         with a client of the transmitter:</p>
-<pre><code>quarkus.openid-ssf.receiver.oauth2.token-endpoint=https://idp.example/realms/demo/protocol/openid-connect/token
+<pre><code class="language-properties">quarkus.openid-ssf.receiver.oauth2.token-endpoint=https://idp.example/realms/demo/protocol/openid-connect/token
 quarkus.openid-ssf.receiver.oauth2.client-id=my-app
 quarkus.openid-ssf.receiver.oauth2.client-secret=${SSF_CLIENT_SECRET}</code></pre>
       <p class="muted" style="margin-top:12px">Or set <code>quarkus.openid-ssf.receiver.stream-management=TRANSMITTER</code>
@@ -390,7 +390,7 @@ quarkus.openid-ssf.receiver.oauth2.client-secret=${SSF_CLIENT_SECRET}</code></pr
     </div>
 
     <h3 style="margin-top:28px">React to any event</h3>
-<pre><code>@ApplicationScoped
+<pre><code class="language-java">@ApplicationScoped
 public class StepUpHandler implements SsfEventHandler {
 
     @Override
@@ -414,7 +414,7 @@ public class StepUpHandler implements SsfEventHandler {
     <div class="two steps">
       <div class="step">
         <h3>Add the library</h3>
-<pre><code>&lt;dependency&gt;
+<pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
     &lt;version&gt;0.2.0&lt;/version&gt;
@@ -437,7 +437,7 @@ public class StepUpHandler implements SsfEventHandler {
     </div>
 
     <h3 style="margin-top:28px">All of it in one place</h3>
-<pre><code>SsfHttpClient httpClient = new JdkSsfHttpClient();
+<pre><code class="language-java">SsfHttpClient httpClient = new JdkSsfHttpClient();
 String issuer = "https://idp.example/realms/demo";
 
 SsfTransmitterMetadataResolver metadata = new SsfTransmitterMetadataResolver(issuer, null, httpClient);
