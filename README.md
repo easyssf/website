@@ -12,10 +12,24 @@ The project website, static files without a build step or external resources:
 | `site.js` | shared by every page: a minimal syntax highlighter for the code blocks (XML, YAML, properties, Java, JSON; `<code class="language-...">`, guessed when missing), the theme toggle of the header (system, light, dark, kept in `localStorage` and applied by an inline script in the head before the first paint) and the height of the sticky header as a CSS variable, the scroll margin of the sections |
 | `start.js` | the Spring Boot / Quarkus / plain Java switch of the getting started section, deep-linkable as `index.html#start-quarkus` or `index.html#start-plain` |
 | `site.css` | the stylesheet of all pages; light and dark theme by `prefers-color-scheme`, or forced with `data-theme` on the root element |
-| `easyssf-icon.svg` | the icon, used as favicon and in the header |
+| `easyssf-icon.svg` | the logo, used as favicon and in the header; a copy of `img/easyssf-logo.svg` |
+| `apple-touch-icon.png` | the logo as a 180×180 PNG for browsers without SVG favicons and for home screens, rendered from the logo, see below |
 | `CNAME`, `.nojekyll` | the custom domain for GitHub Pages, and no Jekyll |
-| `og-image.png` | the preview image for links shared on social media and chat, 1200×630; rendered from the icon with `rsvg-convert`, see below |
+| `og-image.png` | the preview image for links shared on social media and chat, 1200×630; rendered from `img/easyssf-og-card.svg`, see below |
+| `img/` | the sources of the images: the logo and the social media card as SVG |
 | `robots.txt`, `sitemap.xml` | for search engines; add new pages to the sitemap and bump `lastmod` |
+
+## Images
+
+The logo and the social media card are SVGs in `img/`. After a change, copy the logo and render the
+PNGs with [rsvg-convert](https://gitlab.gnome.org/GNOME/librsvg) (`brew install librsvg`); the card
+names Inter as its font and falls back to Helvetica Neue or Arial where it is not installed:
+
+```sh
+cp img/easyssf-logo.svg easyssf-icon.svg
+rsvg-convert -w 1200 -h 630 img/easyssf-og-card.svg -o og-image.png
+rsvg-convert -w 180 -h 180 img/easyssf-logo.svg -o apple-touch-icon.png
+```
 
 ## The tools page
 
