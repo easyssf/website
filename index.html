@@ -72,6 +72,7 @@
     </a>
     <nav class="top">
       <a href="#how">How it works</a>
+      <a href="#usecases" class="hide-xs">Use cases</a>
       <a href="#start" class="hide-xs">Getting started</a>
       <a href="#specs" class="hide-sm">Specifications</a>
       <a href="tools.html">Tools</a>
@@ -279,6 +280,176 @@
         <p>State in your database when there is one, Micrometer metrics, a health indicator for Actuator or
           SmallRye Health, retries with backoff, and the application starts even while the transmitter is down.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="usecases">
+  <div class="wrap">
+    <h2>Use cases</h2>
+    <p class="muted" style="max-width:70ch">What a receiver does with the events. The first three are the example applications,
+      each for Spring Boot and for Quarkus with a Keycloak setup to run against; the others are handlers of your own.</p>
+    <div class="grid usecases">
+
+      <div class="card usecase">
+        <h3>Reject revoked access tokens</h3>
+        <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends a session-revoked SET to the API; a client request with the old access token is answered with 401">
+          <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="43">Identity provider</text>
+          <text class="small" x="70" y="59">revokes a session</text>
+          <rect class="box" x="14" y="130" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="151">Client</text>
+          <text class="small" x="70" y="167">still holds the token</text>
+          <rect class="box accent" x="226" y="22" width="120" height="156" rx="12"/>
+          <text class="title" x="286" y="46">API</text>
+          <text class="small" x="286" y="62">easyssf receiver</text>
+          <text class="small" x="286" y="96">marks the session</text>
+          <text class="small" x="286" y="110">as revoked</text>
+          <text class="small" x="286" y="140">rejects its tokens</text>
+          <text class="small" x="286" y="154">with 401</text>
+          <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M126,46 L225,46"/>
+          <text class="small" x="176" y="38">session-revoked</text>
+          <path class="arrow" marker-end="url(#arrowhead)" d="M126,154 L225,154"/>
+          <text class="small" x="176" y="146">request with</text>
+          <text class="small" x="176" y="168">the old token</text>
+        </svg>
+        <p>An OAuth2 resource server trusts an access token until it expires. With a CAEP <code>session-revoked</code>
+          event the API learns that the session is over and rejects the tokens of that session, or all tokens of the
+          user issued before the event, from the next request on. Built into the Spring Boot starter; a few lines on
+          top of <code>quarkus-oidc</code> in Quarkus.</p>
+        <p class="examples-links">Example:
+          <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-resource-server">Spring Boot</a> ·
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">Quarkus</a></p>
+      </div>
+
+      <div class="card usecase">
+        <h3>End the sessions of a web application</h3>
+        <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends session-revoked or credential-change SETs to the web application, which ends the matching local session; the browser's next request has to log in again">
+          <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="43">Identity provider</text>
+          <text class="small" x="70" y="59">logout, new password</text>
+          <rect class="box" x="14" y="130" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="151">Browser</text>
+          <text class="small" x="70" y="167">has a session cookie</text>
+          <rect class="box accent" x="226" y="22" width="120" height="156" rx="12"/>
+          <text class="title" x="286" y="46">Web application</text>
+          <text class="small" x="286" y="62">easyssf receiver</text>
+          <text class="small" x="286" y="96">finds the session by</text>
+          <text class="small" x="286" y="110">sid, sub or email</text>
+          <text class="small" x="286" y="140">ends it: the next</text>
+          <text class="small" x="286" y="154">request logs in again</text>
+          <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M126,46 L225,46"/>
+          <text class="small" x="176" y="38">session-revoked</text>
+          <text class="small" x="176" y="60">credential-change</text>
+          <path class="arrow" marker-end="url(#arrowhead)" d="M126,154 L225,154"/>
+          <text class="small" x="176" y="146">next request</text>
+        </svg>
+        <p>An OpenID Connect relying party keeps its own session after the login. When the identity provider ends the
+          session or the user changes a credential, <code>session-revoked</code> and <code>credential-change</code>
+          events let the application find the local session by session id, subject or email and end it, so that the
+          next request goes through the login again.</p>
+        <p class="examples-links">Example:
+          <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-oidc-client">Spring Boot</a> ·
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-oidc-client">Quarkus</a></p>
+      </div>
+
+      <div class="card usecase">
+        <h3>Mirror users from SCIM Events</h3>
+        <svg viewBox="0 0 360 200" role="img" aria-label="A SCIM service provider sends provisioning events to the application, which creates, updates, deactivates and deletes the users of its own directory">
+          <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="43">SCIM provider</text>
+          <text class="small" x="70" y="59">users and groups</text>
+          <rect class="box" x="14" y="130" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="151">Local directory</text>
+          <text class="small" x="70" y="167">of the application</text>
+          <rect class="box accent" x="226" y="22" width="120" height="156" rx="12"/>
+          <text class="title" x="286" y="46">Application</text>
+          <text class="small" x="286" y="62">easyssf receiver</text>
+          <text class="small" x="286" y="96">handler per operation:</text>
+          <text class="small" x="286" y="110">create, patch, put, …</text>
+          <text class="small" x="286" y="140">deactivate and delete</text>
+          <text class="small" x="286" y="154">end the user's sessions</text>
+          <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M126,46 L225,46"/>
+          <text class="small" x="176" y="38">prov:create · patch</text>
+          <text class="small" x="176" y="60">deactivate · delete</text>
+          <path class="arrow" marker-end="url(#arrowhead)" d="M225,154 L127,154"/>
+          <text class="small" x="176" y="146">create, update,</text>
+          <text class="small" x="176" y="168">deactivate users</text>
+        </svg>
+        <p>A SCIM service provider reports the changes of its users as SCIM Events, RFC 9967, instead of being polled.
+          The application mirrors them into its own directory with a handler per operation, and a deactivation or
+          deletion also ends the user's sessions. The example runs without an identity provider, driven by the test
+          transmitter, because Keycloak does not emit SCIM Events.</p>
+        <p class="examples-links">Example:
+          <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-scim-provisioning">Spring Boot</a> ·
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-scim-provisioning">Quarkus</a></p>
+      </div>
+
+      <div class="card usecase">
+        <h3>React to RISC account events</h3>
+        <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends RISC account events, account-disabled, account-enabled, account-purged, to the application, whose handler locks or unlocks the local account, ends sessions or deletes the user's data">
+          <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="43">Identity provider</text>
+          <text class="small" x="70" y="59">account state changes</text>
+          <rect class="box" x="14" y="130" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="151">Local accounts</text>
+          <text class="small" x="70" y="167">and the user's data</text>
+          <rect class="box accent" x="226" y="22" width="120" height="156" rx="12"/>
+          <text class="title" x="286" y="46">Application</text>
+          <text class="small" x="286" y="62">your SsfEventHandler</text>
+          <text class="small" x="286" y="96">disabled: lock the</text>
+          <text class="small" x="286" y="110">account, end sessions</text>
+          <text class="small" x="286" y="140">enabled: unlock</text>
+          <text class="small" x="286" y="154">purged: delete data</text>
+          <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M126,46 L225,46"/>
+          <text class="small" x="176" y="38">account-disabled</text>
+          <text class="small" x="176" y="60">enabled · purged</text>
+          <path class="arrow" marker-end="url(#arrowhead)" d="M225,154 L127,154"/>
+          <text class="small" x="176" y="146">lock, unlock,</text>
+          <text class="small" x="176" y="168">delete</text>
+        </svg>
+        <p>RISC events report what happened to the account itself at the identity provider. An
+          <code>account-disabled</code> event, for a hijacked account say, is the moment to lock the local account and
+          end its sessions; <code>account-enabled</code> lifts the lock; <code>account-purged</code> says the account
+          is gone for good, so the user's data can go too. <code>credential-compromise</code> and the identifier events
+          work the same way. Your <code>SsfEventHandler</code> gets each event with its subject and decides.</p>
+        <p class="examples-links">See <a href="#start">React to any event</a> in Getting started, and the
+          <a href="tools.html#events-risc">RISC events</a> on the tools page.</p>
+      </div>
+
+      <div class="card usecase">
+        <h3>Track sessions for threat detection</h3>
+        <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends session-established and session-presented events to a detection service, which builds a timeline per user, detects lateral movement and raises alerts to the security team">
+          <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="43">Identity provider</text>
+          <text class="small" x="70" y="59">logins and sign-ins</text>
+          <rect class="box" x="14" y="130" width="112" height="48" rx="10"/>
+          <text class="title" x="70" y="151">Security team</text>
+          <text class="small" x="70" y="167">SIEM, SOC</text>
+          <rect class="box accent" x="226" y="22" width="120" height="156" rx="12"/>
+          <text class="title" x="286" y="46">Detection service</text>
+          <text class="small" x="286" y="62">EDR / ITDR · easyssf</text>
+          <text class="small" x="286" y="96">timeline per user:</text>
+          <text class="small" x="286" y="110">IPs, user agent, acr</text>
+          <text class="small" x="286" y="140">detects new locations</text>
+          <text class="small" x="286" y="154">and lateral movement</text>
+          <path class="arrow accent" marker-end="url(#arrowhead-accent)" d="M126,46 L225,46"/>
+          <text class="small" x="176" y="38">session-established</text>
+          <text class="small" x="176" y="60">session-presented</text>
+          <path class="arrow" marker-end="url(#arrowhead)" d="M225,154 L127,154"/>
+          <text class="small" x="176" y="146">alerts, revocation</text>
+          <text class="small" x="176" y="168">requests</text>
+        </svg>
+        <p>Not every receiver protects its own sessions; some watch. A <code>session-established</code> event reports a
+          login with the IP addresses, the user agent fingerprint and the authentication context, and
+          <code>session-presented</code> that the session was used to sign in to another application. An endpoint or
+          identity threat detection service, EDR or ITDR, consumes them to build a timeline per user, spot sign-ins from
+          new places and lateral movement across applications, and alert the security team or have the identity
+          provider revoke the session.</p>
+        <p class="examples-links">See the <a href="tools.html#event-CaepSessionEstablished">session events</a> on the
+          tools page, and <a href="#start">React to any event</a> in Getting started.</p>
+      </div>
+
     </div>
   </div>
 </section>

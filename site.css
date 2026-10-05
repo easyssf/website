@@ -139,8 +139,8 @@ header.site .wrap { display: flex; align-items: center; justify-content: space-b
 nav.top { display: flex; gap: 20px; font-size: .95rem; }
 nav.top a { color: var(--fg-muted); white-space: nowrap; }
 nav.top a:hover { color: var(--fg); text-decoration: none; }
-/* below 680px the links no longer fit next to the brand: the header wraps into two rows */
-@media (max-width: 680px) {
+/* below 780px the links no longer fit next to the brand: the header wraps into two rows */
+@media (max-width: 780px) {
   header.site .wrap { height: auto; flex-wrap: wrap; padding-block: 10px; row-gap: 6px; }
   nav.top { gap: 14px; font-size: .9rem; flex-wrap: wrap; }
 }
@@ -240,6 +240,19 @@ section:first-of-type { border-top: 0; }
 .diagram .set rect { fill: var(--bg-raised); stroke: var(--accent); stroke-width: 1.2; }
 .diagram .set text { font-size: 11px; font-weight: 700; fill: var(--accent); }
 .diagram .set .seal { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-linecap: round; }
+
+/* use cases: a small diagram per card, drawn like the main one */
+.grid.usecases { grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); }
+.usecase svg { display: block; width: 100%; max-width: 460px; height: auto; margin: 12px auto 14px; font-family: inherit; overflow: visible; }
+.usecase .box { fill: var(--bg); stroke: var(--line); stroke-width: 1.2; }
+.usecase .box.accent { fill: var(--accent-soft); stroke: var(--accent); }
+.usecase text { fill: var(--fg); font-size: 12px; text-anchor: middle; }
+.usecase text.title { font-weight: 700; }
+.usecase text.small { fill: var(--fg-muted); font-size: 10.5px; }
+.usecase .arrow { fill: none; stroke: var(--fg-muted); stroke-width: 1.4; }
+.usecase .arrow.accent { stroke: var(--accent); }
+.usecase p { margin-bottom: 10px; }
+.usecase .examples-links { margin: 0; font-size: .9rem; }
 
 /* grids and cards */
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 20px; }
