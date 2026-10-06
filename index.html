@@ -101,7 +101,7 @@
     Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
     directly.</p>
   <div class="badges">
-    <span class="badge">0.2.0 on Maven Central</span>
+    <span class="badge">0.3.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -244,7 +244,8 @@
       <div class="card">
         <h3>Push or poll<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8935">RFC 8935</a> · <a href="https://www.rfc-editor.org/rfc/rfc8936">RFC 8936</a></span></h3>
         <p>A push endpoint on a route of your choice, secured by its own stateless filter chain, or a poller
-          that fetches and acknowledges SETs from the transmitter.</p>
+          that fetches and acknowledges SETs from the transmitter, with long polling if you want it. Acknowledgements
+          survive a restart, and several instances can share a stream.</p>
       </div>
       <div class="card">
         <h3>Every SET verified<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8417">RFC 8417</a></span></h3>
@@ -277,8 +278,10 @@
       </div>
       <div class="card">
         <h3>Production details covered</h3>
-        <p>State in your database when there is one, Micrometer metrics, a health indicator for Actuator or
-          SmallRye Health, retries with backoff, and the application starts even while the transmitter is down.</p>
+        <p>State in your database when there is one, with migration scripts for the schema, Micrometer metrics,
+          a health indicator for Actuator or SmallRye Health, retries with backoff, and the application starts even
+          while the transmitter is down. Processing is at least once; every SET carries an idempotency key for
+          the side effects of your handlers.</p>
       </div>
     </div>
   </div>
@@ -476,7 +479,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.2.0&lt;/version&gt;
+    &lt;version&gt;0.3.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">From <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, where
           all modules are listed. Snapshots of <code>main</code> are on the
@@ -504,20 +507,22 @@
 
     <h3 style="margin-top:28px">React to any event</h3>
 <pre><code class="language-java">@Component
-class StepUpHandler implements SsfEventHandler {
+class StepUpHandler extends SsfCaepEventHandler {
 
     @Override
-    public void handle(SsfEventContext eventContext) {
-        if (eventContext.hasEvent("CaepAssuranceLevelChange")) {
-            SsfSubject subject = eventContext.subjectFor("CaepAssuranceLevelChange");
-            Map&lt;String, Object&gt; event = eventContext.eventFor("CaepAssuranceLevelChange");
-            // subject.subject(), subject.sessionId(), subject.email() ...
+    protected void onAssuranceLevelChange(SsfCaepEvent event, SsfEventContext eventContext) {
+        if ("decrease".equals(event.changeDirection())) {
+            SsfSubject subject = eventContext.subject();
+            // subject.subject(), subject.sessionId(), subject.email(), event.currentLevel() ...
         }
     }
 
 }</code></pre>
-    <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the
-      transmitter is expected to deliver the SET again.</p>
+    <p class="muted" style="margin-top:12px"><code>SsfCaepEventHandler</code> and <code>SsfRiscEventHandler</code> hand each
+      CAEP or RISC event of a SET to a method per event type, with its claims typed; <code>SsfEventHandler</code>
+      gets every verified SET as it is. Handlers run before the SET is acknowledged. If one throws, the
+      transmitter is expected to deliver the SET again, so a SET is handled at least once and
+      <code>eventContext.idempotencyKey()</code> is the key for a handler's side effects.</p>
 
     <h3 style="margin-top:28px">Example applications</h3>
     <p class="muted">Complete Spring Boot applications with a Keycloak setup, in the
@@ -606,7 +611,7 @@ public class StepUpHandler implements SsfEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.2.0&lt;/version&gt;
+    &lt;version&gt;0.3.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">A Java module that depends on <code>easyssf-core</code>, Nimbus JOSE + JWT and SLF4J only. Add
           <code>easyssf-receiver-jdbc</code> for database-backed stores.</p>
@@ -650,7 +655,9 @@ SsfPushResponse response = pushHandler.handle(authorizationHeader, requestBody);
 SsfPoller poller = new SsfPoller(httpClient, tokenProvider, () -&gt; pollEndpoint, processor);
 poller.start();</code></pre>
     <p class="muted" style="margin-top:12px">Handlers run before the SET is acknowledged. If one throws, the push handler
-      answers with an error and the poller does not acknowledge the SET, so the transmitter delivers it again.</p>
+      answers with an error and the poller does not acknowledge the SET, so the transmitter delivers it again. A SET is
+      claimed in the de-duplication store while its handlers run, so two instances never acknowledge a SET one of them
+      failed on; <code>eventContext.idempotencyKey()</code> is the key for a handler's side effects.</p>
     <p class="muted" style="margin-top:12px">There is no example application for plain Java yet; the
       <a href="https://github.com/easyssf/easyssf#readme">README</a> walks through the assembly, and the handlers of the
       Spring Boot and Quarkus examples are plain Java you can reuse.</p>
@@ -699,7 +706,7 @@ poller.start();</code></pre>
       <tbody>
         <tr><td><code>easyssf-core</code></td><td>The data structures of SSF shared by receivers and, later, transmitters: SETs, subjects, event types, stream configuration, transmitter metadata, and the typed SCIM Events of RFC 9967.</td><td>nothing</td></tr>
         <tr><td><code>easyssf-receiver</code></td><td>The receiver, independent of any framework: SET verification, de-duplication, event handlers, push handling, polling, stream management, token revocation and session termination logic.</td><td>easyssf-core, Nimbus JOSE + JWT, SLF4J</td></tr>
-        <tr><td><code>easyssf-receiver-jdbc</code></td><td>The database-backed stores of the receiver, processed SETs and revocations, independent of any framework: the SQL, the schema and a small execution interface implemented over a <code>DataSource</code> or a framework's template.</td><td>easyssf-receiver</td></tr>
+        <tr><td><code>easyssf-receiver-jdbc</code></td><td>The database-backed stores of the receiver, processed SETs, pending poll acknowledgements and revocations, independent of any framework: the SQL, the schema with its migration scripts and a small execution interface implemented over a <code>DataSource</code> or a framework's template.</td><td>easyssf-receiver</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-starter</code></td><td>The receiver for Spring Boot 4.1 with Spring Security 7.1 on the servlet stack: configuration properties, auto-configuration, push endpoint, resource server and OIDC client integration.</td><td>easyssf-receiver, Spring Boot</td></tr>
         <tr><td><code>easyssf-test</code></td><td>Test support: a transmitter on a loopback port that signs and delivers SETs, serves metadata and keys and emulates the stream and poll endpoints, for the tests of your receiver.</td><td>easyssf-core, Nimbus JOSE + JWT</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-examples</code></td><td>An example resource server and OIDC client with a Keycloak setup, and a SCIM provisioning example that mirrors users from SCIM Events.</td><td></td></tr>
@@ -737,7 +744,7 @@ poller.start();</code></pre>
           <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each.</p>
       </div>
     </div>
-    <p class="muted" style="margin-top:20px">Not included yet: Spring WebFlux applications and long polling.</p>
+    <p class="muted" style="margin-top:20px">Not included yet: Spring WebFlux applications.</p>
   </div>
 </section>
 
@@ -757,7 +764,7 @@ poller.start();</code></pre>
         <tr>
           <td><a href="https://openid.net/specs/openid-caep-1_0.html">OpenID CAEP 1.0</a></td>
           <td>Continuous Access Evaluation Profile: <code>session-revoked</code>, <code>credential-change</code>, <code>assurance-level-change</code> and the other session and credential events</td>
-          <td>Event type aliases, the resource server and OIDC client integrations</td>
+          <td>Event type aliases, <code>SsfCaepEvent</code> and <code>SsfCaepEventHandler</code>, the resource server and OIDC client integrations</td>
         </tr>
         <tr>
           <td><a href="https://openid.net/specs/openid-caep-interoperability-profile-1_0.html">OpenID CAEP Interoperability Profile 1.0</a></td>
@@ -767,7 +774,7 @@ poller.start();</code></pre>
         <tr>
           <td><a href="https://openid.net/specs/openid-risc-1_0.html">OpenID RISC Profile 1.0</a></td>
           <td>Risk Incident Sharing and Coordination: account disabled, purged, credential compromise and the other account events</td>
-          <td>Event type aliases, for your own handlers</td>
+          <td>Event type aliases, <code>SsfRiscEvent</code> and <code>SsfRiscEventHandler</code> for your own handlers</td>
         </tr>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc8417">RFC 8417</a></td>
@@ -782,7 +789,7 @@ poller.start();</code></pre>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc8936">RFC 8936</a></td>
           <td>Poll-based SET delivery over HTTP</td>
-          <td>The poller, acknowledgements and <code>setErrs</code></td>
+          <td>The poller, long polling, acknowledgements and <code>setErrs</code></td>
         </tr>
         <tr>
           <td><a href="https://www.rfc-editor.org/rfc/rfc9493">RFC 9493</a></td>
