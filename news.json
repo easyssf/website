@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-06-quarkus-openid-ssf-0-5-0",
+    "date": "2026-10-06",
+    "title": "quarkus-openid-ssf 0.5.0 is built on easyssf 0.5.0",
+    "body": "<p>The Quarkiverse extension <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf\">quarkus-openid-ssf</a> 0.5.0 is on Maven Central as <code>io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver:0.5.0</code>, built on easyssf 0.5.0. It picks up two easyssf releases, with nothing to change in an application: the first poll follows the registration of the stream at once instead of up to a <code>poll.interval</code> later, and the column <code>PROCESSED_AT</code> of <code>EASYSSF_PROCESSED_SET</code> is now <code>STATE_CHANGED_AT</code>, renamed on startup with <code>jdbc.initialize-schema=true</code>; with <code>false</code> the start names the statement, the migration script <code>V0_4_0__state_changed_at.sql</code>.</p><p>The <a href=\"index.html#start-quarkus\">getting started guide</a> uses 0.5.0; the <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.5.0\">release notes</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-06-release-0-5-0",
     "date": "2026-10-06",
     "title": "easyssf 0.5.0: the first poll follows the stream registration",
