@@ -101,7 +101,7 @@
     Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
     directly.</p>
   <div class="badges">
-    <span class="badge">0.4.0 on Maven Central</span>
+    <span class="badge">0.5.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -479,7 +479,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.4.0&lt;/version&gt;
+    &lt;version&gt;0.5.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">From <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, where
           all modules are listed. Snapshots of <code>main</code> are on the
@@ -542,12 +542,13 @@ class StepUpHandler extends SsfCaepEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
     &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.3.0&lt;/version&gt;
+    &lt;version&gt;0.4.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">Or <code>quarkus ext add io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver</code>.
           From <a href="https://central.sonatype.com/namespace/io.quarkiverse.openid-ssf">Maven Central</a>;
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.3.0">0.3.0</a> is built on
-          easyssf 0.2.0 and handles SCIM Events like the Spring Boot starter.</p>
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.4.0">0.4.0</a> is built on
+          easyssf 0.3.0: poll delivery that survives restarts and runs on several instances, long polling, SCIM Events
+          and the typed CAEP and RISC handlers, like the Spring Boot starter.</p>
       </div>
       <div class="step">
         <h3>Name the transmitter</h3>
@@ -576,20 +577,22 @@ quarkus.openid-ssf.receiver.oauth2.client-secret=${SSF_CLIENT_SECRET}</code></pr
 
     <h3 style="margin-top:28px">React to any event</h3>
 <pre><code class="language-java">@ApplicationScoped
-public class StepUpHandler implements SsfEventHandler {
+public class StepUpHandler extends SsfCaepEventHandler {
 
     @Override
-    public void handle(SsfEventContext eventContext) {
-        if (eventContext.hasEvent("CaepAssuranceLevelChange")) {
-            SsfSubject subject = eventContext.subjectFor("CaepAssuranceLevelChange");
-            Map&lt;String, Object&gt; event = eventContext.eventFor("CaepAssuranceLevelChange");
-            // subject.subject(), subject.sessionId(), subject.email() ...
+    protected void onAssuranceLevelChange(SsfCaepEvent event, SsfEventContext eventContext) {
+        if ("decrease".equals(event.changeDirection())) {
+            SsfSubject subject = eventContext.subject();
+            // subject.subject(), subject.sessionId(), subject.email(), event.currentLevel() ...
         }
     }
 
 }</code></pre>
     <p class="muted" style="margin-top:12px">Every <code>SsfEventHandler</code> bean is invoked for every verified SET,
-      before the transmitter gets its answer. If one throws, the transmitter is expected to deliver the SET again.</p>
+      before the transmitter gets its answer; <code>SsfCaepEventHandler</code> and <code>SsfRiscEventHandler</code> hand
+      each CAEP or RISC event to a method per event type, with its claims typed. If a handler throws, the transmitter
+      is expected to deliver the SET again, so a SET is handled at least once and
+      <code>eventContext.idempotencyKey()</code> is the key for a handler's side effects.</p>
 
     <h3 style="margin-top:28px">Example applications</h3>
     <p class="muted">Complete Quarkus applications with a Keycloak setup, in the
@@ -611,7 +614,7 @@ public class StepUpHandler implements SsfEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.4.0&lt;/version&gt;
+    &lt;version&gt;0.5.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">A Java module that depends on <code>easyssf-core</code>, Nimbus JOSE + JWT and SLF4J only. Add
           <code>easyssf-receiver-jdbc</code> for database-backed stores.</p>
@@ -627,7 +630,8 @@ public class StepUpHandler implements SsfEventHandler {
       <h3>Wire it into your framework</h3>
       <p class="muted">Call the push handler from the endpoint the transmitter posts SETs to and return its status
         and body, or start the poller from your scheduler. Create the stream at the transmitter, or let
-        <code>SsfStreamClient</code> do it.</p>
+        <code>SsfStreamClient</code> do it; <code>SsfTransmitter</code> assembles the parts for one transmitter and
+        wakes the poller up as soon as the stream is registered.</p>
     </div>
 
     <h3 style="margin-top:28px">All of it in one place</h3>

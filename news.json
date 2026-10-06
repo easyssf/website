@@ -1,5 +1,17 @@
 [
   {
+    "id": "2026-10-06-release-0-5-0",
+    "date": "2026-10-06",
+    "title": "easyssf 0.5.0: the first poll follows the stream registration",
+    "body": "<p>easyssf 0.5.0 is on Maven Central, <code>org.easyssf:easyssf-receiver-spring-boot-starter:0.5.0</code> and the other modules alongside. The first poll now follows the registration of the stream at once: <code>SsfStreamRegistrar.addListener</code> tells a listener when the stream is registered, <code>SsfPoller.wakeUp()</code> ends the pause between two polls, and <code>SsfTransmitter</code> wires the two, which the Spring Boot starter and the Quarkus extension build their transmitters through.</p><p>Fixed: a poller that starts before the stream is registered looks again after one second (<code>setEndpointRetry</code>) instead of waiting the full interval, so an application whose stream was still being registered when the poller started no longer polls for the first time up to an interval later. The <a href=\"https://github.com/easyssf/easyssf/releases/tag/v0.5.0\">release notes</a> have the details.</p>"
+  },
+  {
+    "id": "2026-10-06-quarkus-openid-ssf-0-4-0",
+    "date": "2026-10-06",
+    "title": "quarkus-openid-ssf 0.4.0: durable poll delivery and typed events for Quarkus",
+    "body": "<p>The Quarkiverse extension <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf\">quarkus-openid-ssf</a> 0.4.0 is on Maven Central as <code>io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver:0.4.0</code>, built on easyssf 0.3.0. Poll delivery survives restarts and runs on several instances: the acknowledgements a poller owes its transmitter wait in an <code>SsfPollAckStore</code>, in the database with a datasource, long polling (<code>poll.long-polling=true</code>) keeps one request outstanding, and a SET is claimed while its handlers run (<code>dedup.lease</code>) so that two instances never acknowledge a SET one of them failed on. Nothing changes for an application that delivers by push without a datasource.</p><ul><li>The poller of a transmitter runs on a virtual thread of its own instead of a Vert.x periodic timer; <code>poll.auto-start=false</code> and <code>SsfPollScheduler.pollNow()</code> work as before.</li><li>The typed CAEP and RISC handlers of easyssf 0.3.0, <code>SsfCaepEventHandler</code> and <code>SsfRiscEventHandler</code>, and <code>SsfEventContext.idempotencyKey()</code> for the side effects of a handler.</li><li>A gauge for the pending acknowledgements, the health details <code>polling</code> and <code>pendingAcks</code>, and a Polling section on the stream page of the Dev UI.</li><li>Schema upgrades: with <code>jdbc.initialize-schema=true</code> an existing <code>EASYSSF_PROCESSED_SET</code> table gets the <code>STATE</code> column and the table <code>EASYSSF_POLL_ACK</code> is created on startup; otherwise the start fails naming the statements and the migration scripts of <code>easyssf-receiver-jdbc</code>, which <code>quarkus.flyway.locations</code> can list.</li></ul><p>The <a href=\"index.html#start-quarkus\">getting started guide</a> uses 0.4.0; the <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.4.0\">release notes</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-06-release-0-4-0",
     "date": "2026-10-06",
     "title": "easyssf 0.4.0: a column renamed",
