@@ -1,6 +1,7 @@
 // The framework switch of the getting started section: one tab per framework, the panels are
 // the elements the tabs point to with aria-controls. The choice is kept in localStorage and a
-// panel can be linked to directly (index.html#start-quarkus).
+// panel can be linked to directly (index.html#start-quarkus), as can a heading inside one
+// (index.html#quarkus-example-applications): the link selects the tab.
 (function () {
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.switch [role="tab"]'));
   if (tabs.length === 0) { return; }
@@ -41,10 +42,13 @@
   // On load the scroll is instant, like the browser's own jump to a fragment; a click on a link
   // to a panel scrolls smoothly.
   function fromHash(instant) {
-    var tab = location.hash && byPanelId(location.hash.slice(1));
+    var target = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+    var panel = target && target.closest('[role="tabpanel"]');
+    var tab = panel && byPanelId(panel.id);
     if (!tab) { return false; }
     select(tab, false);
-    var section = tab.closest('section') || panelOf(tab);
+    // a link to the panel lands on the section, with the tabs; a link to a heading in it on the heading
+    var section = target === panel ? tab.closest('section') || panel : target;
     var options = instant ? { behavior: 'instant' } : undefined;
     section.scrollIntoView(options);
     // The browser scrolls to the fragment again once the panel is visible, to the panel rather

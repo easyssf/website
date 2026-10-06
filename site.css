@@ -218,7 +218,14 @@ nav.top { align-items: center; }
 /* --header-h is the height of the sticky header, kept current by site.js, so that a link to a
    section lands below the header whether it is one row or two */
 section { padding-block: 48px; border-top: 1px solid var(--line); scroll-margin-top: var(--header-h, 56px); }
-article.news { scroll-margin-top: calc(var(--header-h, 56px) + 16px); }
+article.news, h2[id], h3[id] { scroll-margin-top: calc(var(--header-h, 56px) + 16px); }
+
+/* the link marker site.js adds to the headings, visible on hover and when focused */
+h2 .anchor, h3 .anchor { margin-left: .4em; font-weight: 400; color: var(--fg-muted); text-decoration: none; opacity: 0; transition: opacity .15s; }
+h2:hover .anchor, h3:hover .anchor, .anchor:focus-visible { opacity: 1; }
+.anchor:hover { color: var(--accent); text-decoration: none; }
+.anchor:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+@media (hover: none) { h2 .anchor, h3 .anchor { opacity: .45; } }
 section:first-of-type { border-top: 0; }
 
 /* diagram */

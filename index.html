@@ -242,42 +242,42 @@
 
     <div class="grid">
       <div class="card">
-        <h3>Push or poll<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8935">RFC 8935</a> · <a href="https://www.rfc-editor.org/rfc/rfc8936">RFC 8936</a></span></h3>
+        <h3 id="push-or-poll">Push or poll<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8935">RFC 8935</a> · <a href="https://www.rfc-editor.org/rfc/rfc8936">RFC 8936</a></span></h3>
         <p>A push endpoint on a route of your choice, secured by its own stateless filter chain, or a poller
           that fetches and acknowledges SETs from the transmitter, with long polling if you want it. Acknowledgements
           survive a restart, and several instances can share a stream.</p>
       </div>
       <div class="card">
-        <h3>Every SET verified<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8417">RFC 8417</a></span></h3>
+        <h3 id="every-set-verified">Every SET verified<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc8417">RFC 8417</a></span></h3>
         <p>Signature against the transmitter's JWK Set, discovered from its <code>.well-known/ssf-configuration</code>,
           plus <code>typ</code>, <code>iss</code>, <code>aud</code>, <code>jti</code>, <code>iat</code> and <code>events</code>.
           The transmitter and every endpoint it publishes must use HTTPS.</p>
       </div>
       <div class="card">
-        <h3>Resource server integration</h3>
+        <h3 id="resource-server-integration">Resource server integration</h3>
         <p>A CAEP <code>session-revoked</code> event makes the application reject the access tokens of that session,
           or all tokens of the user issued before the event: built into the Spring Boot starter, a few lines with
           <code>quarkus-oidc</code>.</p>
       </div>
       <div class="card">
-        <h3>OIDC client integration</h3>
+        <h3 id="oidc-client-integration">OIDC client integration</h3>
         <p><code>session-revoked</code> and <code>credential-change</code> events invalidate the matching local
           sessions, by session id, subject or email.</p>
       </div>
       <div class="card">
-        <h3>SCIM Events<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc9967">RFC 9967</a></span></h3>
+        <h3 id="scim-events">SCIM Events<span class="rfc"><a href="https://www.rfc-editor.org/rfc/rfc9967">RFC 9967</a></span></h3>
         <p>The provisioning changes of a SCIM service provider, users created, patched, deactivated or deleted, arrive
           as SETs with a <code>scim</code> subject. <code>SsfScimEventHandler</code> hands them to a method per
           operation, and a deactivation ends the user's sessions.</p>
       </div>
       <div class="card">
-        <h3>Stream management</h3>
+        <h3 id="stream-management">Stream management</h3>
         <p>Let the application create or update its stream at the transmitter on startup, verify it, and use the
           whole stream management API through <code>SsfStreamClient</code>. Several transmitters, several Keycloak
           realms say, are each configured by name; the issuer of a SET selects the one that verifies it.</p>
       </div>
       <div class="card">
-        <h3>Production details covered</h3>
+        <h3 id="production-details-covered">Production details covered</h3>
         <p>State in your database when there is one, with migration scripts for the schema, Micrometer metrics,
           a health indicator for Actuator or SmallRye Health, retries with backoff, and the application starts even
           while the transmitter is down. Processing is at least once; every SET carries an idempotency key for
@@ -295,7 +295,7 @@
     <div class="grid usecases">
 
       <div class="card usecase">
-        <h3>Reject revoked access tokens</h3>
+        <h3 id="reject-revoked-access-tokens">Reject revoked access tokens</h3>
         <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends a session-revoked SET to the API; a client request with the old access token is answered with 401">
           <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
           <text class="title" x="70" y="43">Identity provider</text>
@@ -326,7 +326,7 @@
       </div>
 
       <div class="card usecase">
-        <h3>End the sessions of a web application</h3>
+        <h3 id="end-the-sessions-of-a-web-application">End the sessions of a web application</h3>
         <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends session-revoked or credential-change SETs to the web application, which ends the matching local session; the browser's next request has to log in again">
           <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
           <text class="title" x="70" y="43">Identity provider</text>
@@ -357,7 +357,7 @@
       </div>
 
       <div class="card usecase">
-        <h3>Mirror users from SCIM Events</h3>
+        <h3 id="mirror-users-from-scim-events">Mirror users from SCIM Events</h3>
         <svg viewBox="0 0 360 200" role="img" aria-label="A SCIM service provider sends provisioning events to the application, which creates, updates, deactivates and deletes the users of its own directory">
           <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
           <text class="title" x="70" y="43">SCIM provider</text>
@@ -389,7 +389,7 @@
       </div>
 
       <div class="card usecase">
-        <h3>React to RISC account events</h3>
+        <h3 id="react-to-risc-account-events">React to RISC account events</h3>
         <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends RISC account events, account-disabled, account-enabled, account-purged, to the application, whose handler locks or unlocks the local account, ends sessions or deletes the user's data">
           <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
           <text class="title" x="70" y="43">Identity provider</text>
@@ -421,7 +421,7 @@
       </div>
 
       <div class="card usecase">
-        <h3>Track sessions for threat detection</h3>
+        <h3 id="track-sessions-for-threat-detection">Track sessions for threat detection</h3>
         <svg viewBox="0 0 360 200" role="img" aria-label="The identity provider sends session-established and session-presented events to a detection service, which builds a timeline per user, detects lateral movement and raises alerts to the security team">
           <rect class="box" x="14" y="22" width="112" height="48" rx="10"/>
           <text class="title" x="70" y="43">Identity provider</text>
@@ -475,7 +475,7 @@
     <p class="muted">Three steps for a Spring Boot application with the servlet stack.</p>
     <div class="two steps">
       <div class="step">
-        <h3>Add the starter</h3>
+        <h3 id="spring-boot-add-the-starter">Add the starter</h3>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
@@ -486,7 +486,7 @@
           <a href="https://central.sonatype.com/repository/maven-snapshots/org/easyssf/">Central snapshot repository</a>.</p>
       </div>
       <div class="step">
-        <h3>Name the transmitter</h3>
+        <h3 id="spring-boot-name-the-transmitter">Name the transmitter</h3>
 <pre><code class="language-yaml">easyssf:
   receiver:
     transmitter-issuer: https://idp.example/realms/demo
@@ -496,7 +496,7 @@
       </div>
     </div>
     <div class="step" style="margin-top:20px">
-      <h3>Create the stream</h3>
+      <h3 id="spring-boot-create-the-stream">Create the stream</h3>
       <p class="muted">Create a stream with push delivery at the transmitter that points to
         <code>https://my-app.example/ssf/push</code> and sends the configured header, or set
         <code>easyssf.receiver.stream.management: receiver</code> and let the application create it.
@@ -505,7 +505,7 @@
         from then on without further code.</p>
     </div>
 
-    <h3 style="margin-top:28px">React to any event</h3>
+    <h3 id="spring-boot-react-to-any-event" style="margin-top:28px">React to any event</h3>
 <pre><code class="language-java">@Component
 class StepUpHandler extends SsfCaepEventHandler {
 
@@ -524,7 +524,7 @@ class StepUpHandler extends SsfCaepEventHandler {
       transmitter is expected to deliver the SET again, so a SET is handled at least once and
       <code>eventContext.idempotencyKey()</code> is the key for a handler's side effects.</p>
 
-    <h3 style="margin-top:28px">Example applications</h3>
+    <h3 id="spring-boot-example-applications" style="margin-top:28px">Example applications</h3>
     <p class="muted">Complete Spring Boot applications with a Keycloak setup, in the
       <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples">examples module</a>:</p>
     <ul class="examples">
@@ -538,7 +538,7 @@ class StepUpHandler extends SsfCaepEventHandler {
     <p class="muted">Three steps for a Quarkus application.</p>
     <div class="two steps">
       <div class="step">
-        <h3>Add the extension</h3>
+        <h3 id="quarkus-add-the-extension">Add the extension</h3>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
     &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
@@ -552,7 +552,7 @@ class StepUpHandler extends SsfCaepEventHandler {
           on its own; the versions coincide this time.</p>
       </div>
       <div class="step">
-        <h3>Name the transmitter</h3>
+        <h3 id="quarkus-name-the-transmitter">Name the transmitter</h3>
 <pre><code class="language-properties">quarkus.openid-ssf.receiver.transmitter-issuer=https://idp.example/realms/demo
 quarkus.openid-ssf.receiver.events-requested=CaepSessionRevoked,CaepCredentialChange
 quarkus.openid-ssf.receiver.push.delivery-endpoint-url=https://my-app.example/ssf/push
@@ -560,7 +560,7 @@ quarkus.openid-ssf.receiver.push.expected-auth-header=Bearer ${SSF_PUSH_SECRET}<
       </div>
     </div>
     <div class="step" style="margin-top:20px">
-      <h3>Create the stream</h3>
+      <h3 id="quarkus-create-the-stream">Create the stream</h3>
       <p class="muted">By default the application creates or updates its stream at the transmitter on startup
         and tells the transmitter to send the configured header. It authenticates at the stream management API
         with a client of the transmitter:</p>
@@ -576,7 +576,7 @@ quarkus.openid-ssf.receiver.oauth2.client-secret=${SSF_CLIENT_SECRET}</code></pr
         <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples">examples</a> show both.</p>
     </div>
 
-    <h3 style="margin-top:28px">React to any event</h3>
+    <h3 id="quarkus-react-to-any-event" style="margin-top:28px">React to any event</h3>
 <pre><code class="language-java">@ApplicationScoped
 public class StepUpHandler extends SsfCaepEventHandler {
 
@@ -595,7 +595,7 @@ public class StepUpHandler extends SsfCaepEventHandler {
       is expected to deliver the SET again, so a SET is handled at least once and
       <code>eventContext.idempotencyKey()</code> is the key for a handler's side effects.</p>
 
-    <h3 style="margin-top:28px">Example applications</h3>
+    <h3 id="quarkus-example-applications" style="margin-top:28px">Example applications</h3>
     <p class="muted">Complete Quarkus applications with a Keycloak setup, in the
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples">examples of quarkus-openid-ssf</a>:</p>
     <ul class="examples">
@@ -611,7 +611,7 @@ public class StepUpHandler extends SsfCaepEventHandler {
       starter and the Quarkus extension are two such integrations.</p>
     <div class="two steps">
       <div class="step">
-        <h3>Add the library</h3>
+        <h3 id="plain-add-the-library">Add the library</h3>
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
@@ -621,21 +621,21 @@ public class StepUpHandler extends SsfCaepEventHandler {
           <code>easyssf-receiver-jdbc</code> for database-backed stores.</p>
       </div>
       <div class="step">
-        <h3>Assemble the receiver</h3>
+        <h3 id="plain-assemble-the-receiver">Assemble the receiver</h3>
         <p class="muted">A metadata resolver and a verifier for the transmitter, a processor that de-duplicates and
           dispatches to your handlers, and a push handler or a poller for the delivery method of your stream. The
           code below is the whole of it.</p>
       </div>
     </div>
     <div class="step" style="margin-top:20px">
-      <h3>Wire it into your framework</h3>
+      <h3 id="plain-wire-it-into-your-framework">Wire it into your framework</h3>
       <p class="muted">Call the push handler from the endpoint the transmitter posts SETs to and return its status
         and body, or start the poller from your scheduler. Create the stream at the transmitter, or let
         <code>SsfStreamClient</code> do it; <code>SsfTransmitter</code> assembles the parts for one transmitter and
         wakes the poller up as soon as the stream is registered.</p>
     </div>
 
-    <h3 style="margin-top:28px">All of it in one place</h3>
+    <h3 id="plain-all-of-it-in-one-place" style="margin-top:28px">All of it in one place</h3>
 <pre><code class="language-java">SsfHttpClient httpClient = new JdkSsfHttpClient();
 String issuer = "https://idp.example/realms/demo";
 
@@ -670,7 +670,7 @@ poller.start();</code></pre>
 
     <div class="grid">
       <div class="card">
-        <h3>Subjects as the spec defines them</h3>
+        <h3 id="subjects-as-the-spec-defines-them">Subjects as the spec defines them</h3>
         <p><code>SsfSubject</code> is the <code>sub_id</code> of the SET: a subject identifier in any RFC 9493 format
           (<code>iss_sub</code>, <code>email</code>, <code>opaque</code>, <code>account</code>, <code>phone_number</code>,
           <code>did</code>, <code>uri</code>, <code>aliases</code>), the <code>scim</code> format of RFC 9967, or a complex subject with its <code>user</code>,
@@ -678,13 +678,13 @@ poller.start();</code></pre>
           cases, nothing is lost.</p>
       </div>
       <div class="card">
-        <h3>Your own event type aliases</h3>
+        <h3 id="your-own-event-type-aliases">Your own event type aliases</h3>
         <p>The SSF, CAEP and RISC event types have built-in aliases such as <code>CaepSessionRevoked</code>. Register
           aliases for vendor specific event types, in configuration or in code, and use them wherever an event type is
           named. The URIs stay canonical; an alias can never redefine another.</p>
       </div>
       <div class="card">
-        <h3>Test your receiver</h3>
+        <h3 id="test-your-receiver">Test your receiver</h3>
         <p><code>easyssf-test</code> brings a transmitter that runs inside your test JVM: it signs SETs, serves metadata
           and keys, hands out tokens and emulates the stream and poll endpoints. Push a revocation, assert the effect.
           The tests of the Spring Boot starter and of the Quarkus extension use it.</p>
@@ -729,22 +729,22 @@ poller.start();</code></pre>
     <h2>Interoperability</h2>
     <div class="grid">
       <div class="card">
-        <h3>Keycloak</h3>
+        <h3 id="keycloak">Keycloak</h3>
         <p>Tested with the SSF transmitter of Keycloak 26.8 (<code>--features=ssf</code>). The examples ship a
           pre-configured realm, and the README documents Keycloak's audience, scopes and single-stream rule.</p>
       </div>
       <div class="card">
-        <h3>caep.dev</h3>
+        <h3 id="caep-dev">caep.dev</h3>
         <p>Point the receiver at <a href="https://caep.dev">caep.dev</a>, SGNL's free hosted transmitter, to receive CAEP
           events sent from a browser without running an identity provider. See <a href="tools.html#more">Tools</a>.</p>
       </div>
       <div class="card">
-        <h3>OpenID conformance suite</h3>
+        <h3 id="openid-conformance-suite">OpenID conformance suite</h3>
         <p>The receiver test plans of the <a href="https://gitlab.com/openid/conformance-suite">OpenID conformance suite</a>,
           default and CAEP interop profile with push and poll delivery, run against the receiver in an automated test module.</p>
       </div>
       <div class="card">
-        <h3>Standards</h3>
+        <h3 id="standards">Standards</h3>
         <p>Built on the OpenID Shared Signals specifications and the IETF security event RFCs, see
           <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each.</p>
       </div>

@@ -137,3 +137,33 @@
   window.easyssfHighlightAll = highlightAll;
   highlightAll(document);
 })();
+
+// A link marker on every h2 and h3 that can be linked to, shown on hover: the heading's own id,
+// or the id of the section it opens. Clicking it puts the id in the URL fragment, so the address
+// bar holds a link to the heading. Headings that are links themselves, the news items, need none.
+(function () {
+  function anchorId(heading) {
+    if (heading.id) { return heading.id; }
+    var section = heading.closest('section[id]');
+    if (section && heading.tagName === 'H2' && section.querySelector('h2') === heading) { return section.id; }
+    return null;
+  }
+  function add(root) {
+    (root || document).querySelectorAll('h2, h3').forEach(function (heading) {
+      if (heading.querySelector('.anchor') || heading.closest('article.news')) { return; }
+      if (heading.children.length === 1 && heading.firstElementChild.tagName === 'A' && heading.textContent.trim() === heading.firstElementChild.textContent.trim()) { return; }
+      var id = anchorId(heading);
+      if (!id) { return; }
+      var a = document.createElement('a');
+      a.className = 'anchor';
+      a.href = '#' + id;
+      var title = heading.cloneNode(true);
+      title.querySelectorAll('.rfc').forEach(function (extra) { extra.remove(); });
+      a.setAttribute('aria-label', 'Link to ' + title.textContent.replace(/\s+/g, ' ').trim());
+      a.textContent = '#';
+      heading.appendChild(a);
+    });
+  }
+  window.easyssfAnchors = add;
+  add(document);
+})();
