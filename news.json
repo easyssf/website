@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-06-release-0-4-0",
+    "date": "2026-10-06",
+    "title": "easyssf 0.4.0: a column renamed",
+    "body": "<p>easyssf 0.4.0 is on Maven Central, <code>org.easyssf:easyssf-receiver-spring-boot-starter:0.4.0</code> and the other modules alongside. It is a small release with one schema change: the column <code>PROCESSED_AT</code> of <code>EASYSSF_PROCESSED_SET</code> is now <code>STATE_CHANGED_AT</code>, which is what it has held since 0.3.0, the time of the claim as well as that of the completion, and it fences the claim.</p><p>Upgrading: existing tables need <code>ALTER TABLE EASYSSF_PROCESSED_SET RENAME COLUMN PROCESSED_AT TO STATE_CHANGED_AT</code>, the migration script <code>V0_4_0__state_changed_at.sql</code>, which works on H2, PostgreSQL and MySQL 8. Where the receiver may create tables it renames the column on startup; otherwise it names the statement in the error. The <a href=\"https://github.com/easyssf/easyssf/releases/tag/v0.4.0\">release notes</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-06-release-0-3-0",
     "date": "2026-10-06",
     "title": "easyssf 0.3.0: durable poll delivery, several instances, typed CAEP and RISC events",
