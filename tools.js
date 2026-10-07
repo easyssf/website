@@ -1,4 +1,4 @@
-// The Security Event Token generator and inspector of tools.html. Everything runs in the browser:
+// The Security Event Token generator, inspector and transmitter metadata checker of tools.html. Everything runs in the browser:
 // the form describes one SET, which is shown as JSON, signed with Web Crypto using a key kept in
 // localStorage. "Copy as link" encodes the state of the form into a URL fragment so that a SET
 // can be linked to. The event catalog follows CAEP 1.0, RISC 1.0, RFC 9967 and
@@ -1287,6 +1287,337 @@
   }
 
   document.getElementById('inspect-in').addEventListener('input', function (e) { inspect(e.target.value); });
+
+  // ---- the transmitter metadata checker --------------------------------------------------------
+
+  // The members of the Transmitter Configuration Metadata, SSF 1.0 section 7.1, in the order of
+  // the specification. Other members may be returned (7.2.3) and are listed as such.
+  var META_MEMBERS = ['spec_version', 'issuer', 'jwks_uri', 'delivery_methods_supported', 'configuration_endpoint',
+    'status_endpoint', 'add_subject_endpoint', 'remove_subject_endpoint', 'verification_endpoint',
+    'critical_subject_members', 'authorization_schemes', 'default_subjects'];
+  var META_ENDPOINTS = { configuration_endpoint: 'the Configuration Endpoint, to create, read, update and delete the stream (section 8.1.1)',
+    status_endpoint: 'the Status Endpoint, to read and change the status of the stream (8.1.2)',
+    add_subject_endpoint: 'the Add Subject Endpoint (8.1.3.2)',
+    remove_subject_endpoint: 'the Remove Subject Endpoint (8.1.3.3)',
+    verification_endpoint: 'the Verification Endpoint, to request a verification event (8.1.4.2)' };
+  // The delivery methods, by the URNs of SSF 1.0 and by the URIs of implementer's draft 1 and the
+  // RISC profile, which transmitters on the older drafts still publish.
+  var DELIVERY_METHODS = { 'urn:ietf:rfc:8935': { label: 'push, the transmitter posts SETs to the receiver', rfc: 8935 },
+    'urn:ietf:rfc:8936': { label: 'poll, the receiver fetches SETs from the transmitter', rfc: 8936 },
+    'https://schemas.openid.net/secevent/risc/delivery-method/push': { label: 'push, by its older URI', rfc: 8935, old: 'urn:ietf:rfc:8935' },
+    'https://schemas.openid.net/secevent/risc/delivery-method/poll': { label: 'poll, by its older URI', rfc: 8936, old: 'urn:ietf:rfc:8936' } };
+  var AUTH_SCHEMES = { 'urn:ietf:rfc:6749': { label: 'OAuth 2.0 access tokens', rfc: 6749 },
+    'urn:ietf:rfc:6750': { label: 'OAuth 2.0 bearer tokens', rfc: 6750 },
+    'urn:ietf:rfc:7523': { label: 'JWT bearer assertions', rfc: 7523 },
+    'urn:ietf:rfc:8705': { label: 'OAuth 2.0 mutual TLS', rfc: 8705 } };
+  // A delivery method or authorization scheme by its URN: the description with a link to the RFC,
+  // or the URN itself when unknown.
+  function urnLink(table, urn) {
+    var v = table[urn];
+    return v ? el('span', {}, [v.label + ' (', el('a', { href: 'https://www.rfc-editor.org/rfc/rfc' + v.rfc, target: '_blank', rel: 'noopener' }, ['RFC ' + v.rfc]), ')']) : el('code', { text: urn });
+  }
+  // The versions of SSF 1.0 a transmitter can name; implementer's draft 1 was published under the
+  // framework's earlier name, Shared Signals and Events.
+  var SPEC_VERSIONS = {
+    '1_0': { label: 'the final SSF 1.0', url: 'https://openid.net/specs/openid-sharedsignals-framework-1_0.html' },
+    '1_0-ID3': { label: 'implementer\'s draft 3 of SSF 1.0', url: 'https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html' },
+    '1_0-ID2': { label: 'implementer\'s draft 2 of SSF 1.0', url: 'https://openid.net/specs/openid-sharedsignals-framework-1_0-ID2.html' },
+    '1_0-ID1': { label: 'implementer\'s draft 1 of SSF 1.0', url: 'https://openid.net/specs/openid-sse-framework-1_0-ID1.html' } };
+  function specVersionLink(id, prefix) {
+    var v = SPEC_VERSIONS[id];
+    return v ? el('span', {}, [(prefix || '') + id + ', ', el('a', { href: v.url, target: '_blank', rel: 'noopener' }, [v.label])]) : el('span', { text: (prefix || '') + id });
+  }
+  var META_EXAMPLE = {
+    spec_version: '1_0', issuer: 'https://tr.example.com', jwks_uri: 'https://tr.example.com/jwks.json',
+    delivery_methods_supported: ['urn:ietf:rfc:8935', 'urn:ietf:rfc:8936'],
+    configuration_endpoint: 'https://tr.example.com/ssf/mgmt/stream', status_endpoint: 'https://tr.example.com/ssf/mgmt/status',
+    add_subject_endpoint: 'https://tr.example.com/ssf/mgmt/subject:add', remove_subject_endpoint: 'https://tr.example.com/ssf/mgmt/subject:remove',
+    verification_endpoint: 'https://tr.example.com/ssf/mgmt/verification', critical_subject_members: ['tenant', 'user'],
+    authorization_schemes: [{ spec_urn: 'urn:ietf:rfc:6749' }, { spec_urn: 'urn:ietf:rfc:8705' }], default_subjects: 'NONE' };
+
+  function parseUrl(s) { try { return new URL(s); } catch (e) { return null; } }
+  function isLoopback(u) { return /^(localhost|127(\.\d{1,3}){3}|\[::1\])$/.test(u.hostname); }
+
+  // Where the metadata of an issuer is: SSF 1.0 (7.2) inserts the well-known path between the host
+  // and the path of the issuer; transmitters that grew out of OpenID providers append it to the
+  // issuer instead, and RISC transmitters may still use risc-configuration (7.2.2).
+  function metadataLocations(issuer) {
+    var u = parseUrl(issuer);
+    if (!u || !/^https?:$/.test(u.protocol)) { return []; }
+    var base = u.protocol + '//' + u.host;
+    var path = u.pathname.replace(/\/+$/, '');
+    var out = [{ url: base + '/.well-known/ssf-configuration' + path, how: 'SSF 1.0, section 7.2' }];
+    if (path) { out.push({ url: base + path + '/.well-known/ssf-configuration', how: 'appended to the issuer, as OpenID providers do; not what the spec says' }); }
+    out.push({ url: base + '/.well-known/risc-configuration' + path, how: 'the legacy location of RISC transmitters, section 7.2.2' });
+    return out;
+  }
+
+  // The inverse: the issuer a metadata URL belongs to by the rules of section 7.2, so that a
+  // metadata URL can be entered instead of the issuer, and the issuer of a fetched document can be
+  // checked against where it came from.
+  function impliedIssuer(url) {
+    var u = parseUrl(url);
+    if (!u || !/^https?:$/.test(u.protocol)) { return null; }
+    var base = u.protocol + '//' + u.host, m;
+    if ((m = /^\/\.well-known\/(ssf|risc)-configuration(\/.*)?$/.exec(u.pathname))) {
+      return { issuer: base + (m[2] || '').replace(/\/+$/, ''), how: m[1] === 'ssf' ? 'SSF 1.0, section 7.2' : 'the legacy location of RISC transmitters, section 7.2.2' };
+    }
+    if ((m = /^(.*)\/\.well-known\/(ssf|risc)-configuration\/?$/.exec(u.pathname))) {
+      return { issuer: base + m[1], how: 'appended to the issuer, as OpenID providers do; not what the spec says' };
+    }
+    return null;
+  }
+
+  function checkMetadata(text, issuerInput, fetched) {
+    var checks = document.getElementById('meta-checks');
+    var box = document.getElementById('meta-checks-box');
+    var summary = document.getElementById('meta-summary');
+    var out = document.getElementById('meta-out');
+    var wasHidden = box.hidden, hadErrors = box.dataset.errors === 'true';
+    checks.innerHTML = ''; box.hidden = true; summary.innerHTML = ''; summary.hidden = true; out.hidden = true;
+    text = text.trim();
+    if (!text) { return; }
+    var findings = [];
+    function flat(parts) { return [].concat.apply([], parts.map(function (x) { return Array.isArray(x) ? flat(x) : [x]; })); }
+    function add(level, member, parts) { findings.push({ level: level, member: member, parts: typeof parts === 'string' ? [parts] : flat(parts) }); }
+    var meta;
+    try { meta = JSON.parse(text); } catch (e) { add('error', null, 'Not JSON: ' + e.message); render(); return; }
+    if (!meta || typeof meta !== 'object' || Array.isArray(meta)) { add('error', null, 'The document has to be a JSON object.'); render(); return; }
+
+    var str = function (k) { return typeof meta[k] === 'string'; };
+    var loopbackHttp = [];
+    function checkUrl(k, must) {
+      if (meta[k] === undefined) { return null; }
+      if (!str(k)) { add('error', k, 'has to be a string holding a URL.'); return null; }
+      var u = parseUrl(meta[k]);
+      if (!u) { add('error', k, 'is not a URL.'); return null; }
+      if (u.protocol !== 'https:') {
+        if (u.protocol === 'http:' && isLoopback(u)) { loopbackHttp.push(k); }
+        else { add('error', k, 'has to use HTTP over TLS (https), it is ' + u.protocol.replace(':', '') + '.'); }
+      }
+      return u;
+    }
+
+    // issuer, 7.1 and 7.2.4
+    var issuer = null;
+    if (meta.issuer === undefined) { add('error', 'issuer', 'is required: the issuer identifier, identical to the iss claim of the SETs.'); }
+    else {
+      issuer = checkUrl('issuer');
+      if (issuer) {
+        if (issuer.search || issuer.hash || /[?#]/.test(meta.issuer)) { add('error', 'issuer', 'must have no query or fragment component.'); }
+        if (issuerInput && issuerInput !== meta.issuer) {
+          var slashOnly = issuerInput.replace(/\/+$/, '') === meta.issuer.replace(/\/+$/, '');
+          var expected = metadataLocations(meta.issuer)[0];
+          add('error', 'issuer', [
+            'is ', el('code', { text: meta.issuer }), fetched
+              ? [', but the document was fetched from ', el('code', { text: fetched.url }), ', which by the derivation rules of section 7.2 is the metadata of the issuer ', el('code', { text: issuerInput })]
+              : [' but the metadata was requested for ', el('code', { text: issuerInput })],
+            '. Section 7.2.4 requires the issuer of the document to be identical to the issuer URL used to retrieve it' + (slashOnly ? '; a trailing slash counts, and so does the iss claim of every SET' : '') + '. A receiver must not use this document.',
+            expected ? [' The metadata of ', el('code', { text: meta.issuer }), ' belongs at ', el('code', { text: expected.url }), '.'] : null]);
+        }
+        if (fetched && fetched.how !== 'SSF 1.0, section 7.2') { add('warning', null, 'The document was found at ' + fetched.url + ', ' + fetched.how + '. A receiver following section 7.2 looks elsewhere; easyssf tries the appended location as a fallback.'); }
+      }
+    }
+
+    // spec_version
+    if (meta.spec_version === undefined) { add('info', 'spec_version', ['is absent, which is allowed: the transmitter is then assumed to implement ', specVersionLink('1_0-ID1'), ', whose stream API differs from the final spec. A transmitter implementing the final spec should say "1_0".']); }
+    else if (!str('spec_version')) { add('error', 'spec_version', 'has to be a string, such as "1_0".'); }
+    else if (!SPEC_VERSIONS[meta.spec_version]) { add('warning', 'spec_version', ['is ', el('code', { text: meta.spec_version }), ', which is not a version of SSF 1.0 (1_0, 1_0-ID3, 1_0-ID2, 1_0-ID1). The naming convention is the numerical part of the version, with an underscore.']); }
+
+    // jwks_uri
+    if (meta.jwks_uri === undefined) { add('warning', 'jwks_uri', 'is absent. It is required when the transmitter signs its SETs, and a receiver cannot verify a SET without the keys: easyssf refuses to start without it.'); }
+    else { checkUrl('jwks_uri'); }
+
+    // delivery_methods_supported
+    var methods = [];
+    if (meta.delivery_methods_supported === undefined) { add('warning', 'delivery_methods_supported', 'is absent, though recommended. A receiver has to know out of band whether it can create a push or a poll stream.'); }
+    else if (!Array.isArray(meta.delivery_methods_supported) || meta.delivery_methods_supported.some(function (m) { return typeof m !== 'string'; })) { add('error', 'delivery_methods_supported', 'has to be an array of delivery method URIs.'); }
+    else if (meta.delivery_methods_supported.length === 0) { add('error', 'delivery_methods_supported', 'is empty; members with zero elements must be omitted (7.2.3).'); }
+    else {
+      methods = meta.delivery_methods_supported;
+      methods.forEach(function (m) {
+        var known = DELIVERY_METHODS[m];
+        if (!known) { add('warning', 'delivery_methods_supported', ['lists ', el('code', { text: m }), ', which is neither push (urn:ietf:rfc:8935) nor poll (urn:ietf:rfc:8936), nor one of their older URIs under https://schemas.openid.net/secevent/risc/delivery-method/.']); }
+        else if (known.old) { add('info', 'delivery_methods_supported', ['lists ', el('code', { text: m }), ', the URI of implementer\'s draft 1 and the RISC profile; since draft 2 it is ', el('code', { text: known.old }), '. A receiver on the final spec, easyssf included, names the method by the URN when it creates a stream.']); }
+      });
+    }
+
+    // the endpoints
+    var endpoints = Object.keys(META_ENDPOINTS).filter(function (k) { return meta[k] !== undefined; });
+    endpoints.forEach(function (k) { checkUrl(k); });
+    if (endpoints.length === 0) { add('info', null, 'No stream management endpoints: streams are configured out of band, for instance in the transmitter\'s admin console, and a receiver cannot create, update or verify its stream itself.'); }
+    else {
+      if (meta.configuration_endpoint === undefined) { add('info', 'configuration_endpoint', 'is absent, so a receiver cannot create or update its stream, only use the other endpoints.'); }
+      if ((meta.add_subject_endpoint === undefined) !== (meta.remove_subject_endpoint === undefined)) { add('warning', null, 'Only one of add_subject_endpoint and remove_subject_endpoint is present; a receiver can change the subjects of the stream in one direction only.'); }
+    }
+
+    // critical_subject_members
+    if (meta.critical_subject_members !== undefined) {
+      if (!Array.isArray(meta.critical_subject_members) || meta.critical_subject_members.some(function (m) { return typeof m !== 'string'; })) { add('error', 'critical_subject_members', 'has to be an array of member names.'); }
+      else if (meta.critical_subject_members.length === 0) { add('error', 'critical_subject_members', 'is empty; members with zero elements must be omitted (7.2.3).'); }
+      else { add('info', 'critical_subject_members', 'A receiver must interpret these members of a complex subject when an event carries them; one that cannot should reject the event rather than act on the others. easyssf rejects a SET whose subject carries a critical member the application does not understand, as invalid_request.'); }
+    }
+
+    // authorization_schemes
+    var schemes = [];
+    if (meta.authorization_schemes !== undefined) {
+      if (!Array.isArray(meta.authorization_schemes)) { add('error', 'authorization_schemes', 'has to be an array of objects.'); }
+      else if (meta.authorization_schemes.length === 0) { add('error', 'authorization_schemes', 'is empty; members with zero elements must be omitted (7.2.3).'); }
+      else {
+        meta.authorization_schemes.forEach(function (s, i) {
+          if (!s || typeof s !== 'object' || Array.isArray(s)) { add('error', 'authorization_schemes', 'entry ' + (i + 1) + ' has to be an object with a spec_urn.'); return; }
+          if (typeof s.spec_urn !== 'string') { add('error', 'authorization_schemes', 'entry ' + (i + 1) + ' lacks spec_urn, which is required (7.1.1).'); return; }
+          schemes.push(s.spec_urn);
+          if (!AUTH_SCHEMES[s.spec_urn]) { add('info', 'authorization_schemes', ['uses ', el('code', { text: s.spec_urn }), ', a scheme this checker does not know; the receiver has to learn from the transmitter what credentials it means.']); }
+        });
+      }
+    } else if (endpoints.length) { add('info', 'authorization_schemes', 'is absent: the metadata does not say how the stream management API is protected, so the receiver has to be told out of band.'); }
+
+    // default_subjects
+    if (meta.default_subjects !== undefined && meta.default_subjects !== 'ALL' && meta.default_subjects !== 'NONE') { add('error', 'default_subjects', 'has to be "ALL" or "NONE".'); }
+
+    if (loopbackHttp.length) { add('warning', null, [loopbackHttp.length === 1 ? 'One URL uses' : loopbackHttp.length + ' URLs use', ' http on a loopback address: ', el('code', { text: loopbackHttp.join(', ') }), '. The spec requires HTTP over TLS; easyssf accepts http on loopback addresses, for development.']); }
+
+    // the rest
+    Object.keys(meta).forEach(function (k) {
+      if (META_MEMBERS.indexOf(k) >= 0) { return; }
+      if (Array.isArray(meta[k]) && meta[k].length === 0) { add('error', k, 'is empty; members with zero elements must be omitted (7.2.3).'); }
+      else { add('info', k, 'is not a member of SSF 1.0; other members may be returned and a receiver ignores the ones it does not know.'); }
+    });
+
+    render();
+
+    // the summary: what a receiver can do with this transmitter
+    function row(term, value) {
+      summary.appendChild(el('dt', { text: term }));
+      summary.appendChild(el('dd', {}, typeof value === 'string' ? [value] : value));
+    }
+    function lines(items) { return items.map(function (p) { return el('div', {}, typeof p === 'string' ? [p] : p); }); }
+    if (issuer) { row('Issuer', [el('code', { text: meta.issuer })]); }
+    row('Spec version', [meta.spec_version === undefined ? specVersionLink('1_0-ID1', 'not stated, assumed ') : specVersionLink(String(meta.spec_version))]);
+    row('Keys', str('jwks_uri') ? [el('code', { text: meta.jwks_uri })] : 'none, the SETs cannot be verified');
+    row('Delivery', methods.length ? lines(methods.map(function (m) { return [urnLink(DELIVERY_METHODS, m)]; })) : 'not stated');
+    row('Stream management', endpoints.length ? lines(endpoints.map(function (k) { return [el('code', { text: k }), ': ' + META_ENDPOINTS[k]]; })) : 'none');
+    if (schemes.length) { row('Authorization', lines(schemes.map(function (s) { return [urnLink(AUTH_SCHEMES, s)]; }))); }
+    if (Array.isArray(meta.critical_subject_members) && meta.critical_subject_members.length) { row('Critical subject members', meta.critical_subject_members.join(', ')); }
+    if (meta.default_subjects === 'ALL' || meta.default_subjects === 'NONE') { row('Default subjects', meta.default_subjects === 'ALL' ? 'ALL: a new stream carries every subject the transmitter has for the receiver; subjects can be removed' : 'NONE: a new stream carries no subject until the receiver adds some'); }
+    summary.hidden = false;
+    document.getElementById('meta-json').innerHTML = window.easyssfHighlight(JSON.stringify(meta, null, 2), 'json');
+    out.hidden = false;
+
+    // The findings, errors first, behind a summary line that counts them: open when there are
+    // errors, else collapsed, and left alone on a re-check so that a click sticks.
+    function render() {
+      var order = { error: 0, warning: 1, info: 2 };
+      findings.sort(function (a, b) { return order[a.level] - order[b.level]; });
+      var counts = { error: 0, warning: 0, info: 0 };
+      findings.forEach(function (fd) { counts[fd.level]++; });
+      findings.forEach(function (fd) {
+        var body = fd.member ? [el('code', { text: fd.member }), ' '].concat(fd.parts) : fd.parts;
+        checks.appendChild(el('li', { class: fd.level }, [el('span', { class: 'badge', text: fd.level }), el('span', {}, body)]));
+      });
+      var line = document.getElementById('meta-checks-summary');
+      line.innerHTML = '';
+      var clean = !counts.error && !counts.warning;
+      if (clean) { line.appendChild(el('span', { class: 'badge ok', text: 'ok' })); line.appendChild(el('span', { text: 'No problems: every member is well-formed and the URLs use TLS.' })); }
+      ['error', 'warning', 'info'].forEach(function (level) {
+        if (!counts[level]) { return; }
+        var noun = level === 'info' ? 'note' : level;
+        line.appendChild(el('span', { class: 'badge ' + level, text: counts[level] + ' ' + noun + (counts[level] === 1 ? '' : 's') }));
+      });
+      box.classList.toggle('clean', clean && !counts.info);
+      box.dataset.errors = String(counts.error > 0);
+      if (wasHidden || (counts.error > 0 && !hadErrors)) { box.open = counts.error > 0; }
+      if (clean && !counts.info) { box.open = false; }
+      box.hidden = false;
+    }
+  }
+
+  var metaIssuer = document.getElementById('meta-issuer');
+  var metaIn = document.getElementById('meta-in');
+  var metaNote = document.getElementById('meta-fetch-note');
+
+  // What the issuer field holds: the issuer and the locations of its metadata, or a metadata URL,
+  // which implies the issuer.
+  function issuerAndLocations() {
+    var input = metaIssuer.value.trim();
+    var implied = impliedIssuer(input);
+    if (implied) { return { issuer: implied.issuer, locations: [{ url: input, how: implied.how }], implied: true }; }
+    return { issuer: input, locations: metadataLocations(input), implied: false };
+  }
+
+  function showLocations() {
+    var hint = document.getElementById('meta-locations');
+    hint.innerHTML = '';
+    var il = issuerAndLocations();
+    var locations = il.locations;
+    if (!locations.length) { hint.textContent = 'The issuer of the transmitter, an https URL, or the URL of its metadata. The metadata is fetched from the well-known locations.'; return; }
+    if (il.implied) {
+      hint.appendChild(document.createTextNode('A metadata URL; by the rules of section 7.2 it belongs to the issuer '));
+      hint.appendChild(el('code', { text: il.issuer }));
+      hint.appendChild(document.createTextNode(' (' + locations[0].how + ').'));
+      return;
+    }
+    hint.appendChild(document.createTextNode('Looked up at '));
+    locations.forEach(function (l, i) {
+      if (i) { hint.appendChild(document.createTextNode(i === locations.length - 1 ? ' and ' : ', ')); }
+      hint.appendChild(el('a', { href: l.url, target: '_blank', rel: 'noopener', title: l.how }, [l.url]));
+    });
+    hint.appendChild(document.createTextNode('.'));
+  }
+
+  function fetchMetadata() {
+    var il = issuerAndLocations();
+    var issuer = il.issuer, locations = il.locations;
+    metaNote.innerHTML = '';
+    if (!locations.length) { metaNote.textContent = 'Enter the issuer, or the URL of its metadata, as an absolute http(s) URL first.'; return; }
+    if (!window.fetch) { metaNote.textContent = 'This browser cannot fetch; open the document and paste it.'; return; }
+    var btn = document.getElementById('meta-fetch');
+    btn.disabled = true; btn.textContent = 'Fetching';
+    var failures = [];
+    function next(i) {
+      if (i >= locations.length) {
+        btn.disabled = false; btn.textContent = 'Fetch';
+        metaNote.appendChild(el('div', {}, ['The browser could not load the metadata; usually the transmitter does not allow cross-origin reads (CORS), which a receiver never needs. Open the document and paste it:']));
+        metaNote.appendChild(el('ul', {}, failures.map(function (fl) { return el('li', {}, [el('a', { href: fl.url, target: '_blank', rel: 'noopener' }, [fl.url]), ': ' + fl.reason]); })));
+        var curl = 'curl -sS -H "Accept: application/json" ' + locations[0].url;
+        metaNote.appendChild(el('div', { style: 'margin-top:8px' }, ['Or from a terminal, which has no such restriction: ', el('code', { id: 'meta-curl', text: curl }), ' ',
+          el('button', { type: 'button', class: 'btn small', 'data-copy': 'meta-curl', 'data-copied-label': 'Command copied' }, ['Copy'])]));
+        return;
+      }
+      var loc = locations[i];
+      fetch(loc.url, { mode: 'cors', headers: { Accept: 'application/json' }, cache: 'no-store' }).then(function (res) {
+        if (res.status === 404) { failures.push({ url: loc.url, reason: 'not found (404)' }); next(i + 1); return; }
+        if (!res.ok) { failures.push({ url: loc.url, reason: 'status ' + res.status }); next(i + 1); return; }
+        var type = res.headers.get('content-type') || '';
+        return res.text().then(function (body) {
+          btn.disabled = false; btn.textContent = 'Fetch';
+          metaIn.value = body;
+          var notes = ['Fetched from ' + loc.url + ' (' + loc.how + ').'];
+          if (!/^application\/json\b/i.test(type)) { notes.push('The document was returned as ' + (type || 'no content type') + ', the spec requires application/json (7.2).'); }
+          metaNote.appendChild(el('ul', {}, notes.map(function (n) { return el('li', { text: n }); })));
+          checkMetadata(body, issuer, loc);
+        });
+      }).catch(function (e) {
+        failures.push({ url: loc.url, reason: 'blocked or unreachable (' + e.message + ')' });
+        next(i + 1);
+      });
+    }
+    next(0);
+  }
+
+  document.getElementById('meta').addEventListener('submit', function (e) { e.preventDefault(); fetchMetadata(); });
+  metaIssuer.addEventListener('input', function () { showLocations(); if (metaIn.value.trim()) { checkMetadata(metaIn.value, issuerAndLocations().issuer, null); } });
+  metaIn.addEventListener('input', function () { metaNote.innerHTML = ''; checkMetadata(metaIn.value, issuerAndLocations().issuer, null); });
+  document.getElementById('meta-example').addEventListener('click', function () {
+    metaIssuer.value = META_EXAMPLE.issuer; showLocations();
+    metaIn.value = JSON.stringify(META_EXAMPLE, null, 2); metaNote.innerHTML = '';
+    checkMetadata(metaIn.value, META_EXAMPLE.issuer, null);
+  });
+  document.getElementById('meta-clear').addEventListener('click', function () {
+    metaIssuer.value = ''; metaIn.value = ''; metaNote.innerHTML = ''; showLocations(); checkMetadata('', '', null);
+  });
+  showLocations();
 
   // ---- start ----------------------------------------------------------------------------------
 

@@ -60,6 +60,7 @@
     <div class="switch tools-switch" role="tablist" aria-label="Tool" id="tools">
       <button type="button" role="tab" aria-selected="true" aria-controls="generator">SET generator</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="inspector" tabindex="-1">SET inspector</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="metadata" tabindex="-1">Transmitter metadata</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="events" tabindex="-1">Event types</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="more" tabindex="-1">Other tools</button>
     </div>
@@ -281,6 +282,51 @@
         carries the URI. You can register your own aliases for vendor-specific types, see the
         <a href="https://github.com/easyssf/easyssf#readme">README</a>.</p>
       <div id="event-list"></div>
+    </div>
+  </section>
+
+  <section id="metadata" class="tool-panel" role="tabpanel" hidden>
+    <div class="wrap">
+      <h2>Transmitter metadata checker</h2>
+      <p class="muted" style="max-width:70ch">Checks a transmitter's configuration metadata, the document at
+        <code>/.well-known/ssf-configuration</code>, against <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html#section-7">section 7 of SSF 1.0</a>:
+        the required and recommended members, the URLs, the delivery methods and the authorization schemes, and what a
+        receiver can do with the transmitter. Enter the issuer to fetch the document, or paste it.</p>
+      <div class="tool">
+        <form id="meta" class="tool-form" autocomplete="off" novalidate>
+          <div class="field" style="margin-top:0">
+            <label for="meta-issuer">Issuer, or the URL of its metadata</label>
+            <div class="with-btn">
+              <input type="text" id="meta-issuer" placeholder="https://idp.example/realms/demo" inputmode="url">
+              <button type="submit" class="btn small" id="meta-fetch">Fetch</button>
+            </div>
+            <span class="hint" id="meta-locations"></span>
+          </div>
+          <div class="field">
+            <label for="meta-in">Transmitter configuration metadata, JSON</label>
+            <textarea id="meta-in" spellcheck="false" placeholder='{"issuer": "https://tr.example.com", "jwks_uri": ...}' style="min-height:18em"></textarea>
+            <span class="hint">Fetching needs the transmitter to allow cross-origin reads, which few do. When it does not, open the
+              document in a new tab and paste it here. Nothing is sent anywhere but to the transmitter.</span>
+          </div>
+          <div class="tool-actions" style="margin-top:12px;margin-bottom:0">
+            <button type="button" class="btn small" id="meta-example" title="The example of SSF 1.0, section 7.2.3">Load the example of the spec</button>
+            <button type="button" class="btn small" id="meta-clear">Clear</button>
+          </div>
+        </form>
+        <div class="tool-splitter" role="separator" aria-orientation="vertical" aria-label="Width of the panes, drag or use the arrow keys; double-click resets" tabindex="0" title="Drag to resize the panes, double-click to reset"></div>
+        <div class="tool-output" style="position:static">
+          <div class="note" id="meta-fetch-note"></div>
+          <details class="checks" id="meta-checks-box" hidden>
+            <summary id="meta-checks-summary" aria-live="polite"></summary>
+            <ul id="meta-checks"></ul>
+          </details>
+          <dl class="summary" id="meta-summary" hidden></dl>
+          <div class="out-panel" id="meta-out" hidden>
+            <pre><code id="meta-json"></code></pre>
+            <div class="copy"><button type="button" class="btn small" data-copy="meta-json">Copy</button></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
