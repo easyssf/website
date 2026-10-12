@@ -99,10 +99,9 @@
     CAEP events about sessions and credentials, RISC events about accounts, and SCIM Events about your users;
     rejects the access tokens and ends the affected sessions; and hands everything else to your code. Spring Boot
     and Quarkus get a starter and an extension; other JVM applications use the receiver library directly; and
-    ASP.NET Core applications use the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>,
-    on its way to NuGet.</p>
+    ASP.NET Core applications use the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>.</p>
   <div class="badges">
-    <span class="badge">0.6.0 on Maven Central</span>
+    <span class="badge">0.6.0 on Maven Central and NuGet</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -679,17 +678,16 @@ poller.start();</code></pre>
     <p class="muted">Three steps for an ASP.NET Core application on .NET 10, with
       <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>, the port of the receiver to .NET: feature
       complete relative to the Java library, with the same conformance test results, database tables and Keycloak
-      setup. Experimental, and not on NuGet yet.</p>
+      setup, released under the version of the Java library it matches.</p>
     <div class="two steps">
       <div class="step">
         <h3 id="dotnet-add-the-packages">Add the packages</h3>
-<pre><code class="language-xml">&lt;ItemGroup&gt;
-  &lt;ProjectReference Include=&quot;../easyssf-dotnet/src/EasySsf.Receiver.Hosting/EasySsf.Receiver.Hosting.csproj&quot; /&gt;
-  &lt;ProjectReference Include=&quot;../easyssf-dotnet/src/EasySsf.Receiver.AspNetCore/EasySsf.Receiver.AspNetCore.csproj&quot; /&gt;
-&lt;/ItemGroup&gt;</code></pre>
-        <p class="muted">The packages <code>EasySsf.Receiver.Hosting</code> and, for push delivery,
-          <code>EasySsf.Receiver.AspNetCore</code> are not on NuGet yet: the <code>EasySsf</code> prefix is reserved
-          there and the first release follows. Until then, clone the repository and reference its projects.</p>
+<pre><code class="language-xml">&lt;PackageReference Include=&quot;EasySsf.Receiver.Hosting&quot; Version=&quot;0.6.0&quot; /&gt;
+&lt;PackageReference Include=&quot;EasySsf.Receiver.AspNetCore&quot; Version=&quot;0.6.0&quot; /&gt;</code></pre>
+        <p class="muted">From <a href="https://www.nuget.org/profiles/easyssf">NuGet</a>, where all packages are listed:
+          <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application and
+          <code>EasySsf.Receiver.AspNetCore</code> for the push endpoint and the revocation hooks; add
+          <code>EasySsf.Receiver.Data</code> for database-backed stores. .NET 10.</p>
       </div>
       <div class="step">
         <h3 id="dotnet-name-the-transmitter">Name the transmitter</h3>
@@ -800,7 +798,7 @@ class StepUpHandler(IStepUp stepUp) : SsfCaepEventHandler
         <tr><td><code>easyssf-test-conformance</code></td><td>Runs the OpenID conformance suite's SSF receiver test plans against a receiver under test, in any framework: the suite via Testcontainers, the scenarios the receiver plays, and the plan tests to extend.</td><td>easyssf-receiver, Testcontainers, JUnit</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-conformance-tests</code></td><td>The Spring Boot receiver under test and the four plan tests for it.</td><td></td></tr>
         <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
-        <tr><td><a href="https://github.com/easyssf/easyssf-dotnet"><code>easyssf-dotnet</code></a></td><td>The receiver for .NET 10, a port of the library with the same tests, tables and Keycloak setup: <code>EasySsf.Core</code>, <code>EasySsf.Receiver</code>, <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application, <code>EasySsf.Receiver.AspNetCore</code> with the push endpoint and the JwtBearer and cookie revocation hooks, <code>EasySsf.Receiver.Data</code> with the stores on ADO.NET, test support and the conformance harness. Not on NuGet yet.</td><td>Microsoft.IdentityModel.JsonWebTokens, Microsoft.Extensions.*</td></tr>
+        <tr><td><a href="https://github.com/easyssf/easyssf-dotnet"><code>easyssf-dotnet</code></a></td><td>The receiver for .NET 10, a port of the library with the same tests, tables and Keycloak setup: <code>EasySsf.Core</code>, <code>EasySsf.Receiver</code>, <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application, <code>EasySsf.Receiver.AspNetCore</code> with the push endpoint and the JwtBearer and cookie revocation hooks, <code>EasySsf.Receiver.Data</code> with the stores on ADO.NET, and <code>EasySsf.Testing</code> for the tests of your receiver; on NuGet under the version of the Java library.</td><td>Microsoft.IdentityModel.JsonWebTokens, Microsoft.Extensions.*</td></tr>
       </tbody>
     </table>
     </div>

@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-12-easyssf-dotnet-0-6-0",
+    "date": "2026-10-12",
+    "title": "easyssf-dotnet 0.6.0 is on NuGet",
+    "body": "<p>The .NET port is on <a href=\"https://www.nuget.org/profiles/easyssf\">NuGet</a>: <code>EasySsf.Receiver.Hosting</code> and <code>EasySsf.Receiver.AspNetCore</code> for an ASP.NET Core application, <code>EasySsf.Receiver.Data</code> for the database stores, <code>EasySsf.Testing</code> for the tests of a receiver, and <code>EasySsf.Core</code> and <code>EasySsf.Receiver</code> underneath, all at 0.6.0, the version of the Java library the code matches. The port stays experimental, and below 1.0 a minor version may break the API, as with the Java library.</p><p>The <a href=\"index.html#start-dotnet\">getting started guide</a> now adds the packages instead of referencing a checkout; the <a href=\"https://github.com/easyssf/easyssf-dotnet/releases/tag/v0.6.0\">release notes</a> and the <a href=\"https://github.com/easyssf/easyssf-dotnet#readme\">README</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-12-easyssf-dotnet",
     "date": "2026-10-12",
     "title": "easyssf-dotnet: the receiver, ported to .NET",
