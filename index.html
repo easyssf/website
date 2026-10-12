@@ -101,7 +101,7 @@
     Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
     directly.</p>
   <div class="badges">
-    <span class="badge">0.5.0 on Maven Central</span>
+    <span class="badge">0.6.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
@@ -479,7 +479,7 @@
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver-spring-boot-starter&lt;/artifactId&gt;
-    &lt;version&gt;0.5.0&lt;/version&gt;
+    &lt;version&gt;0.6.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">From <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, where
           all modules are listed. Snapshots of <code>main</code> are on the
@@ -493,6 +493,8 @@
     expected-audience: https://my-app.example
     push:
       expected-auth-header: Bearer ${SSF_PUSH_SECRET}</code></pre>
+        <p class="muted">The audience is required, unless the application creates or looks up its stream, which
+          tells it: a receiver that cannot know the audience of its SETs does not start.</p>
       </div>
     </div>
     <div class="step" style="margin-top:20px">
@@ -542,12 +544,12 @@ class StepUpHandler extends SsfCaepEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
     &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.5.0&lt;/version&gt;
+    &lt;version&gt;0.6.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">Or <code>quarkus ext add io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver</code>.
           From <a href="https://central.sonatype.com/namespace/io.quarkiverse.openid-ssf">Maven Central</a>;
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.5.0">0.5.0</a> is built on
-          easyssf 0.5.0: poll delivery that survives restarts and runs on several instances, long polling, SCIM Events
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.6.0">0.6.0</a> is built on
+          easyssf 0.6.0: poll delivery that survives restarts and runs on several instances, long polling, SCIM Events
           and the typed CAEP and RISC handlers, like the Spring Boot starter. The extension is versioned and released
           on its own; the versions coincide this time.</p>
       </div>
@@ -615,7 +617,7 @@ public class StepUpHandler extends SsfCaepEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;org.easyssf&lt;/groupId&gt;
     &lt;artifactId&gt;easyssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.5.0&lt;/version&gt;
+    &lt;version&gt;0.6.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">A Java module that depends on <code>easyssf-core</code>, Nimbus JOSE + JWT and SLF4J only. Add
           <code>easyssf-receiver-jdbc</code> for database-backed stores.</p>

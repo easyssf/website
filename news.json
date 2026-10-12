@@ -1,5 +1,17 @@
 [
   {
+    "id": "2026-10-12-quarkus-openid-ssf-0-6-0",
+    "date": "2026-10-12",
+    "title": "quarkus-openid-ssf 0.6.0: a receiver has to know its audience",
+    "body": "<p>The Quarkiverse extension <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf\">quarkus-openid-ssf</a> 0.6.0 is on Maven Central as <code>io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver:0.6.0</code>, built on easyssf 0.6.0. An application that configured neither <code>expected-audience</code> nor a stream of its own (<code>stream-management=TRANSMITTER</code> without <code>stream-id</code>) accepted SETs the transmitter issued for other receivers; it no longer starts until it names one of the two, or <code>set-validation.allow-any-audience=true</code> for a transmitter that sends no <code>aud</code>. Where the stream tells the audience, a SET that arrives before the stream is known is left to the redelivery: <code>503</code> on push, unacknowledged on poll. Nothing changes for an application that lets the extension register its stream, the default.</p><p>Also new: the claim of a SET is renewed every third of <code>dedup.lease</code> while its handlers run, so a handler that takes longer than the lease no longer loses the SET to another instance. The <a href=\"index.html#start-quarkus\">getting started guide</a> uses 0.6.0; the <a href=\"https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.6.0\">release notes</a> have the details.</p>"
+  },
+  {
+    "id": "2026-10-12-release-0-6-0",
+    "date": "2026-10-12",
+    "title": "easyssf 0.6.0: a known audience, longer-lived revocations, renewed claims",
+    "body": "<p>easyssf 0.6.0 is on Maven Central, <code>org.easyssf:easyssf-receiver-spring-boot-starter:0.6.0</code> and the other modules alongside. A receiver has to know the audience of its SETs: a Spring Boot receiver that configured neither <code>expected-audience</code> nor a stream it registers or looks up accepted SETs the transmitter issued for other receivers, and no longer starts until it names an audience, a stream, or <code>set-validation.allow-any-audience</code>. Where the stream tells the audience, a SET that arrives before the stream is known gets a <code>503</code> on push and stays unacknowledged on poll, so the transmitter delivers it again. <code>NimbusSsfSetVerifier</code> keeps accepting any audience when none is configured; a receiver built by hand decides.</p><p>Two more lessons of the <a href=\"https://github.com/easyssf/easyssf-dotnet\">.NET port</a>: <code>resource-server.revocation-ttl</code> defaults to <code>24h</code> instead of <code>1h</code>, as a revoked access token of a realm with longer-lived tokens was valid again after an hour; and a handler that runs longer than the dedup lease keeps its SET, because <code>SsfSetProcessor</code> renews the claim meanwhile (<code>SsfJtiDedupStore.renew</code>, implemented by the in-memory and the JDBC store). The conformance tests run release 5.3.2 of the OpenID conformance suite, the first with the complete SSF receiver tests, pinned by digest, every night. The <a href=\"https://github.com/easyssf/easyssf/releases/tag/v0.6.0\">release notes</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-06-quarkus-openid-ssf-0-5-0",
     "date": "2026-10-06",
     "title": "quarkus-openid-ssf 0.5.0 is built on easyssf 0.5.0",
