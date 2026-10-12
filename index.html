@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>easyssf · Shared Signals Framework support for Java</title>
-<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to JVM-based applications, with a Spring Boot starter and a Quarkus extension: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
+<title>easyssf · Shared Signals Framework support for Java and .NET</title>
+<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to Java and .NET applications, with a Spring Boot starter, a Quarkus extension and an ASP.NET Core integration: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://easyssf.org/">
@@ -13,18 +13,18 @@
 <meta name="theme-color" content="#fdf8f1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
-<meta property="og:title" content="easyssf · Shared Signals Framework support for Java">
-<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your JVM-based application, Spring Boot and Quarkus included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
+<meta property="og:title" content="easyssf · Shared Signals Framework support for Java and .NET">
+<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your Java or .NET application, Spring Boot, Quarkus and ASP.NET Core included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://easyssf.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, as a Spring Boot starter, a Quarkus extension and a plain Java library">
+<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java and .NET, as a Spring Boot starter, a Quarkus extension, a plain Java library and an ASP.NET Core integration">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java">
-<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your JVM-based application, Spring Boot and Quarkus included, tested with the OpenID conformance suite.">
+<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java and .NET">
+<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your Java or .NET application, Spring Boot, Quarkus and ASP.NET Core included, tested with the OpenID conformance suite.">
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="stylesheet" href="site.css">
@@ -38,7 +38,7 @@
       "@id": "https://easyssf.org/#website",
       "url": "https://easyssf.org/",
       "name": "easyssf",
-      "description": "Shared Signals Framework support for Java",
+      "description": "Shared Signals Framework support for Java and .NET",
       "inLanguage": "en"
     },
     {
@@ -50,7 +50,7 @@
       "programmingLanguage": "Java",
       "runtimePlatform": ["Java 21", "Spring Boot 4.1", "Quarkus 3.27"],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
-      "description": "A Java library that adds an OpenID Shared Signals Framework (SSF) receiver to JVM-based applications, with a Spring Boot starter and a Quarkus extension: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
+      "description": "A library that adds an OpenID Shared Signals Framework (SSF) receiver to Java and .NET applications, with a Spring Boot starter, a Quarkus extension and an ASP.NET Core integration: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
       "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", "Keycloak"],
       "about": [
         {"@type": "Thing", "name": "OpenID Shared Signals Framework 1.0", "url": "https://openid.net/specs/openid-sharedsignals-framework-1_0.html"},
@@ -92,15 +92,15 @@
 
 <div class="hero wrap">
 <div class="hero-text">
-  <h1>Shared Signals Framework<br>support for Java</h1>
+  <h1>Shared Signals Framework<br>support for Java and .NET</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
-    Shared Signals Framework</a> receiver to your JVM-based application, so that it reacts when your identity
+    Shared Signals Framework</a> receiver to your Java or .NET application, so that it reacts when your identity
     provider revokes a session, changes a credential or signals a risk. The receiver verifies the security events,
     the CAEP events about sessions and credentials, the RISC events about accounts and the SCIM Events about your
     users, rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
-    Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
-    directly. A port to .NET, <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>, is on its
-    way to NuGet.</p>
+    Spring Boot and Quarkus get a starter and an extension, other JVM applications use the receiver library
+    directly, and ASP.NET Core applications the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>,
+    on its way to NuGet.</p>
   <div class="badges">
     <span class="badge">0.6.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
