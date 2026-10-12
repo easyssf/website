@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-12-easyssf-dotnet",
+    "date": "2026-10-12",
+    "title": "easyssf-dotnet: the receiver, ported to .NET",
+    "body": "<p><a href=\"https://github.com/easyssf/easyssf-dotnet\">easyssf-dotnet</a> is public: the easyssf receiver ported to .NET 10, with the scope of the Java library. SET verification, push and poll delivery, stream management, de-duplication shared between instances, the typed CAEP, RISC and SCIM handlers, access token and cookie session revocation for ASP.NET Core, and the database stores on the tables of the Java library, so the two can share a database. It passes the four SSF and CAEP interop receiver plans of the OpenID conformance suite, with the harness in the repository, and its three examples run against the same Keycloak setup as the Java ones. Experimental, and not on NuGet yet: the <code>EasySsf</code> prefix is reserved there and the first release follows; until then the <a href=\"index.html#start-dotnet\">getting started guide</a> references the projects of a checkout.</p><p>The port paid back already: a review of it found three things the Java library had too, the fail-open audience, the one-hour revocation TTL and a dedup lease that had to outlast the longest handler, all fixed in easyssf 0.6.0.</p>"
+  },
+  {
     "id": "2026-10-12-quarkus-openid-ssf-0-6-0",
     "date": "2026-10-12",
     "title": "quarkus-openid-ssf 0.6.0: a receiver has to know its audience",

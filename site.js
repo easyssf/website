@@ -62,6 +62,14 @@
       ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
       ['n', '\\b\\d[\\d_]*L?\\b']
     ],
+    csharp: [
+      ['c', '\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/'],
+      ['s', '\\$?"(?:[^"\\\\\\n]|\\\\.)*"'],
+      ['a', '^\\s*\\[[A-Za-z_][\\w.]*(?:\\([^)]*\\))?\\]'],
+      ['k', '\\b(?:abstract|as|async|await|base|bool|break|case|catch|class|const|continue|default|do|else|enum|false|finally|for|foreach|if|in|interface|internal|is|namespace|new|null|out|override|private|protected|public|readonly|record|ref|return|sealed|static|string|struct|switch|this|throw|true|try|typeof|using|var|virtual|void|while|yield)\\b'],
+      ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
+      ['n', '\\b\\d[\\d_]*[LdDfFmM]?\\b']
+    ],
     xml: [
       ['c', '<!--[\\s\\S]*?-->'],
       ['s', '"[^"]*"'],

@@ -99,7 +99,8 @@
     the CAEP events about sessions and credentials, the RISC events about accounts and the SCIM Events about your
     users, rejects the access tokens and ends the sessions concerned, and hands everything else to your code.
     Spring Boot and Quarkus get a starter and an extension; other JVM applications use the receiver library
-    directly.</p>
+    directly. A port to .NET, <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>, is on its
+    way to NuGet.</p>
   <div class="badges">
     <span class="badge">0.6.0 on Maven Central</span>
     <span class="badge">Java 21+</span>
@@ -463,12 +464,15 @@
     <p class="muted" style="max-width:70ch">easyssf comes with a starter for Spring Boot and, through the Quarkiverse extension
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
       Both are built on the same receiver library, which other JVM applications use on their own; all three
-      verify, de-duplicate and dispatch events the same way.</p>
+      verify, de-duplicate and dispatch events the same way. A port to .NET,
+      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>, brings the same receiver to ASP.NET
+      Core applications.</p>
 
     <div class="switch" role="tablist" aria-label="Framework">
       <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
       <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
       <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
+      <button type="button" role="tab" id="tab-dotnet" aria-controls="start-dotnet" aria-selected="false" tabindex="-1">.NET</button>
     </div>
 
     <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
@@ -670,6 +674,81 @@ poller.start();</code></pre>
       Spring Boot and Quarkus examples are plain Java you can reuse.</p>
     </div>
 
+    <div id="start-dotnet" class="framework" role="tabpanel" aria-labelledby="tab-dotnet" hidden>
+    <p class="muted">Three steps for an ASP.NET Core application on .NET 10, with
+      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>, the port of the receiver to .NET: feature
+      complete relative to the Java library, with the same conformance test results, database tables and Keycloak
+      setup. Experimental, and not on NuGet yet.</p>
+    <div class="two steps">
+      <div class="step">
+        <h3 id="dotnet-add-the-packages">Add the packages</h3>
+<pre><code class="language-xml">&lt;ItemGroup&gt;
+  &lt;ProjectReference Include=&quot;../easyssf-dotnet/src/EasySsf.Receiver.Hosting/EasySsf.Receiver.Hosting.csproj&quot; /&gt;
+  &lt;ProjectReference Include=&quot;../easyssf-dotnet/src/EasySsf.Receiver.AspNetCore/EasySsf.Receiver.AspNetCore.csproj&quot; /&gt;
+&lt;/ItemGroup&gt;</code></pre>
+        <p class="muted">The packages <code>EasySsf.Receiver.Hosting</code> and, for push delivery,
+          <code>EasySsf.Receiver.AspNetCore</code> are not on NuGet yet: the <code>EasySsf</code> prefix is reserved
+          there and the first release follows. Until then, clone the repository and reference its projects.</p>
+      </div>
+      <div class="step">
+        <h3 id="dotnet-name-the-transmitter">Name the transmitter</h3>
+<pre><code class="language-json">{
+  &quot;EasySsf&quot;: {
+    &quot;Receiver&quot;: {
+      &quot;TransmitterIssuer&quot;: &quot;https://idp.example/realms/demo&quot;,
+      &quot;ExpectedAudience&quot;: &quot;https://my-app.example&quot;,
+      &quot;Push&quot;: { &quot;ExpectedAuthHeader&quot;: &quot;Bearer s3cr3t&quot; }
+    }
+  }
+}</code></pre>
+        <p class="muted">In <code>appsettings.json</code>, bound from <code>EasySsf:Receiver</code> and validated on
+          start. The audience is required, unless the application creates or looks up its stream, which tells it.</p>
+      </div>
+    </div>
+    <div class="step" style="margin-top:20px">
+      <h3 id="dotnet-create-the-stream">Create the stream</h3>
+      <p class="muted">Create a stream with push delivery at the transmitter that points to
+        <code>https://my-app.example/ssf/push</code> and sends the configured header, or set
+        <code>"Stream": { "Management": "Receiver" }</code> and let the application create it.
+        <code>AddSsfTokenRevocation()</code> then rejects the access tokens of revoked sessions and users in a
+        JwtBearer scheme, and <code>AddSsfSessionRevocation()</code> signs revoked cookie sessions out on their
+        next request, one line each.</p>
+    </div>
+
+    <h3 id="dotnet-react-to-any-event" style="margin-top:28px">React to any event</h3>
+<pre><code class="language-csharp">var builder = WebApplication.CreateBuilder(args);
+builder.AddSsfReceiver()                       // binds EasySsf:Receiver, validates on start
+    .AddEventHandler&lt;StepUpHandler&gt;();         // any ISsfEventHandler, SsfCaepEventHandler, ...
+var app = builder.Build();
+app.MapSsfPush();                              // POST /ssf/push: the SET authenticates itself
+app.Run();
+
+class StepUpHandler(IStepUp stepUp) : SsfCaepEventHandler
+{
+    protected override Task OnAssuranceLevelChangeAsync(SsfCaepEvent caepEvent, SsfEventContext eventContext,
+            CancellationToken cancellationToken)
+    {
+        return (caepEvent.ChangeDirection == &quot;decrease&quot;)
+            ? stepUp.RequireAsync(eventContext.Subject.Subject, caepEvent.CurrentLevel, cancellationToken)
+            : Task.CompletedTask;
+    }
+}</code></pre>
+    <p class="muted" style="margin-top:12px"><code>SsfCaepEventHandler</code>, <code>SsfRiscEventHandler</code> and
+      <code>SsfScimEventHandler</code> hand each event of a SET to a method per event type, with its claims typed;
+      <code>ISsfEventHandler</code> gets every verified SET as it is. Handlers run before the SET is acknowledged.
+      If one throws, the transmitter is expected to deliver the SET again, so a SET is handled at least once and
+      <code>eventContext.IdempotencyKey</code> is the key for a handler's side effects.</p>
+
+    <h3 id="dotnet-example-applications" style="margin-top:28px">Example applications</h3>
+    <p class="muted">Complete ASP.NET Core applications with a Keycloak setup, in the
+      <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/">examples of easyssf-dotnet</a>:</p>
+    <ul class="examples">
+      <li><a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ResourceServer">OAuth2 resource server</a>: rejects the access tokens of revoked sessions.</li>
+      <li><a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.OidcClient">OIDC relying party</a>: rejects the cookie of a session Keycloak ended, or whose password changed.</li>
+      <li><a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ScimProvisioning">SCIM provisioning</a>: mirrors SCIM users into a local directory from SCIM Events.</li>
+    </ul>
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3 id="subjects-as-the-spec-defines-them">Subjects as the spec defines them</h3>
@@ -706,7 +785,7 @@ poller.start();</code></pre>
   <div class="wrap">
     <h2>Modules</h2>
     <p class="muted">Everything is published under the group id <code>org.easyssf</code>. The Quarkus extension is a
-      Quarkiverse project with its own coordinates.</p>
+      Quarkiverse project with its own coordinates; the .NET port has a repository of its own.</p>
     <div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>What it is</th><th>Depends on</th></tr></thead>
@@ -720,6 +799,7 @@ poller.start();</code></pre>
         <tr><td><code>easyssf-test-conformance</code></td><td>Runs the OpenID conformance suite's SSF receiver test plans against a receiver under test, in any framework: the suite via Testcontainers, the scenarios the receiver plays, and the plan tests to extend.</td><td>easyssf-receiver, Testcontainers, JUnit</td></tr>
         <tr><td><code>easyssf-receiver-spring-boot-conformance-tests</code></td><td>The Spring Boot receiver under test and the four plan tests for it.</td><td></td></tr>
         <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
+        <tr><td><a href="https://github.com/easyssf/easyssf-dotnet"><code>easyssf-dotnet</code></a></td><td>The receiver for .NET 10, a port of the library with the same tests, tables and Keycloak setup: <code>EasySsf.Core</code>, <code>EasySsf.Receiver</code>, <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application, <code>EasySsf.Receiver.AspNetCore</code> with the push endpoint and the JwtBearer and cookie revocation hooks, <code>EasySsf.Receiver.Data</code> with the stores on ADO.NET, test support and the conformance harness. Not on NuGet yet.</td><td>Microsoft.IdentityModel.JsonWebTokens, Microsoft.Extensions.*</td></tr>
       </tbody>
     </table>
     </div>
