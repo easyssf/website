@@ -1,7 +1,7 @@
 // The Security Event Token generator, inspector and transmitter metadata checker of tools.html. Everything runs in the browser:
 // the form describes one SET, which is shown as JSON, signed with Web Crypto using a key kept in
 // localStorage. "Copy as link" encodes the state of the form into a URL fragment so that a SET
-// can be linked to. The event catalog follows CAEP 1.0, RISC 1.0, RFC 9967 and
+// can be linked to; #generate=<event> and #event=<event> link to an event type. The event catalog follows CAEP 1.0, RISC 1.0, RFC 9967 and
 // SSF 1.0; the aliases are those of org.easyssf.core.event.SsfEventTypes.
 (function () {
   'use strict';
@@ -975,10 +975,28 @@
 
   // Shows the tool that holds the element the fragment names, opens it if it is a card, and
   // scrolls to it, instantly on load and smoothly on a click. Returns whether the fragment
-  // named something.
+  // named something. Besides ids, the fragment can name an event: #generate=CaepSessionRevoked
+  // opens it in the generator (and is dropped from the address bar, like #set=, as the form
+  // moves on from there), #event=CaepSessionRevoked its card in the listing. The event is named
+  // by alias, URI, profile/short-name or short name, see eventByRef.
   function revealHash(instant) {
     var id = location.hash.slice(1);
     if (!id || /^set=/.test(id)) { return false; }
+    var m = /^(generate|event)[=\/](.+)$/.exec(id), ref;
+    if (m) {
+      ref = eventByRef(m[2]);
+      if (!ref) { return false; }
+      if (m[1] === 'generate') {
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ }
+        openInGenerator(ref.profile.id, ref.version.id, ref.ev.uri);
+        return true;
+      }
+      id = 'event-' + ref.ev.alias;
+    } else if (/^event-/.test(id) && !document.getElementById(id)) {
+      // A card named by something other than the exact alias, #event-session-revoked.
+      ref = eventByRef(id.slice(6));
+      if (ref) { id = 'event-' + ref.ev.alias; }
+    }
     var target = document.getElementById(id);
     if (!target) { return false; }
     var panel = target.closest('.tool-panel');
@@ -1069,6 +1087,41 @@
     return uri.replace(/^https:\/\/schemas\.openid\.net\/secevent\/[a-z]+\/event-type\//, '').replace(SCIM, '');
   }
 
+  // ---- linking to an event --------------------------------------------------------------------
+
+  // Finds an event by a reference as it may appear in a URL fragment: the easyssf alias
+  // (CaepSessionRevoked), the URI, the profile and the short name (caep/session-revoked) or the
+  // short name alone (session-revoked), all case-insensitively. Returns the profile, the version
+  // the event is in (the default one when it has the event) and the event, or null.
+  function eventByRef(ref) {
+    try { ref = decodeURIComponent(ref); } catch (e) { /* keep as is */ }
+    ref = String(ref || '').trim().toLowerCase();
+    if (!ref) { return null; }
+    var found = null;
+    PROFILES.forEach(function (profile) {
+      profile.versions.forEach(function (version) {
+        version.events.forEach(function (ev) {
+          if (found) { return; }
+          var names = [ev.alias, ev.uri, profile.id + '/' + shortName(ev.uri), shortName(ev.uri)];
+          if (names.some(function (n) { return n.toLowerCase() === ref; })) { found = { profile: profile, version: version, ev: ev }; }
+        });
+      });
+    });
+    return found;
+  }
+
+  // Opens an event in the generator: switches the profile and the version, selects the event
+  // and shows the generator.
+  function openInGenerator(profileId, versionId, uri) {
+    selectProfile(profileId);
+    set('versions.' + profileId, versionId);
+    state.event = uri;
+    onEventChange();
+    rebuild();
+    showTool('generator');
+    document.getElementById('tools').scrollIntoView();
+  }
+
   // ---- the event listing ----------------------------------------------------------------------
 
   // Every event type of the catalog, by profile: the common claims once, then a card per event
@@ -1122,7 +1175,10 @@
         var card = el('details', { class: 'event', id: 'event-' + ev.alias });
         var summary = el('summary', {}, [
           el('span', { class: 'title', text: ev.title || shortName(ev.uri) }),
-          el('code', { class: 'alias', text: ev.alias })
+          el('code', { class: 'alias', text: ev.alias }),
+          // The link marker of the headings, see site.js: shown on hover, it puts the card's
+          // fragment in the address bar without toggling the card.
+          el('a', { class: 'anchor', href: '#event-' + ev.alias, 'aria-label': 'Link to ' + (ev.title || shortName(ev.uri)), text: '#' })
         ]);
         if (entry.versions.length < profile.versions.length) {
           summary.appendChild(el('span', { class: 'since', text: entry.versions.map(function (v) { return v.id; }).join(', ') }));
@@ -1143,15 +1199,19 @@
       root.appendChild(section);
     });
     root.addEventListener('click', function (e) {
+      var anchor = e.target.closest('summary a.anchor');
+      if (anchor) {
+        // Not the summary's toggle, only the fragment; revealHash then opens the card, or
+        // does so here when the fragment is already the one of the card.
+        e.preventDefault();
+        e.stopPropagation();
+        var hash = anchor.getAttribute('href');
+        if (location.hash === hash) { revealHash(false); } else { location.hash = hash; }
+        return;
+      }
       var btn = e.target.closest('[data-open-event]');
       if (!btn) { return; }
-      selectProfile(btn.dataset.openProfile);
-      set('versions.' + btn.dataset.openProfile, btn.dataset.openVersion);
-      state.event = btn.dataset.openEvent;
-      onEventChange();
-      rebuild();
-      showTool('generator');
-      document.getElementById('tools').scrollIntoView();
+      openInGenerator(btn.dataset.openProfile, btn.dataset.openVersion, btn.dataset.openEvent);
     });
   })();
 
