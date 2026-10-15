@@ -70,6 +70,13 @@
       ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
       ['n', '\\b\\d[\\d_]*[LdDfFmM]?\\b']
     ],
+    go: [
+      ['c', '\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/'],
+      ['s', '"(?:[^"\\\\\\n]|\\\\.)*"|`[^`]*`'],
+      ['k', '\\b(?:break|case|chan|const|continue|default|defer|else|fallthrough|for|func|go|goto|if|import|interface|map|package|range|return|select|struct|switch|type|var|nil|true|false|any|bool|byte|error|int|int64|string)\\b'],
+      ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
+      ['n', '\\b\\d[\\d_]*\\b']
+    ],
     xml: [
       ['c', '<!--[\\s\\S]*?-->'],
       ['s', '"[^"]*"'],

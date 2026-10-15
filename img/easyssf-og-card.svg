@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="easyssf – Shared Signals Framework support for Java and .NET">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="easyssf – Shared Signals Framework support for Java, .NET and Go">
 <defs><linearGradient id="og_bar" x1="0" x2="1"><stop offset="0" stop-color="#F6B04C"/><stop offset="1" stop-color="#E2552D"/></linearGradient></defs>
 <rect width="1200" height="630" fill="#FDF8F2"/>
 <rect width="1200" height="10" fill="url(#og_bar)"/>
@@ -6,7 +6,7 @@
 <g font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif">
 <text x="346" y="232" font-size="92" font-weight="700" fill="#221A16" letter-spacing="-2">easyssf</text>
 <text x="1104" y="232" font-size="26" font-weight="700" fill="#C9461C" text-anchor="end">easyssf.org</text>
-<text x="348" y="305" font-size="31" fill="#221A16">Shared Signals Framework support for Java and .NET</text>
-<text x="348" y="366" font-size="28" fill="#6B5D55">Spring Boot · Quarkus · plain Java · ASP.NET Core</text>
+<text x="348" y="305" font-size="29" fill="#221A16">Shared Signals Framework support for Java, .NET and Go</text>
+<text x="348" y="366" font-size="26" fill="#6B5D55">Spring Boot · Quarkus · plain Java · ASP.NET Core · Go</text>
 <text x="96" y="548" font-size="24" fill="#6B5D55">OpenID SSF 1.0 · CAEP · RISC · SCIM events · tested with the OpenID conformance suite</text>
 </g></svg>

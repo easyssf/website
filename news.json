@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-15-easyssf-go-0-6-0",
+    "date": "2026-10-15",
+    "title": "easyssf-go 0.6.0: the receiver, ported to Go",
+    "body": "<p><a href=\"https://github.com/easyssf/easyssf-go\">easyssf-go</a> is public and released: the easyssf receiver ported to Go, at feature parity with easyssf 0.6.0 for Java, whose version it follows. <code>go get github.com/easyssf/easyssf-go</code> brings the <code>receiver</code> package, with SET verification, push and poll delivery, stream management, de-duplication with a lease shared between instances, the typed CAEP, RISC and SCIM handlers, token revocation as a middleware and session termination; <code>ssf</code> with the vocabulary of SSF, CAEP, RISC and SCIM Events; <code>receiver/sqlstore</code> with the stores on <code>database/sql</code>, on the tables of the Java and .NET libraries; and <code>ssftest</code> with an in-process test transmitter. The push endpoint is an <code>http.Handler</code>, so it mounts on <code>net/http</code>, chi, gorilla/mux, gin and echo as it is. Go 1.25 or later, no cgo.</p><p>It passes the four SSF and CAEP receiver test plans of the OpenID conformance suite, with the harness in the repository, and its three examples run against the same Keycloak setup as the Java and .NET ones. Experimental, like the other ports: below 1.0 a release may break the API when the changelog says so. The <a href=\"index.html#start-go\">getting started guide</a> has the three steps; the <a href=\"https://github.com/easyssf/easyssf-go/blob/main/CHANGELOG.md\">changelog</a> and the <a href=\"https://github.com/easyssf/easyssf-go#readme\">README</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-12-easyssf-dotnet-0-6-0",
     "date": "2026-10-12",
     "title": "easyssf-dotnet 0.6.0 is on NuGet",
