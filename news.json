@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-16-easyssf-rust-0-6-0",
+    "date": "2026-10-16",
+    "title": "easyssf-rust 0.6.0: the receiver, ported to Rust",
+    "body": "<p><a href=\"https://github.com/easyssf/easyssf-rust\">easyssf-rust</a> is public and on <a href=\"https://crates.io/crates/easyssf-receiver\">crates.io</a>: the easyssf receiver ported to Rust, at feature parity with easyssf 0.6.0 for Java, .NET and Go, whose version it follows. Five crates: <code>easyssf-core</code> with the vocabulary of SSF, CAEP, RISC and SCIM Events; <code>easyssf-receiver</code> with SET verification, push and poll delivery, stream management, de-duplication with a lease shared between instances, the typed CAEP, RISC and SCIM handler traits, token revocation and session termination, without a web framework; <code>easyssf-receiver-axum</code> with the push router and the revocation layers for axum, and through tower for tonic, Loco and Leptos; <code>easyssf-receiver-actix-web</code> with the same for actix-web; and <code>easyssf-receiver-sqlx</code> with the stores on SQLite, PostgreSQL and MySQL, on the tables of the other ports. Rocket, Poem, Salvo and warp call <code>SsfPushHandler::handle</code> directly. Rust 1.94 or later, with the pure-Rust crypto backend of jsonwebtoken by default or aws-lc-rs.</p><p>The three examples, a resource server and an OIDC client on axum and a SCIM provisioning application, run against the same Keycloak setup as the Java, .NET and Go ones. The in-process test transmitter <code>easyssf-test</code> is in the repository and follows to crates.io; the OpenID conformance harness is the next step, the receiver is covered by the ported unit and integration tests so far. Experimental, like the other ports: below 1.0 a release may break the API when the changelog says so. The <a href=\"index.html#start-rust\">getting started guide</a> has the three steps; the <a href=\"https://github.com/easyssf/easyssf-rust/blob/main/CHANGELOG.md\">changelog</a> and the <a href=\"https://github.com/easyssf/easyssf-rust#readme\">README</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-15-easyssf-go-0-6-0",
     "date": "2026-10-15",
     "title": "easyssf-go 0.6.0: the receiver, ported to Go",

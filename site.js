@@ -77,6 +77,21 @@
       ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
       ['n', '\\b\\d[\\d_]*\\b']
     ],
+    rust: [
+      ['c', '\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/'],
+      ['s', 'b?"(?:[^"\\\\\\n]|\\\\.)*"'],
+      ['a', '#!?\\[[^\\]]*\\]|\\b[a-z_]\\w*!(?=\\()'],
+      ['k', '\\b(?:as|async|await|break|const|continue|crate|dyn|else|enum|extern|false|fn|for|if|impl|in|let|loop|match|mod|move|mut|pub|ref|return|self|Self|static|struct|super|trait|true|type|unsafe|use|where|while|str|bool|u8|u32|u64|usize|i32|i64)\\b'],
+      ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
+      ['n', '\\b\\d[\\d_]*(?:u8|u32|u64|usize|i32|i64|f32|f64)?\\b']
+    ],
+    toml: [
+      ['c', '#[^\\n]*'],
+      ['s', '"(?:[^"\\\\\\n]|\\\\.)*"'],
+      ['a', '^\\s*\\[[^\\]]*\\]'],
+      ['k', '\\b(?:true|false)\\b'],
+      ['n', '\\b\\d[\\d_.]*\\b']
+    ],
     xml: [
       ['c', '<!--[\\s\\S]*?-->'],
       ['s', '"[^"]*"'],

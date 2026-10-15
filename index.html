@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>easyssf · Shared Signals Framework support for Java, .NET and Go</title>
-<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET and Go applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration and a net/http handler: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
+<title>easyssf · Shared Signals Framework support for Java, .NET, Go and Rust</title>
+<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go and Rust applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler and axum and actix-web crates: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://easyssf.org/">
@@ -13,18 +13,18 @@
 <meta name="theme-color" content="#fdf8f1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
-<meta property="og:title" content="easyssf · Shared Signals Framework support for Java, .NET and Go">
-<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET or Go application, Spring Boot, Quarkus, ASP.NET Core and net/http included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
+<meta property="og:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go and Rust">
+<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go or Rust application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum and actix-web included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://easyssf.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, .NET and Go, as a Spring Boot starter, a Quarkus extension, a plain Java library, an ASP.NET Core integration and a Go module">
+<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, .NET, Go and Rust, as a Spring Boot starter, a Quarkus extension, a plain Java library, an ASP.NET Core integration, a Go module and Rust crates">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java, .NET and Go">
-<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET or Go application, Spring Boot, Quarkus, ASP.NET Core and net/http included, tested with the OpenID conformance suite.">
+<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go and Rust">
+<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go or Rust application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum and actix-web included, tested with the OpenID conformance suite.">
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="stylesheet" href="site.css">
@@ -38,7 +38,7 @@
       "@id": "https://easyssf.org/#website",
       "url": "https://easyssf.org/",
       "name": "easyssf",
-      "description": "Shared Signals Framework support for Java, .NET and Go",
+      "description": "Shared Signals Framework support for Java, .NET, Go and Rust",
       "inLanguage": "en"
     },
     {
@@ -50,8 +50,8 @@
       "programmingLanguage": "Java",
       "runtimePlatform": ["Java 21", "Spring Boot 4.1", "Quarkus 3.27"],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
-      "description": "A library that adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET and Go applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration and a net/http handler: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
-      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", ".NET", "Go", "Keycloak"],
+      "description": "A library that adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go and Rust applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler and axum and actix-web crates: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
+      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", ".NET", "Go", "Rust", "Keycloak"],
       "about": [
         {"@type": "Thing", "name": "OpenID Shared Signals Framework 1.0", "url": "https://openid.net/specs/openid-sharedsignals-framework-1_0.html"},
         {"@type": "Thing", "name": "OpenID CAEP 1.0", "url": "https://openid.net/specs/openid-caep-1_0.html"},
@@ -92,22 +92,25 @@
 
 <div class="hero wrap">
 <div class="hero-text">
-  <h1>Shared Signals Framework<br>support for Java, .NET and Go</h1>
+  <h1>Shared Signals Framework<br>support for Java, .NET, Go and Rust</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
-    Shared Signals Framework</a> receiver to your Java, .NET or Go application, so that it reacts when your identity
+    Shared Signals Framework</a> receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
     provider revokes a session, changes a credential, or signals a risk. The receiver verifies security events,
     CAEP events about sessions and credentials, RISC events about accounts, and SCIM Events about your users;
     rejects the access tokens and ends the affected sessions; and hands everything else to your code. Spring Boot
     and Quarkus get a starter and an extension; other JVM applications use the receiver library directly; ASP.NET
-    Core applications use the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>; and Go
-    applications the port <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a>, on <code>net/http</code>.</p>
+    Core applications use the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>; Go
+    applications the port <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a>, on <code>net/http</code>; and
+    Rust applications the crates of <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a>, for axum and
+    actix-web.</p>
   <div class="badges">
-    <span class="badge">0.6.0 for Java, .NET and Go</span>
+    <span class="badge">0.6.0 for Java, .NET, Go and Rust</span>
     <span class="badge">Java 21+</span>
     <span class="badge">Spring Boot 4.1</span>
     <span class="badge">Quarkus 3.27</span>
     <span class="badge">.NET 10</span>
     <span class="badge">Go 1.25+</span>
+    <span class="badge">Rust 1.94+</span>
     <span class="badge">Apache License 2.0</span>
     <span class="badge">OpenID conformance suite tested</span>
   </div>
@@ -466,10 +469,11 @@
     <p class="muted" style="max-width:70ch">easyssf comes with a starter for Spring Boot and, through the Quarkiverse extension
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
       Both are built on the same receiver library, which other JVM applications use on their own; all three
-      verify, de-duplicate and dispatch events the same way. Two ports bring the same receiver to other platforms:
-      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> to ASP.NET Core applications and
+      verify, de-duplicate and dispatch events the same way. Three ports bring the same receiver to other platforms:
+      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> to ASP.NET Core applications,
       <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a> to Go applications on <code>net/http</code>
-      and the frameworks built on it.</p>
+      and the frameworks built on it, and <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a> to
+      Rust applications on axum or actix-web.</p>
 
     <div class="switch" role="tablist" aria-label="Framework">
       <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
@@ -477,6 +481,7 @@
       <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
       <button type="button" role="tab" id="tab-dotnet" aria-controls="start-dotnet" aria-selected="false" tabindex="-1">.NET</button>
       <button type="button" role="tab" id="tab-go" aria-controls="start-go" aria-selected="false" tabindex="-1">Go</button>
+      <button type="button" role="tab" id="tab-rust" aria-controls="start-rust" aria-selected="false" tabindex="-1">Rust</button>
     </div>
 
     <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
@@ -825,6 +830,84 @@ func (stepUp) OnAssuranceLevelChange(ctx context.Context, event *caep.Event, set
     </ul>
     </div>
 
+    <div id="start-rust" class="framework" role="tabpanel" aria-labelledby="tab-rust" hidden>
+    <p class="muted">Three steps for a Rust application on axum, with
+      <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a>, the port of the receiver to Rust: feature
+      complete relative to the Java library, with the same database tables and Keycloak setup, released under the
+      version of the Java library it matches. actix-web has a crate of its own, other frameworks call the push
+      handler directly.</p>
+    <div class="two steps">
+      <div class="step">
+        <h3 id="rust-add-the-crates">Add the crates</h3>
+<pre><code class="language-toml">[dependencies]
+easyssf-receiver = "0.6.0"
+easyssf-receiver-axum = "0.6.0"</code></pre>
+        <p class="muted">From <a href="https://crates.io/crates/easyssf-receiver">crates.io</a>: <code>easyssf-receiver</code>
+          is the receiver without a web framework, <code>easyssf-receiver-axum</code> the push router and the
+          revocation layers for axum, or <code>easyssf-receiver-actix-web</code> for actix-web; add
+          <code>easyssf-receiver-sqlx</code> for database-backed stores. Rust 1.94 or later.</p>
+      </div>
+      <div class="step">
+        <h3 id="rust-name-the-transmitter">Name the transmitter</h3>
+<pre><code class="language-toml">[easyssf.receiver]
+transmitter-issuer = "https://idp.example/realms/demo"
+expected-audience = "https://my-app.example"
+[easyssf.receiver.push]
+expected-auth-header = "Bearer s3cr3t"</code></pre>
+        <p class="muted">The keys of the Spring Boot starter, deserialized with serde into <code>SsfReceiverConfig</code>
+          from TOML, YAML, JSON or the environment through figment, config-rs or the crate of your choice, and
+          validated when the receiver is built. The audience is required, unless the application creates or looks up
+          its stream, which tells it.</p>
+      </div>
+    </div>
+    <div class="step" style="margin-top:20px">
+      <h3 id="rust-create-the-stream">Create the stream</h3>
+      <p class="muted">Create a stream with push delivery at the transmitter that points to
+        <code>https://my-app.example/ssf/push</code> and sends the configured header, or set
+        <code>management = "receiver"</code> under <code>[easyssf.receiver.stream]</code> and let the application
+        create it. <code>SsfRevocationLayer</code> then rejects the access tokens of revoked sessions and users behind
+        your token validation, and <code>SsfSessionRevocationLayer</code> signs revoked tower-sessions out on their next
+        request.</p>
+    </div>
+
+    <h3 id="rust-react-to-any-event" style="margin-top:28px">React to any event</h3>
+<pre><code class="language-rust">use easyssf_receiver::{BoxError, SsfReceiver, caep::{SsfCaepEventHandler, caep}, event::SsfEventContext};
+use easyssf_receiver_axum::push_router_for;
+
+let config: SsfReceiverConfig = figment.extract_inner("easyssf.receiver")?;
+let receiver = SsfReceiver::builder(config)       // validates the configuration
+    .handler(caep(StepUp))                        // any SsfEventHandler; caep, risc and scim dispatch by type
+    .build()?;
+receiver.start();                                 // registers the stream, starts polling
+let app = Router::new().merge(push_router_for(&amp;receiver)); // POST /ssf/push: the SET authenticates itself
+
+struct StepUp;
+
+impl SsfCaepEventHandler for StepUp {
+    async fn on_assurance_level_change(&amp;self, event: SsfCaepEvent, context: SsfEventContext) -> Result&lt;(), BoxError&gt; {
+        if event.change_direction().as_deref() == Some("decrease") {
+            step_up.require(context.subject().subject(), event.current_level()).await?;
+        }
+        Ok(())
+    }
+}</code></pre>
+    <p class="muted" style="margin-top:12px"><code>SsfCaepEventHandler</code>, <code>SsfRiscEventHandler</code> and
+      <code>SsfScimEventHandler</code> hand each event of a SET to a method per event type, with its claims typed;
+      <code>for_event</code> takes a closure for one event type, and an <code>SsfEventHandler</code> gets every verified
+      SET as it is. Handlers run before the SET is acknowledged. If one returns an error, the transmitter is
+      expected to deliver the SET again, so a SET is handled at least once and
+      <code>context.idempotency_key()</code> is the key for a handler's side effects.</p>
+
+    <h3 id="rust-example-applications" style="margin-top:28px">Example applications</h3>
+    <p class="muted">Complete axum applications with a Keycloak setup, in the
+      <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/">examples of easyssf-rust</a>:</p>
+    <ul class="examples">
+      <li><a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-resource-server">OAuth2 resource server</a>: rejects the access tokens of revoked sessions, pushed or polled, with Prometheus metrics.</li>
+      <li><a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-oidc-client">OIDC relying party</a>: ends the tower-sessions session Keycloak revoked, or whose password changed.</li>
+      <li><a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-scim-provisioning">SCIM provisioning</a>: mirrors SCIM users into a local directory from SCIM Events.</li>
+    </ul>
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3 id="subjects-as-the-spec-defines-them">Subjects as the spec defines them</h3>
@@ -861,7 +944,7 @@ func (stepUp) OnAssuranceLevelChange(ctx context.Context, event *caep.Event, set
   <div class="wrap">
     <h2>Modules</h2>
     <p class="muted">Everything is published under the group id <code>org.easyssf</code>. The Quarkus extension is a
-      Quarkiverse project with its own coordinates; the .NET and Go ports have repositories of their own.</p>
+      Quarkiverse project with its own coordinates; the .NET, Go and Rust ports have repositories of their own.</p>
     <div class="table-wrap">
     <table>
       <thead><tr><th>Module</th><th>What it is</th><th>Depends on</th></tr></thead>
@@ -877,6 +960,7 @@ func (stepUp) OnAssuranceLevelChange(ctx context.Context, event *caep.Event, set
         <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
         <tr><td><a href="https://github.com/easyssf/easyssf-dotnet"><code>easyssf-dotnet</code></a></td><td>The receiver for .NET 10, a port of the library with the same tests, tables and Keycloak setup: <code>EasySsf.Core</code>, <code>EasySsf.Receiver</code>, <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application, <code>EasySsf.Receiver.AspNetCore</code> with the push endpoint and the JwtBearer and cookie revocation hooks, <code>EasySsf.Receiver.Data</code> with the stores on ADO.NET, and <code>EasySsf.Testing</code> for the tests of your receiver; on NuGet under the version of the Java library.</td><td>Microsoft.IdentityModel.JsonWebTokens, Microsoft.Extensions.*</td></tr>
         <tr><td><a href="https://github.com/easyssf/easyssf-go"><code>easyssf-go</code></a></td><td>The receiver for Go 1.25, a port of the library with the same tests, tables and Keycloak setup, as the module <code>github.com/easyssf/easyssf-go</code>: <code>ssf</code> with the vocabulary and the typed CAEP, RISC and SCIM events, <code>receiver</code> with the push handler on <code>net/http</code>, the poller, stream management and the revocation middleware, <code>receiver/sqlstore</code> with the stores on <code>database/sql</code>, and <code>ssftest</code> for the tests of your receiver; versioned with the Java library.</td><td>go-jose, the standard library</td></tr>
+        <tr><td><a href="https://github.com/easyssf/easyssf-rust"><code>easyssf-rust</code></a></td><td>The receiver for Rust 1.94, a port of the library with the same tables and Keycloak setup, on crates.io under the version of the Java library: <code>easyssf-core</code> with the vocabulary and the typed CAEP, RISC and SCIM events, <code>easyssf-receiver</code> with verification, push and poll, stream management, the handler traits and revocation, <code>easyssf-receiver-axum</code> and <code>easyssf-receiver-actix-web</code> with the push endpoint and the revocation layers of the two frameworks, and <code>easyssf-receiver-sqlx</code> with the stores on SQLite, PostgreSQL and MySQL; <code>easyssf-test</code>, the test transmitter, in the repository.</td><td>jsonwebtoken, serde, tokio, reqwest</td></tr>
       </tbody>
     </table>
     </div>
