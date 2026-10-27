@@ -1,39 +1,68 @@
-// The framework switch of the getting started section: one tab per framework, the panels are
-// the elements the tabs point to with aria-controls. The choice is kept in localStorage and a
-// panel can be linked to directly (index.html#start-quarkus), as can a heading inside one
-// (index.html#quarkus-example-applications): the link selects the tab.
+// The framework switch of the getting started section: a tablist per level, the platform and,
+// for Java, the framework. The panels are the elements the tabs point to with aria-controls; a
+// tablist inside a panel belongs to that panel. The choice is kept in localStorage and a panel
+// can be linked to directly (index.html#start-quarkus), as can a heading inside one
+// (index.html#quarkus-example-applications): the link selects the tab, and the tabs around it.
 (function () {
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.switch [role="tab"]'));
-  if (tabs.length === 0) { return; }
+  var lists = Array.prototype.slice.call(document.querySelectorAll('.switch[role="tablist"]'));
+  if (lists.length === 0) { return; }
   var key = 'easyssf.framework';
 
+  function tabsOf(list) { return Array.prototype.slice.call(list.querySelectorAll('[role="tab"]')); }
   function panelOf(tab) { return document.getElementById(tab.getAttribute('aria-controls')); }
+  function selectedTab(list) { return list.querySelector('[role="tab"][aria-selected="true"]'); }
 
-  function select(tab, focus) {
-    tabs.forEach(function (other) {
+  var tabs = lists.reduce(function (all, list) { return all.concat(tabsOf(list)); }, []);
+  function byPanelId(id) {
+    return tabs.filter(function (tab) { return tab.getAttribute('aria-controls') === id; })[0];
+  }
+
+  // the tab of the panel a tablist sits in, if any
+  function parentTab(list) {
+    var panel = list.closest('[role="tabpanel"]');
+    return panel ? byPanelId(panel.id) : null;
+  }
+
+  function selectInList(tab) {
+    tabsOf(tab.closest('[role="tablist"]')).forEach(function (other) {
       var selected = other === tab;
       other.setAttribute('aria-selected', selected ? 'true' : 'false');
       other.tabIndex = selected ? 0 : -1;
       var panel = panelOf(other);
       if (panel) { panel.hidden = !selected; }
     });
+  }
+
+  // the innermost panel shown: the panel of the tab, then of the selected tab of any tablist in it
+  function deepestPanel(tab) {
+    var panel = panelOf(tab);
+    for (;;) {
+      var inner = panel && panel.querySelector('.switch[role="tablist"]');
+      var innerTab = inner && selectedTab(inner);
+      if (!innerTab) { return panel; }
+      panel = panelOf(innerTab);
+    }
+  }
+
+  // selects the tab, and the tabs of the tablists it is nested in
+  function select(tab, focus) {
+    for (var t = tab; t; t = parentTab(t.closest('[role="tablist"]'))) { selectInList(t); }
     if (focus) { tab.focus(); }
-    try { localStorage.setItem(key, panelOf(tab).id); } catch (e) { /* storage unavailable */ }
+    try { localStorage.setItem(key, deepestPanel(tab).id); } catch (e) { /* storage unavailable */ }
   }
 
-  function byPanelId(id) {
-    return tabs.filter(function (tab) { return tab.getAttribute('aria-controls') === id; })[0];
-  }
-
-  tabs.forEach(function (tab, index) {
-    tab.addEventListener('click', function () { select(tab, false); });
-    tab.addEventListener('keydown', function (event) {
-      var next;
-      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') { next = tabs[(index + 1) % tabs.length]; }
-      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') { next = tabs[(index - 1 + tabs.length) % tabs.length]; }
-      else if (event.key === 'Home') { next = tabs[0]; }
-      else if (event.key === 'End') { next = tabs[tabs.length - 1]; }
-      if (next) { event.preventDefault(); select(next, true); }
+  lists.forEach(function (list) {
+    var own = tabsOf(list);
+    own.forEach(function (tab, index) {
+      tab.addEventListener('click', function () { select(tab, false); });
+      tab.addEventListener('keydown', function (event) {
+        var next;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') { next = own[(index + 1) % own.length]; }
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') { next = own[(index - 1 + own.length) % own.length]; }
+        else if (event.key === 'Home') { next = own[0]; }
+        else if (event.key === 'End') { next = own[own.length - 1]; }
+        if (next) { event.preventDefault(); select(next, true); }
+      });
     });
   });
 

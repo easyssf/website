@@ -94,7 +94,7 @@
 <div class="hero-text">
   <h1>Shared Signals Framework<br>support for Java, .NET, Go and Rust</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
-    Shared Signals Framework</a> receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
+    Shared Signals Framework</a> (SSF) receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
     provider revokes a session, changes a credential, or signals a risk.<br>
     The receiver verifies the incoming security events, CAEP events about sessions and credentials, RISC events about
     accounts, and SCIM Events about changes to your users, rejects the affected access tokens, ends the affected
@@ -108,7 +108,7 @@
     <span class="badge">Go 1.25+</span>
     <span class="badge">Rust 1.94+</span>
     <span class="badge">Apache License 2.0</span>
-    <span class="badge">OpenID conformance suite tested</span>
+    <a class="badge" href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-conformance-tests">OpenID conformance suite tested</a>
   </div>
   <div class="cta">
     <a class="btn primary" href="#start">Get started</a>
@@ -163,6 +163,49 @@
   </svg>
 </div>
 </div>
+
+<section id="why">
+  <div class="wrap">
+    <h2>Why a SSF receiver?</h2>
+    <p class="muted" style="max-width:70ch">Your identity provider knows the moment a user signs out everywhere, loses
+      a device, changes a password or trips a risk rule. Your application does not: its session and its access tokens
+      stay valid until they expire. A Shared Signals receiver closes that gap.</p>
+    <div class="grid why">
+      <div class="card">
+        <h3 id="without-a-receiver">Without a receiver</h3>
+        <p>You shorten token lifetimes, poll token introspection on every request, or write the Security Event Token
+          verification, replay protection and stream management yourself. OpenID back-channel logout covers logout
+          only, and a logout request that gets lost on the way stays lost: there is no retry and nothing to poll. It says
+          nothing about credentials, risk or provisioning either.</p>
+      </div>
+      <div class="card">
+        <h3 id="with-easyssf">With easyssf</h3>
+        <p>The receiver verifies the events and acts on them: it rejects the revoked tokens and ends the sessions in the
+          security layer of your framework, out of the box. The events it cannot act on alone, it hands to a handler of
+          yours. One library, one behaviour, on the JVM, .NET, Go and Rust. <a href="#start">Get started</a> with
+          the integration for your framework.</p>
+      </div>
+      <div class="card">
+        <h3 id="try-it-first">Try it before you commit</h3>
+        <p>The <a href="https://shared-signals.dev/playground/">shared-signals.dev playground</a> and
+          <a href="https://caep.dev">caep.dev</a> run public transmitters, so you can send yourself a CAEP event from the
+          browser without an identity provider. The <a href="#usecases">example applications</a> come with a Keycloak
+          setup for the full round trip.</p>
+      </div>
+    </div>
+    <!-- conference recording: a figure with the demo segment goes here once the URL and timestamp are known -->
+    <ul class="proof" aria-label="Where easyssf already runs">
+      <li><strong><a href="https://docs.quarkiverse.io/quarkus-openid-ssf/dev/index.html">Quarkiverse</a></strong>
+        the Quarkus integration is a community extension in the Quarkiverse, with its own docs and releases</li>
+      <li><strong><a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-conformance-tests">OpenID conformance suite</a></strong>
+        the SSF and CAEP receiver test plans, push and poll, run in the build</li>
+      <li><strong><a href="#keycloak">Keycloak 26.8</a></strong>
+        tested against Keycloak's SSF transmitter, with a ready-made realm in the examples</li>
+      <li><strong><a href="https://shared-signals.dev/implementations/">shared-signals.dev</a></strong>
+        listed in the independent directory of Shared Signals implementations</li>
+    </ul>
+  </div>
+</section>
 
 <section id="how">
   <div class="wrap">
@@ -293,7 +336,8 @@
   <div class="wrap">
     <h2>Use cases</h2>
     <p class="muted" style="max-width:70ch">What a receiver does with the events. The first three are the example applications,
-      each for Spring Boot and for Quarkus with a Keycloak setup to run against; the others are handlers of your own.</p>
+      each for Spring Boot, Quarkus, .NET, Go and Rust with a Keycloak setup to run against; the others are handlers
+      of your own.</p>
     <div class="grid usecases">
 
       <div class="card usecase">
@@ -324,7 +368,10 @@
           top of <code>quarkus-oidc</code> in Quarkus.</p>
         <p class="examples-links">Example:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-resource-server">Spring Boot</a> ·
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">Quarkus</a></p>
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">Quarkus</a> ·
+          <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ResourceServer">.NET</a> ·
+          <a href="https://github.com/easyssf/easyssf-go/tree/main/examples/resource-server">Go</a> ·
+          <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-resource-server">Rust</a></p>
       </div>
 
       <div class="card usecase">
@@ -355,7 +402,10 @@
           next request goes through the login again.</p>
         <p class="examples-links">Example:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-oidc-client">Spring Boot</a> ·
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-oidc-client">Quarkus</a></p>
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-oidc-client">Quarkus</a> ·
+          <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.OidcClient">.NET</a> ·
+          <a href="https://github.com/easyssf/easyssf-go/tree/main/examples/oidc-client">Go</a> ·
+          <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-oidc-client">Rust</a></p>
       </div>
 
       <div class="card usecase">
@@ -387,7 +437,10 @@
           transmitter, because Keycloak does not emit SCIM Events.</p>
         <p class="examples-links">Example:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-scim-provisioning">Spring Boot</a> ·
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-scim-provisioning">Quarkus</a></p>
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-scim-provisioning">Quarkus</a> ·
+          <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ScimProvisioning">.NET</a> ·
+          <a href="https://github.com/easyssf/easyssf-go/tree/main/examples/scim-provisioning">Go</a> ·
+          <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-scim-provisioning">Rust</a></p>
       </div>
 
       <div class="card usecase">
@@ -462,17 +515,22 @@
 <section id="start">
   <div class="wrap">
     <h2>Getting started</h2>
-    <p class="muted" style="max-width:70ch">Pick your framework below. Each tab shows the steps for one integration,
+    <p class="muted" style="max-width:70ch">Pick your platform below, and for Java the framework. Each tab shows the steps for one integration,
       from the Spring Boot starter to the Rust crates. Whichever you choose, it is the same receiver:
       it verifies, de-duplicates and dispatches events the same way on the JVM, .NET, Go and Rust.</p>
 
-    <div class="switch" role="tablist" aria-label="Framework">
-      <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
-      <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
-      <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
+    <div class="switch" role="tablist" aria-label="Platform">
+      <button type="button" role="tab" id="tab-java" aria-controls="start-java" aria-selected="true">Java</button>
       <button type="button" role="tab" id="tab-dotnet" aria-controls="start-dotnet" aria-selected="false" tabindex="-1">.NET</button>
       <button type="button" role="tab" id="tab-go" aria-controls="start-go" aria-selected="false" tabindex="-1">Go</button>
       <button type="button" role="tab" id="tab-rust" aria-controls="start-rust" aria-selected="false" tabindex="-1">Rust</button>
+    </div>
+
+    <div id="start-java" class="platform" role="tabpanel" aria-labelledby="tab-java">
+    <div class="switch sub" role="tablist" aria-label="Java framework">
+      <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
+      <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
+      <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
     </div>
 
     <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
@@ -672,6 +730,7 @@ poller.start();</code></pre>
     <p class="muted" style="margin-top:12px">There is no example application for plain Java yet; the
       <a href="https://github.com/easyssf/easyssf#readme">README</a> walks through the assembly, and the handlers of the
       Spring Boot and Quarkus examples are plain Java you can reuse.</p>
+    </div>
     </div>
 
     <div id="start-dotnet" class="framework" role="tabpanel" aria-labelledby="tab-dotnet" hidden>
