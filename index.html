@@ -95,14 +95,10 @@
   <h1>Shared Signals Framework<br>support for Java, .NET, Go and Rust</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
     Shared Signals Framework</a> receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
-    provider revokes a session, changes a credential, or signals a risk. The receiver verifies security events,
-    CAEP events about sessions and credentials, RISC events about accounts, and SCIM Events about your users;
-    rejects the access tokens and ends the affected sessions; and hands everything else to your code. Spring Boot
-    and Quarkus get a starter and an extension; other JVM applications use the receiver library directly; ASP.NET
-    Core applications use the port <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a>; Go
-    applications the port <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a>, on <code>net/http</code>; and
-    Rust applications the crates of <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a>, for axum and
-    actix-web.</p>
+    provider revokes a session, changes a credential, or signals a risk.<br>
+    The receiver verifies the incoming security events, CAEP events about sessions and credentials, RISC events about
+    accounts, and SCIM Events about changes to your users, rejects the affected access tokens, ends the affected
+    sessions, and hands everything else to your code.</p>
   <div class="badges">
     <span class="badge">0.6.0 for Java, .NET, Go and Rust</span>
     <span class="badge">Java 21+</span>
@@ -466,14 +462,9 @@
 <section id="start">
   <div class="wrap">
     <h2>Getting started</h2>
-    <p class="muted" style="max-width:70ch">easyssf comes with a starter for Spring Boot and, through the Quarkiverse extension
-      <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a>, as an extension for Quarkus.
-      Both are built on the same receiver library, which other JVM applications use on their own; all three
-      verify, de-duplicate and dispatch events the same way. Three ports bring the same receiver to other platforms:
-      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> to ASP.NET Core applications,
-      <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a> to Go applications on <code>net/http</code>
-      and the frameworks built on it, and <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a> to
-      Rust applications on axum or actix-web.</p>
+    <p class="muted" style="max-width:70ch">Pick your framework below. Each tab shows the steps for one integration,
+      from the Spring Boot starter to the Rust crates. Whichever you choose, it is the same receiver:
+      it verifies, de-duplicates and dispatches events the same way on the JVM, .NET, Go and Rust.</p>
 
     <div class="switch" role="tablist" aria-label="Framework">
       <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
