@@ -114,6 +114,8 @@ h2 { font-size: 1.6rem; margin-bottom: .75rem; }
 h3 { font-size: 1.05rem; margin-bottom: .35rem; }
 p { margin: 0 0 1rem; }
 .muted { color: var(--fg-muted); }
+/* intro paragraphs of sections: a readable measure, and no lone short word at the end of the last line */
+.intro { max-width: 80ch; text-wrap: pretty; }
 .wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; }
 /* wide screens: a wider column for the diagram, tables, code and the tools; prose keeps its measure
    through the max-width in ch of the paragraphs, and from 1800px the type grows a step */
@@ -200,7 +202,8 @@ nav.top { align-items: center; }
   .hero-art .ring:nth-child(3) { display: none; }
 }
 .hero h1 { font-size: clamp(2rem, 5vw, 3rem); max-width: 26ch; }
-.hero .lead { font-size: 1.2rem; max-width: 60ch; color: var(--fg-muted); margin-top: 18px; }
+.hero .lead { font-size: 1.2rem; max-width: 60ch; color: var(--fg-muted); margin-top: 18px; text-wrap: balance; }
+.hero .lead + .lead { margin-top: 12px; }
 .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .badge { font-size: .8rem; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--fg); border: 1px solid transparent; }
 a.badge:hover { text-decoration: none; border-color: var(--accent); }
@@ -277,6 +280,21 @@ section:first-of-type { border-top: 0; }
 .card p { margin: 0; color: var(--fg-muted); font-size: .95rem; }
 .card .rfc { display: inline-block; font-size: .75rem; color: var(--fg-muted); margin-left: 6px; font-weight: 400; }
 
+/* code: one card per repository */
+.grid.repos { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+@media (min-width: 1800px) { .grid.repos { grid-template-columns: repeat(5, 1fr); } }
+.card.repo { display: flex; flex-direction: column; gap: 8px; }
+.card.repo code { overflow-wrap: anywhere; }
+.card.repo .platform { font-size: .8rem; font-weight: 600; color: var(--fg-muted); }
+.card.repo h3 { margin: 0; }
+.card.repo h3 a { color: inherit; display: inline-flex; align-items: center; gap: 6px; }
+.card.repo h3 a:hover { color: var(--accent); text-decoration: none; }
+.card.repo h3 svg { width: 14px; height: 14px; flex: none; color: var(--fg-muted); }
+.card.repo h3 a:hover svg { color: var(--accent); }
+.card.repo .version { font-size: .85rem; }
+.card.repo .badges { margin-top: auto; padding-top: 6px; gap: 6px; }
+.card.repo .badge { font-size: .75rem; font-weight: 600; }
+
 .two { display: grid; gap: 20px; grid-template-columns: 1fr 1fr; margin-top: 20px; }
 @media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
 .step { counter-increment: step; }
@@ -295,6 +313,7 @@ th:nth-child(2), td:nth-child(2) { min-width: 34ch; }
 
 footer { border-top: 1px solid var(--line); padding-block: 32px; color: var(--fg-muted); font-size: .9rem; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
+footer .repos { flex-basis: 100%; }
 
 /* news */
 .news-list { display: grid; gap: 14px; margin-top: 20px; }
@@ -324,6 +343,10 @@ article.news .body pre { margin: 0 0 1rem; }
 .switch [role="tab"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .switch.sub { margin: 0 0 20px; padding: 3px; }
 .switch.sub [role="tab"] { padding: 5px 13px; font-size: .9rem; }
+.switch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 4px 0 20px; }
+.switch-row.sub { margin: 0 0 20px; }
+.switch-row .switch { margin: 0; }
+.switch-label { font-size: .9rem; font-weight: 600; color: var(--fg-muted); }
 .framework > .muted:first-child { margin-bottom: 0; }
 .framework .two { margin-top: 16px; }
 .examples { margin: 0; padding-left: 1.2rem; color: var(--fg-muted); font-size: .95rem; }

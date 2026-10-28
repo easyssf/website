@@ -92,21 +92,14 @@
 
 <div class="hero wrap">
 <div class="hero-text">
-  <h1>Shared Signals Framework<br>support for Java, .NET, Go and Rust</h1>
+  <h1>Shared Signals Framework<br>support for Java, .NET, Go&nbsp;and&nbsp;Rust</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
     Shared Signals Framework</a> (SSF) receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
-    provider revokes a session, changes a credential, or signals a risk.<br>
-    The receiver verifies the incoming security events, CAEP events about sessions and credentials, RISC events about
+    provider revokes a session, changes a credential, or signals a risk.</p>
+  <p class="lead">The receiver verifies the incoming security events, CAEP events about sessions and credentials, RISC events about
     accounts, and SCIM Events about changes to your users, rejects the affected access tokens, ends the affected
     sessions, and hands everything else to your code.</p>
   <div class="badges">
-    <span class="badge">0.6.0 for Java, .NET, Go and Rust</span>
-    <span class="badge">Java 21+</span>
-    <span class="badge">Spring Boot 4.1</span>
-    <span class="badge">Quarkus 3.27</span>
-    <span class="badge">.NET 10</span>
-    <span class="badge">Go 1.25+</span>
-    <span class="badge">Rust 1.94+</span>
     <span class="badge">Apache License 2.0</span>
     <a class="badge" href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-conformance-tests">OpenID conformance suite tested</a>
   </div>
@@ -167,7 +160,7 @@
 <section id="why">
   <div class="wrap">
     <h2>Why a SSF receiver?</h2>
-    <p class="muted" style="max-width:70ch">Your identity provider knows the moment a user signs out everywhere, loses
+    <p class="muted intro">Your identity provider knows the moment a user signs out everywhere, loses
       a device, changes a password or trips a risk rule. Your application does not: its session and its access tokens
       stay valid until they expire. A Shared Signals receiver closes that gap.</p>
     <div class="grid why">
@@ -210,7 +203,7 @@
 <section id="how">
   <div class="wrap">
     <h2>How it works</h2>
-    <p class="muted" style="max-width:70ch">A transmitter, usually your identity provider, delivers Security Event Tokens (SETs)
+    <p class="muted intro">A transmitter, usually your identity provider, delivers Security Event Tokens (SETs)
       to your application, either by pushing them to an endpoint or by letting the application poll for them.
       easyssf verifies each token, skips duplicates and routes the events to the integrations that act on them.</p>
 
@@ -335,7 +328,7 @@
 <section id="usecases">
   <div class="wrap">
     <h2>Use cases</h2>
-    <p class="muted" style="max-width:70ch">What a receiver does with the events. The first three are the example applications,
+    <p class="muted intro">What a receiver does with the events. The first three are the example applications,
       each for Spring Boot, Quarkus, .NET, Go and Rust with a Keycloak setup to run against; the others are handlers
       of your own.</p>
     <div class="grid usecases">
@@ -515,22 +508,28 @@
 <section id="start">
   <div class="wrap">
     <h2>Getting started</h2>
-    <p class="muted" style="max-width:70ch">Pick your platform below, and for Java the framework. Each tab shows the steps for one integration,
+    <p class="muted intro">Each tab shows the steps for one integration,
       from the Spring Boot starter to the Rust crates. Whichever you choose, it is the same receiver:
       it verifies, de-duplicates and dispatches events the same way on the JVM, .NET, Go and Rust.</p>
 
-    <div class="switch" role="tablist" aria-label="Platform">
+    <div class="switch-row">
+      <span class="switch-label" id="label-platform">Select your platform:</span>
+      <div class="switch" role="tablist" aria-labelledby="label-platform">
       <button type="button" role="tab" id="tab-java" aria-controls="start-java" aria-selected="true">Java</button>
       <button type="button" role="tab" id="tab-dotnet" aria-controls="start-dotnet" aria-selected="false" tabindex="-1">.NET</button>
       <button type="button" role="tab" id="tab-go" aria-controls="start-go" aria-selected="false" tabindex="-1">Go</button>
       <button type="button" role="tab" id="tab-rust" aria-controls="start-rust" aria-selected="false" tabindex="-1">Rust</button>
+      </div>
     </div>
 
     <div id="start-java" class="platform" role="tabpanel" aria-labelledby="tab-java">
-    <div class="switch sub" role="tablist" aria-label="Java framework">
+    <div class="switch-row sub">
+      <span class="switch-label" id="label-java-integration">Pick your integration:</span>
+      <div class="switch sub" role="tablist" aria-labelledby="label-java-integration">
       <button type="button" role="tab" id="tab-spring-boot" aria-controls="start-spring-boot" aria-selected="true">Spring Boot</button>
       <button type="button" role="tab" id="tab-quarkus" aria-controls="start-quarkus" aria-selected="false" tabindex="-1">Quarkus</button>
       <button type="button" role="tab" id="tab-plain" aria-controls="start-plain" aria-selected="false" tabindex="-1">Plain Java</button>
+      </div>
     </div>
 
     <div id="start-spring-boot" class="framework" role="tabpanel" aria-labelledby="tab-spring-boot">
@@ -981,38 +980,76 @@ impl SsfCaepEventHandler for StepUp {
       </div>
     </div>
 
-    <div class="note">easyssf is pre-1.0 and its API may still change. The modules are on
-      <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a> and the source on
-      <a href="https://github.com/easyssf/easyssf">GitHub</a>. See the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
+    <div class="note">easyssf is pre-1.0 and its API may still change. The Java modules are on
+      <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, the .NET packages on
+      <a href="https://www.nuget.org/profiles/easyssf">NuGet</a>, the Go module at
+      <a href="https://pkg.go.dev/github.com/easyssf/easyssf-go">pkg.go.dev</a>, the Rust crates on
+      <a href="https://crates.io/crates/easyssf-receiver">crates.io</a> and the source on
+      <a href="https://github.com/easyssf">GitHub</a>. See the <a href="https://github.com/easyssf/easyssf#readme">README</a> for the
       complete configuration reference of the Spring Boot starter, and the
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf#readme">README of quarkus-openid-ssf</a> for the one
       of the Quarkus extension.</div>
   </div>
 </section>
 
-<section id="modules">
+<section id="code">
   <div class="wrap">
-    <h2>Modules</h2>
-    <p class="muted">Everything is published under the group id <code>org.easyssf</code>. The Quarkus extension is a
-      Quarkiverse project with its own coordinates; the .NET, Go and Rust ports have repositories of their own.</p>
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Module</th><th>What it is</th><th>Depends on</th></tr></thead>
-      <tbody>
-        <tr><td><code>easyssf-core</code></td><td>The data structures of SSF shared by receivers and, later, transmitters: SETs, subjects, event types, stream configuration, transmitter metadata, and the typed SCIM Events of RFC 9967.</td><td>nothing</td></tr>
-        <tr><td><code>easyssf-receiver</code></td><td>The receiver, independent of any framework: SET verification, de-duplication, event handlers, push handling, polling, stream management, token revocation and session termination logic.</td><td>easyssf-core, Nimbus JOSE + JWT, SLF4J</td></tr>
-        <tr><td><code>easyssf-receiver-jdbc</code></td><td>The database-backed stores of the receiver, processed SETs, pending poll acknowledgements and revocations, independent of any framework: the SQL, the schema with its migration scripts and a small execution interface implemented over a <code>DataSource</code> or a framework's template.</td><td>easyssf-receiver</td></tr>
-        <tr><td><code>easyssf-receiver-spring-boot-starter</code></td><td>The receiver for Spring Boot 4.1 with Spring Security 7.1 on the servlet stack: configuration properties, auto-configuration, push endpoint, resource server and OIDC client integration.</td><td>easyssf-receiver, Spring Boot</td></tr>
-        <tr><td><code>easyssf-test</code></td><td>Test support: a transmitter on a loopback port that signs and delivers SETs, serves metadata and keys and emulates the stream and poll endpoints, for the tests of your receiver.</td><td>easyssf-core, Nimbus JOSE + JWT</td></tr>
-        <tr><td><code>easyssf-receiver-spring-boot-examples</code></td><td>An example resource server and OIDC client with a Keycloak setup, and a SCIM provisioning example that mirrors users from SCIM Events.</td><td></td></tr>
-        <tr><td><code>easyssf-test-conformance</code></td><td>Runs the OpenID conformance suite's SSF receiver test plans against a receiver under test, in any framework: the suite via Testcontainers, the scenarios the receiver plays, and the plan tests to extend.</td><td>easyssf-receiver, Testcontainers, JUnit</td></tr>
-        <tr><td><code>easyssf-receiver-spring-boot-conformance-tests</code></td><td>The Spring Boot receiver under test and the four plan tests for it.</td><td></td></tr>
-        <tr><td><a href="https://github.com/quarkiverse/quarkus-openid-ssf"><code>quarkus-openid-ssf-receiver</code></a></td><td>The receiver for Quarkus 3.27, group id <code>io.quarkiverse.openid-ssf</code>: configuration, CDI wiring, the Vert.x push route, the poll scheduler, token providers, Micrometer, SmallRye Health, JDBC, Dev UI and native image support. Its examples and conformance tests live in the same repository.</td><td>easyssf-receiver, easyssf-receiver-jdbc, Quarkus</td></tr>
-        <tr><td><a href="https://github.com/easyssf/easyssf-dotnet"><code>easyssf-dotnet</code></a></td><td>The receiver for .NET 10, a port of the library with the same tests, tables and Keycloak setup: <code>EasySsf.Core</code>, <code>EasySsf.Receiver</code>, <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application, <code>EasySsf.Receiver.AspNetCore</code> with the push endpoint and the JwtBearer and cookie revocation hooks, <code>EasySsf.Receiver.Data</code> with the stores on ADO.NET, and <code>EasySsf.Testing</code> for the tests of your receiver; on NuGet under the version of the Java library.</td><td>Microsoft.IdentityModel.JsonWebTokens, Microsoft.Extensions.*</td></tr>
-        <tr><td><a href="https://github.com/easyssf/easyssf-go"><code>easyssf-go</code></a></td><td>The receiver for Go 1.25, a port of the library with the same tests, tables and Keycloak setup, as the module <code>github.com/easyssf/easyssf-go</code>: <code>ssf</code> with the vocabulary and the typed CAEP, RISC and SCIM events, <code>receiver</code> with the push handler on <code>net/http</code>, the poller, stream management and the revocation middleware, <code>receiver/sqlstore</code> with the stores on <code>database/sql</code>, and <code>ssftest</code> for the tests of your receiver; versioned with the Java library.</td><td>go-jose, the standard library</td></tr>
-        <tr><td><a href="https://github.com/easyssf/easyssf-rust"><code>easyssf-rust</code></a></td><td>The receiver for Rust 1.94, a port of the library with the same tables and Keycloak setup, on crates.io under the version of the Java library: <code>easyssf-core</code> with the vocabulary and the typed CAEP, RISC and SCIM events, <code>easyssf-receiver</code> with verification, push and poll, stream management, the handler traits and revocation, <code>easyssf-receiver-axum</code> and <code>easyssf-receiver-actix-web</code> with the push endpoint and the revocation layers of the two frameworks, and <code>easyssf-receiver-sqlx</code> with the stores on SQLite, PostgreSQL and MySQL; <code>easyssf-test</code>, the test transmitter, in the repository.</td><td>jsonwebtoken, serde, tokio, reqwest</td></tr>
-      </tbody>
-    </table>
+    <h2>Code</h2>
+    <p class="muted intro">One receiver in five repositories on GitHub, each with its examples, Keycloak setup and tests. The&nbsp;.NET, Go
+      and Rust ports are released under the version of the Java library; the Quarkus extension, a Quarkiverse project,
+      has releases of its own.</p>
+    <div class="grid repos">
+      <div class="card repo">
+        <span class="platform">Java</span>
+        <h3 id="repo-easyssf"><a href="https://github.com/easyssf/easyssf">easyssf <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.6.0</p>
+        <p>The Java library: the receiver, the Spring Boot starter, the JDBC stores and the test transmitter.
+          On Maven Central under <code>org.easyssf</code>.</p>
+        <div class="badges">
+          <span class="badge">Spring Boot 4.1</span>
+          <span class="badge">Java 21+</span>
+        </div>
+      </div>
+      <div class="card repo">
+        <span class="platform">Java</span>
+        <h3 id="repo-quarkus-openid-ssf"><a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.6.0</p>
+        <p>The Quarkus extension is based on the easyssf Java library, with Dev UI and native image support. On Maven Central under
+          <code>io.quarkiverse.openid-ssf</code>.</p>
+        <div class="badges">
+          <span class="badge">Quarkus 3.27</span>
+        </div>
+      </div>
+      <div class="card repo">
+        <span class="platform">.NET</span>
+        <h3 id="repo-easyssf-dotnet"><a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.6.0</p>
+        <p>The port for .NET 10: hosting, the ASP.NET Core integration, the ADO.NET stores and test support.
+          On NuGet.</p>
+        <div class="badges">
+          <span class="badge">.NET 10</span>
+        </div>
+      </div>
+      <div class="card repo">
+        <span class="platform">Go</span>
+        <h3 id="repo-easyssf-go"><a href="https://github.com/easyssf/easyssf-go">easyssf-go <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.6.0</p>
+        <p>The port for Go 1.26: the receiver on <code>net/http</code>, the stores on <code>database/sql</code> and
+          the test transmitter, in one module.</p>
+        <div class="badges">
+          <span class="badge">Go 1.26+</span>
+        </div>
+      </div>
+      <div class="card repo">
+        <span class="platform">Rust</span>
+        <h3 id="repo-easyssf-rust"><a href="https://github.com/easyssf/easyssf-rust">easyssf-rust <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.6.0</p>
+        <p>The port for Rust 1.94: the receiver, axum and actix-web, the sqlx stores and the test transmitter.
+          On crates.io.</p>
+        <div class="badges">
+          <span class="badge">Rust 1.94+</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1048,7 +1085,7 @@ impl SsfCaepEventHandler for StepUp {
 <section id="specs">
   <div class="wrap">
     <h2>Specifications</h2>
-    <p class="muted" style="max-width:70ch">What easyssf implements, and where each piece is defined.</p>
+    <p class="muted intro">What easyssf implements, and where each piece is defined.</p>
     <div class="table-wrap">
     <table class="specs">
       <thead><tr><th>Specification</th><th>Defines</th><th>In easyssf</th></tr></thead>
@@ -1129,6 +1166,13 @@ impl SsfCaepEventHandler for StepUp {
       <a href="https://github.com/easyssf/easyssf">GitHub</a> ·
       <a href="https://github.com/easyssf/easyssf/issues">Issues</a> ·
       <a href="https://github.com/easyssf/easyssf#readme">Documentation</a>
+    </span>
+    <span class="repos">Repositories:
+      <a href="https://github.com/easyssf/easyssf">easyssf</a> (Java) ·
+      <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a> (Quarkus) ·
+      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> (.NET) ·
+      <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a> (Go) ·
+      <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a> (Rust)
     </span>
   </div>
 </footer>

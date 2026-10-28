@@ -52,7 +52,7 @@
 <main id="top">
   <div class="wrap page-title">
     <h1>Tools</h1>
-    <p class="muted" style="max-width:70ch">Security Event Tokens to try a receiver with, or to show what a CAEP, RISC or SCIM
+    <p class="muted intro">Security Event Tokens to try a receiver with, or to show what a CAEP, RISC or SCIM
       event looks like.</p>
     <div class="note" style="max-width:70ch"><strong>Runs in your browser only.</strong> This page is static: the tokens are built and
       signed by the JavaScript of the page, and nothing you enter, no claim, subject or token, is sent to any server. The
@@ -69,7 +69,7 @@
   <section id="generator" class="tool-panel" role="tabpanel">
     <div class="wrap">
       <h2>Security Event Token generator</h2>
-      <p class="muted" style="max-width:70ch">Pick an event type and get a complete example right away, as the SET's JSON and signed as a JWT with
+      <p class="muted intro">Pick an event type and get a complete example right away, as the SET's JSON and signed as a JWT with
         a key generated in your browser; then change the subject, the claims and the token as you need. The event types
         and their claims follow <a href="https://openid.net/specs/openid-caep-1_0.html">CAEP 1.0</a>,
         <a href="https://openid.net/specs/openid-risc-1_0.html">RISC 1.0</a>,
@@ -253,7 +253,7 @@
   <section id="inspector" class="tool-panel" role="tabpanel" hidden>
     <div class="wrap">
       <h2>Security Event Token inspector</h2>
-      <p class="muted" style="max-width:70ch">Paste a SET you received, or one from the generator, to read its header and claims.
+      <p class="muted intro">Paste a SET you received, or one from the generator, to read its header and claims.
         Event types are shown with their easyssf alias. The signature is not verified here.</p>
       <div class="tool">
         <div class="field" style="margin-top:0">
@@ -275,13 +275,13 @@
   <section id="events" class="tool-panel" role="tabpanel" hidden>
     <div class="wrap">
       <h2>Event types</h2>
-      <p class="muted" style="max-width:70ch">Every event type the specifications define and easyssf knows, with its claims. The
+      <p class="muted intro">Every event type the specifications define and easyssf knows, with its claims. The
         specifications identify event types by URI; easyssf accepts those URIs everywhere, and additionally the short alias
         shown with each event, usable in <code>events-requested</code>, in <code>SsfEventContext.hasEvent()</code> and wherever
         else an event type is named. The aliases are an easyssf convention, not part of the specifications; a SET always
         carries the URI. You can register your own aliases for vendor-specific types, see the
         <a href="https://github.com/easyssf/easyssf#readme">README</a>.</p>
-      <p class="muted" style="max-width:70ch">Each event can be linked to: <code>tools.html#event-CaepSessionRevoked</code> opens its
+      <p class="muted intro">Each event can be linked to: <code>tools.html#event-CaepSessionRevoked</code> opens its
         card here, <code>tools.html#generate=CaepSessionRevoked</code> opens it in the generator. Instead of the alias, the
         fragment can name the event by its URI, as <code>caep/session-revoked</code> or just <code>session-revoked</code>.</p>
       <div id="event-list"></div>
@@ -291,7 +291,7 @@
   <section id="metadata" class="tool-panel" role="tabpanel" hidden>
     <div class="wrap">
       <h2>Transmitter metadata checker</h2>
-      <p class="muted" style="max-width:70ch">Checks a transmitter's configuration metadata, the document at
+      <p class="muted intro">Checks a transmitter's configuration metadata, the document at
         <code>/.well-known/ssf-configuration</code>, against <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html#section-7">section 7 of SSF 1.0</a>:
         the required and recommended members, the URLs, the delivery methods and the authorization schemes, and what a
         receiver can do with the transmitter. Enter the issuer to fetch the document, or paste it.</p>
@@ -336,7 +336,7 @@
   <section id="more" class="tool-panel" role="tabpanel" hidden>
     <div class="wrap">
       <h2>Other tools</h2>
-      <p class="muted" style="max-width:70ch">The generator shows what a SET looks like; to see a receiver react, it needs a
+      <p class="muted intro">The generator shows what a SET looks like; to see a receiver react, it needs a
         transmitter whose keys it can fetch. These do that.</p>
       <div class="grid">
         <div class="card">
@@ -377,6 +377,13 @@ runs a public transmitter and receiver to test your own implementation against.<
       <a href="https://github.com/easyssf/easyssf">GitHub</a> ·
       <a href="https://github.com/easyssf/easyssf/issues">Issues</a> ·
       <a href="https://github.com/easyssf/easyssf#readme">Documentation</a>
+    </span>
+    <span class="repos">Repositories:
+      <a href="https://github.com/easyssf/easyssf">easyssf</a> (Java) ·
+      <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a> (Quarkus) ·
+      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> (.NET) ·
+      <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a> (Go) ·
+      <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a> (Rust)
     </span>
   </div>
 </footer>
