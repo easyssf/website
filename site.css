@@ -141,6 +141,7 @@ header.site .wrap { display: flex; align-items: center; justify-content: space-b
 nav.top { display: flex; gap: 20px; font-size: .95rem; }
 nav.top a { color: var(--fg-muted); white-space: nowrap; }
 nav.top a:hover { color: var(--fg); text-decoration: none; }
+nav.top a svg.gh { width: 14px; height: 14px; vertical-align: -2px; margin-left: 2px; }
 /* below 780px the links no longer fit next to the brand: the header wraps into two rows */
 @media (max-width: 780px) {
   header.site .wrap { height: auto; flex-wrap: wrap; padding-block: 10px; row-gap: 6px; }
@@ -262,22 +263,19 @@ section:first-of-type { border-top: 0; }
 .usecase text.small { fill: var(--fg-muted); font-size: 10.5px; }
 .usecase .arrow { fill: none; stroke: var(--fg-muted); stroke-width: 1.4; }
 .usecase .arrow.accent { stroke: var(--accent); }
-.usecase p { margin-bottom: 10px; }
-.usecase .examples-links { margin: 0; font-size: .9rem; }
+.usecase p code { white-space: nowrap; }
+.usecase { display: flex; flex-direction: column; }
+.usecase p.caption { margin: 0 0 4px; font-size: .75rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-muted); }
+.usecase p.examples-links { margin-top: auto; padding-top: 14px; font-size: .9rem; }
 
 /* why a receiver: the case for the library, and the places it already runs */
 .grid.why { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
-.proof { list-style: none; margin: 28px 0 0; padding: 20px 0 0; border-top: 1px solid var(--line); display: grid; gap: 14px 28px; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); font-size: .9rem; color: var(--fg-muted); }
-.proof li { margin: 0; }
-.proof strong { display: block; color: var(--fg); font-weight: 600; margin-bottom: 2px; }
-.proof strong a { color: inherit; text-decoration: none; }
-.proof strong a:hover { color: var(--accent); }
 
 /* grids and cards */
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 20px; }
 .grid > *, .two > * { min-width: 0; }
 .card { background: var(--bg-raised); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
-.card p { margin: 0; color: var(--fg-muted); font-size: .95rem; }
+.card p { margin: 0; color: var(--fg-muted); font-size: .95rem; text-wrap: pretty; }
 .card .rfc { display: inline-block; font-size: .75rem; color: var(--fg-muted); margin-left: 6px; font-weight: 400; }
 
 /* code: one card per repository */
@@ -313,7 +311,6 @@ th:nth-child(2), td:nth-child(2) { min-width: 34ch; }
 
 footer { border-top: 1px solid var(--line); padding-block: 32px; color: var(--fg-muted); font-size: .9rem; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; }
-footer .repos { flex-basis: 100%; }
 
 /* news */
 .news-list { display: grid; gap: 14px; margin-top: 20px; }

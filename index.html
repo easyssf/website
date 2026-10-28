@@ -78,7 +78,7 @@
       <a href="#specs" class="hide-sm">Specifications</a>
       <a href="tools.html">Tools</a>
       <a href="#news">News</a>
-      <a href="https://github.com/easyssf/easyssf">GitHub</a>
+      <a href="#code">Code <svg class="gh" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a>
       <button type="button" class="theme-toggle" data-theme-toggle aria-label="Theme: follows the system" title="Theme: follows the system">
         <svg class="icon-auto" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"/></svg>
         <svg class="icon-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.75" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 1.5v2.5M10 16v2.5M1.5 10H4M16 10h2.5M4 4l1.8 1.8M14.2 14.2 16 16M4 16l1.8-1.8M14.2 5.8 16 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -186,17 +186,6 @@
           setup for the full round trip.</p>
       </div>
     </div>
-    <!-- conference recording: a figure with the demo segment goes here once the URL and timestamp are known -->
-    <ul class="proof" aria-label="Where easyssf already runs">
-      <li><strong><a href="https://docs.quarkiverse.io/quarkus-openid-ssf/dev/index.html">Quarkiverse</a></strong>
-        the Quarkus integration is a community extension in the Quarkiverse, with its own docs and releases</li>
-      <li><strong><a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-conformance-tests">OpenID conformance suite</a></strong>
-        the SSF and CAEP receiver test plans, push and poll, run in the build</li>
-      <li><strong><a href="#keycloak">Keycloak 26.8</a></strong>
-        tested against Keycloak's SSF transmitter, with a ready-made realm in the examples</li>
-      <li><strong><a href="https://shared-signals.dev/implementations/">shared-signals.dev</a></strong>
-        listed in the independent directory of Shared Signals implementations</li>
-    </ul>
   </div>
 </section>
 
@@ -355,11 +344,12 @@
           <text class="small" x="176" y="146">request with</text>
           <text class="small" x="176" y="168">the old token</text>
         </svg>
+        <p class="caption">Description</p>
         <p>An OAuth2 resource server trusts an access token until it expires. With a CAEP <code>session-revoked</code>
           event the API learns that the session is over and rejects the tokens of that session, or all tokens of the
           user issued before the event, from the next request on. Built into the Spring Boot starter; a few lines on
           top of <code>quarkus-oidc</code> in Quarkus.</p>
-        <p class="examples-links">Example:
+        <p class="examples-links">Examples:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-resource-server">Spring Boot</a> ·
           <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">Quarkus</a> ·
           <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ResourceServer">.NET</a> ·
@@ -389,11 +379,12 @@
           <path class="arrow" marker-end="url(#arrowhead)" d="M126,154 L225,154"/>
           <text class="small" x="176" y="146">next request</text>
         </svg>
+        <p class="caption">Description</p>
         <p>An OpenID Connect relying party keeps its own session after the login. When the identity provider ends the
           session or the user changes a credential, <code>session-revoked</code> and <code>credential-change</code>
           events let the application find the local session by session id, subject or email and end it, so that the
           next request goes through the login again.</p>
-        <p class="examples-links">Example:
+        <p class="examples-links">Examples:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-oidc-client">Spring Boot</a> ·
           <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-oidc-client">Quarkus</a> ·
           <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.OidcClient">.NET</a> ·
@@ -424,11 +415,12 @@
           <text class="small" x="176" y="146">create, update,</text>
           <text class="small" x="176" y="168">deactivate users</text>
         </svg>
-        <p>A SCIM service provider reports the changes of its users as SCIM Events, RFC 9967, instead of being polled.
+        <p class="caption">Description</p>
+        <p>A SCIM service provider reports the changes of its users as SCIM Events, RFC&nbsp;9967, instead of being polled.
           The application mirrors them into its own directory with a handler per operation, and a deactivation or
           deletion also ends the user's sessions. The example runs without an identity provider, driven by the test
           transmitter, because Keycloak does not emit SCIM Events.</p>
-        <p class="examples-links">Example:
+        <p class="examples-links">Examples:
           <a href="https://github.com/easyssf/easyssf/tree/main/easyssf-receiver-spring-boot-examples/example-scim-provisioning">Spring Boot</a> ·
           <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-scim-provisioning">Quarkus</a> ·
           <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ScimProvisioning">.NET</a> ·
@@ -459,6 +451,7 @@
           <text class="small" x="176" y="146">lock, unlock,</text>
           <text class="small" x="176" y="168">delete</text>
         </svg>
+        <p class="caption">Description</p>
         <p>RISC events report what happened to the account itself at the identity provider. An
           <code>account-disabled</code> event, for a hijacked account say, is the moment to lock the local account and
           end its sessions; <code>account-enabled</code> lifts the lock; <code>account-purged</code> says the account
@@ -491,7 +484,8 @@
           <text class="small" x="176" y="146">alerts, revocation</text>
           <text class="small" x="176" y="168">requests</text>
         </svg>
-        <p>Not every receiver protects its own sessions; some watch. A <code>session-established</code> event reports a
+        <p class="caption">Description</p>
+        <p>Not every receiver protects its own sessions; some watch. A&nbsp;<code>session-established</code> event reports a
           login with the IP addresses, the user agent fingerprint and the authentication context, and
           <code>session-presented</code> that the session was used to sign in to another application. An endpoint or
           identity threat detection service, EDR or ITDR, consumes them to build a timeline per user, spot sign-ins from
@@ -1076,7 +1070,9 @@ impl SsfCaepEventHandler for StepUp {
       <div class="card">
         <h3 id="standards">Standards</h3>
         <p>Built on the OpenID Shared Signals specifications and the IETF security event RFCs, see
-          <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each.</p>
+          <a href="#specs">Specifications</a> for the complete list and what easyssf takes from each. easyssf is
+          listed in the <a href="https://shared-signals.dev/implementations/">shared-signals.dev directory</a> of
+          Shared Signals implementations.</p>
       </div>
     </div>
   </div>
@@ -1166,13 +1162,6 @@ impl SsfCaepEventHandler for StepUp {
       <a href="https://github.com/easyssf/easyssf">GitHub</a> ·
       <a href="https://github.com/easyssf/easyssf/issues">Issues</a> ·
       <a href="https://github.com/easyssf/easyssf#readme">Documentation</a>
-    </span>
-    <span class="repos">Repositories:
-      <a href="https://github.com/easyssf/easyssf">easyssf</a> (Java) ·
-      <a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf</a> (Quarkus) ·
-      <a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet</a> (.NET) ·
-      <a href="https://github.com/easyssf/easyssf-go">easyssf-go</a> (Go) ·
-      <a href="https://github.com/easyssf/easyssf-rust">easyssf-rust</a> (Rust)
     </span>
   </div>
 </footer>
