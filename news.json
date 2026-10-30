@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-10-30-release-0-7-0",
+    "date": "2026-10-30",
+    "title": "easyssf 0.7.0: a release of hardening",
+    "body": "<p>easyssf 0.7.0 is on Maven Central, <code>org.easyssf:easyssf-receiver-spring-boot-starter:0.7.0</code> and the other modules alongside. A host name that merely starts with <code>127.</code>, such as <code>127.attacker.example</code>, no longer passes for loopback and may no longer use plain <code>http</code> under the default URI policy: only <code>localhost</code> and names under it, <code>127.0.0.0/8</code> and <code>::1</code> count, the rule of the Go library. The poll endpoint is held to the same policy as the metadata endpoints before the access token goes to it, configured or taken from the stream configuration (<code>SsfPoller.setUriPolicy</code>), and the responses of the transmitter are bounded, 4 MiB by default (<code>easyssf.receiver.http.max-response-size</code>, <code>JdkSsfHttpClient.setMaxResponseSize</code>). <code>SsfStreamClient</code> checks the issuer of every stream configuration the transmitter returns, not only of a created one.</p><p>Fixed: stopping and starting a poller or a stream registrar again no longer leaves a polling thread or a stream behind, the <code>easyssf.receiver.poll.pending-acks</code> gauge no longer turns <code>NaN</code> after a garbage collection, and a SET a poll response lists under a key other than its <code>jti</code> is reported as <code>invalid_request</code> instead of being acknowledged under the wrong key. The nightly conformance tests run again on GitHub's current Ubuntu runners, with MongoDB 9.0.4. The <a href=\"https://github.com/easyssf/easyssf-java/releases/tag/v0.7.0\">release notes</a> have the details.</p>"
+  },
+  {
     "id": "2026-10-16-easyssf-rust-0-6-0",
     "date": "2026-10-16",
     "title": "easyssf-rust 0.6.0: the receiver, ported to Rust",
