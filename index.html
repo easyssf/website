@@ -599,12 +599,12 @@ class StepUpHandler extends SsfCaepEventHandler {
 <pre><code class="language-xml">&lt;dependency&gt;
     &lt;groupId&gt;io.quarkiverse.openid-ssf&lt;/groupId&gt;
     &lt;artifactId&gt;quarkus-openid-ssf-receiver&lt;/artifactId&gt;
-    &lt;version&gt;0.6.0&lt;/version&gt;
+    &lt;version&gt;0.7.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
         <p class="muted">Or <code>quarkus ext add io.quarkiverse.openid-ssf:quarkus-openid-ssf-receiver</code>.
           From <a href="https://central.sonatype.com/namespace/io.quarkiverse.openid-ssf">Maven Central</a>;
-          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.6.0">0.6.0</a> is built on
-          easyssf 0.6.0: poll delivery that survives restarts and runs on several instances, long polling, SCIM Events
+          <a href="https://github.com/quarkiverse/quarkus-openid-ssf/releases/tag/0.7.0">0.7.0</a> is built on
+          easyssf 0.7.0: poll delivery that survives restarts and runs on several instances, long polling, SCIM Events
           and the typed CAEP and RISC handlers, like the Spring Boot starter. The extension is versioned and released
           on its own; the versions coincide this time.</p>
       </div>
@@ -734,8 +734,8 @@ poller.start();</code></pre>
     <div class="two steps">
       <div class="step">
         <h3 id="dotnet-add-the-packages">Add the packages</h3>
-<pre><code class="language-xml">&lt;PackageReference Include=&quot;EasySsf.Receiver.Hosting&quot; Version=&quot;0.6.0&quot; /&gt;
-&lt;PackageReference Include=&quot;EasySsf.Receiver.AspNetCore&quot; Version=&quot;0.6.0&quot; /&gt;</code></pre>
+<pre><code class="language-xml">&lt;PackageReference Include=&quot;EasySsf.Receiver.Hosting&quot; Version=&quot;0.7.0&quot; /&gt;
+&lt;PackageReference Include=&quot;EasySsf.Receiver.AspNetCore&quot; Version=&quot;0.7.0&quot; /&gt;</code></pre>
         <p class="muted">From <a href="https://www.nuget.org/profiles/easyssf">NuGet</a>, where all packages are listed:
           <code>EasySsf.Receiver.Hosting</code> for any <code>Microsoft.Extensions.Hosting</code> application and
           <code>EasySsf.Receiver.AspNetCore</code> for the push endpoint and the revocation hooks; add
@@ -808,10 +808,10 @@ class StepUpHandler(IStepUp stepUp) : SsfCaepEventHandler
     <div class="two steps">
       <div class="step">
         <h3 id="go-add-the-module">Add the module</h3>
-<pre><code class="language-sh">go get github.com/easyssf/easyssf-go@v0.6.0</code></pre>
+<pre><code class="language-sh">go get github.com/easyssf/easyssf-go@v0.7.0</code></pre>
         <p class="muted">One module: <code>receiver</code> is the receiver, <code>ssf</code> the vocabulary of SETs, subjects
           and events, <code>receiver/sqlstore</code> the stores on <code>database/sql</code> for SQLite, PostgreSQL and
-          MySQL, and <code>ssftest</code> a transmitter for your tests. Go 1.25 or later, no cgo.</p>
+          MySQL, and <code>ssftest</code> a transmitter for your tests. Go 1.26 or later, no cgo.</p>
       </div>
       <div class="step">
         <h3 id="go-name-the-transmitter">Name the transmitter</h3>
@@ -883,8 +883,8 @@ func (stepUp) OnAssuranceLevelChange(ctx context.Context, event *caep.Event, set
       <div class="step">
         <h3 id="rust-add-the-crates">Add the crates</h3>
 <pre><code class="language-toml">[dependencies]
-easyssf-receiver = "0.6.0"
-easyssf-receiver-axum = "0.6.0"</code></pre>
+easyssf-receiver = "0.7.0"
+easyssf-receiver-axum = "0.7.0"</code></pre>
         <p class="muted">From <a href="https://crates.io/crates/easyssf-receiver">crates.io</a>: <code>easyssf-receiver</code>
           is the receiver without a web framework, <code>easyssf-receiver-axum</code> the push router and the
           revocation layers for axum, or <code>easyssf-receiver-actix-web</code> for actix-web; add
@@ -1007,7 +1007,7 @@ impl SsfCaepEventHandler for StepUp {
       <div class="card repo">
         <span class="platform">Java</span>
         <h3 id="repo-quarkus-openid-ssf"><a href="https://github.com/quarkiverse/quarkus-openid-ssf">quarkus-openid-ssf <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
-        <p class="version">Latest version: 0.6.0</p>
+        <p class="version">Latest version: 0.7.0</p>
         <p>The Quarkus extension is based on the easyssf Java library, with Dev UI and native image support. On Maven Central under
           <code>io.quarkiverse.openid-ssf</code>.</p>
         <div class="badges">
@@ -1017,7 +1017,7 @@ impl SsfCaepEventHandler for StepUp {
       <div class="card repo">
         <span class="platform">.NET</span>
         <h3 id="repo-easyssf-dotnet"><a href="https://github.com/easyssf/easyssf-dotnet">easyssf-dotnet <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
-        <p class="version">Latest version: 0.6.0</p>
+        <p class="version">Latest version: 0.7.0</p>
         <p>The port for .NET 10: hosting, the ASP.NET Core integration, the ADO.NET stores and test support.
           On NuGet.</p>
         <div class="badges">
@@ -1027,7 +1027,7 @@ impl SsfCaepEventHandler for StepUp {
       <div class="card repo">
         <span class="platform">Go</span>
         <h3 id="repo-easyssf-go"><a href="https://github.com/easyssf/easyssf-go">easyssf-go <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
-        <p class="version">Latest version: 0.6.0</p>
+        <p class="version">Latest version: 0.7.0</p>
         <p>The port for Go 1.26: the receiver on <code>net/http</code>, the stores on <code>database/sql</code> and
           the test transmitter, in one module.</p>
         <div class="badges">
@@ -1037,7 +1037,7 @@ impl SsfCaepEventHandler for StepUp {
       <div class="card repo">
         <span class="platform">Rust</span>
         <h3 id="repo-easyssf-rust"><a href="https://github.com/easyssf/easyssf-rust">easyssf-rust <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
-        <p class="version">Latest version: 0.6.0</p>
+        <p class="version">Latest version: 0.7.0</p>
         <p>The port for Rust 1.94: the receiver, axum and actix-web, the sqlx stores and the test transmitter.
           On crates.io.</p>
         <div class="badges">
