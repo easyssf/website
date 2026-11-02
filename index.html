@@ -100,6 +100,7 @@
     accounts, and SCIM Events about changes to your users, rejects the affected access tokens, ends the affected
     sessions, and hands everything else to your code.</p>
   <div class="badges">
+    <a class="badge" href="#code">0.7 on every platform</a>
     <span class="badge">Apache License 2.0</span>
     <a class="badge" href="https://github.com/easyssf/easyssf-java/tree/main/easyssf-receiver-spring-boot-conformance-tests">OpenID conformance suite tested</a>
   </div>
@@ -1065,9 +1066,11 @@ app.include_router(push_router_for(receiver))  # POST /ssf/push: the SET authent
 <section id="code">
   <div class="wrap">
     <h2>Code</h2>
-    <p class="muted intro">One receiver in six repositories on GitHub, each with its examples, Keycloak setup and tests. The&nbsp;.NET, Go,
-      Rust and Python ports are released under the version of the Java library; the Quarkus extension, a Quarkiverse project,
-      has releases of its own.</p>
+    <p class="muted intro">One receiver in six repositories on GitHub, each with its examples, Keycloak setup and tests,
+      on one release line, currently 0.7. The Java library sets the line: the&nbsp;.NET, Go, Rust and Python ports
+      follow its minor version once they are at feature parity, with the same configuration keys and database tables,
+      and release patches of their own in between. The Quarkus extension, a Quarkiverse project, is versioned on its
+      own and names the easyssf release it is built on.</p>
     <div class="grid repos">
       <div class="card repo">
         <span class="platform">Java</span>

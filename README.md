@@ -66,6 +66,11 @@ Add an object to the top of `news.json`:
 The home page shows the three newest items, the news page all of them. The items are fetched by
 `news.js`, so preview the site over HTTP (below) rather than by opening the file.
 
+A release also changes the version in the getting started snippets of its platform and in
+"Latest version" on its card in the Code section. A new minor version of the Java library starts a
+release line: bump the hero badge ("0.7 on every platform") and the line named in the intro of the
+Code section once the ports follow; patch releases leave both alone.
+
 ## Search engines
 
 `index.html` carries a `google-site-verification` meta tag for Google Search Console, Open Graph
