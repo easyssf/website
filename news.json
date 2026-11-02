@@ -1,5 +1,11 @@
 [
   {
+    "id": "2026-11-02-easyssf-python-0-7-0",
+    "date": "2026-11-02",
+    "title": "easyssf-python 0.7.0: the receiver, ported to Python",
+    "body": "<p><a href=\"https://github.com/easyssf/easyssf-python\">easyssf-python</a> is public and on <a href=\"https://pypi.org/project/easyssf-receiver/\">PyPI</a>: the easyssf receiver ported to Python, after the Go, .NET and Rust ports, at feature parity with easyssf 0.7.0 for Java, whose version it follows. <code>pip install easyssf-receiver</code> brings <code>easyssf.receiver</code>, an asyncio receiver with SET verification, push and poll delivery, stream management, de-duplication with a lease shared between instances, the typed CAEP, RISC and SCIM handlers, token revocation and session termination; it rests on <code>easyssf-core</code> with the vocabulary of SSF, CAEP, RISC and SCIM Events. The push endpoint is an ASGI or a WSGI app, so it mounts on any web framework; <code>easyssf-receiver-fastapi</code> adds the push route as an <code>APIRouter</code>, the rejection of revoked access tokens as a dependency or middleware, and the receiver's lifecycle as a lifespan. <code>easyssf-test</code> is the in-process test transmitter. Python 3.11 or later.</p><p>Two things it does differently: <code>ReceiverConfig.from_mapping</code> fails on a configuration key it does not know and names the one it resembles, and a late instance whose handlers outlived the dedup lease answers <code>503</code> instead of acknowledging a SET another instance took over. The OpenID conformance suite's four SSF and CAEP receiver test plans run against it with the harness in the repository, and the FastAPI resource server example runs against the same Keycloak setup as the other ports. Litestar, Flask and the database stores on SQLAlchemy, on the tables of the other ports, are next. Experimental, like the other ports: below 1.0 a release may break the API when the changelog says so. The <a href=\"index.html#start-python\">getting started guide</a> has the three steps; the <a href=\"https://github.com/easyssf/easyssf-python/releases/tag/v0.7.0\">release notes</a> and the <a href=\"https://github.com/easyssf/easyssf-python#readme\">README</a> have the details.</p>"
+  },
+  {
     "id": "2026-11-02-easyssf-rust-0-7-0",
     "date": "2026-11-02",
     "title": "easyssf-rust 0.7.0: the hardening, in Rust",

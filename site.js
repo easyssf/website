@@ -85,6 +85,14 @@
       ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
       ['n', '\\b\\d[\\d_]*(?:u8|u32|u64|usize|i32|i64|f32|f64)?\\b']
     ],
+    python: [
+      ['c', '#[^\\n]*'],
+      ['s', '[rbf]?"(?:[^"\\\\\\n]|\\\\.)*"|[rbf]?\'(?:[^\'\\\\\\n]|\\\\.)*\''],
+      ['a', '^\\s*@[A-Za-z_][\\w.]*'],
+      ['k', '\\b(?:and|as|async|await|break|class|continue|def|elif|else|except|finally|for|from|if|import|in|is|lambda|not|or|pass|raise|return|try|while|with|yield|None|True|False|self)\\b'],
+      ['t', '\\b[A-Z][A-Za-z0-9_]*\\b'],
+      ['n', '\\b\\d[\\d_]*\\b']
+    ],
     toml: [
       ['c', '#[^\\n]*'],
       ['s', '"(?:[^"\\\\\\n]|\\\\.)*"'],

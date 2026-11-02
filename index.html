@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>easyssf · Shared Signals Framework support for Java, .NET, Go and Rust</title>
-<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go and Rust applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler and axum and actix-web crates: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
+<title>easyssf · Shared Signals Framework support for Java, .NET, Go, Rust and Python</title>
+<meta name="description" content="easyssf adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go, Rust and Python applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler, axum and actix-web crates and a FastAPI integration: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.">
 <link rel="icon" href="easyssf-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="canonical" href="https://easyssf.org/">
@@ -13,18 +13,18 @@
 <meta name="theme-color" content="#fdf8f1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta property="og:site_name" content="easyssf">
-<meta property="og:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go and Rust">
-<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go or Rust application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum and actix-web included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
+<meta property="og:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go, Rust and Python">
+<meta property="og:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go, Rust or Python application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum, actix-web and FastAPI included: verified security event tokens, revoked access tokens, ended sessions, tested with the OpenID conformance suite.">
 <meta property="og:url" content="https://easyssf.org/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://easyssf.org/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, .NET, Go and Rust, as a Spring Boot starter, a Quarkus extension, a plain Java library, an ASP.NET Core integration, a Go module and Rust crates">
+<meta property="og:image:alt" content="easyssf: Shared Signals Framework support for Java, .NET, Go, Rust and Python, as a Spring Boot starter, a Quarkus extension, a plain Java library, an ASP.NET Core integration, a Go module, Rust crates and Python packages">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go and Rust">
-<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go or Rust application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum and actix-web included, tested with the OpenID conformance suite.">
+<meta name="twitter:title" content="easyssf · Shared Signals Framework support for Java, .NET, Go, Rust and Python">
+<meta name="twitter:description" content="Add an OpenID Shared Signals Framework receiver to your Java, .NET, Go, Rust or Python application, Spring Boot, Quarkus, ASP.NET Core, net/http, axum, actix-web and FastAPI included, tested with the OpenID conformance suite.">
 <meta name="twitter:image" content="https://easyssf.org/og-image.png">
 <link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="stylesheet" href="site.css">
@@ -38,7 +38,7 @@
       "@id": "https://easyssf.org/#website",
       "url": "https://easyssf.org/",
       "name": "easyssf",
-      "description": "Shared Signals Framework support for Java, .NET, Go and Rust",
+      "description": "Shared Signals Framework support for Java, .NET, Go, Rust and Python",
       "inLanguage": "en"
     },
     {
@@ -50,8 +50,8 @@
       "programmingLanguage": "Java",
       "runtimePlatform": ["Java 21", "Spring Boot 4.1", "Quarkus 3.27"],
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
-      "description": "A library that adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go and Rust applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler and axum and actix-web crates: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
-      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", ".NET", "Go", "Rust", "Keycloak"],
+      "description": "A library that adds an OpenID Shared Signals Framework (SSF) receiver to Java, .NET, Go, Rust and Python applications, with a Spring Boot starter, a Quarkus extension, an ASP.NET Core integration, a net/http handler, axum and actix-web crates and a FastAPI integration: it verifies security event tokens, revokes access tokens and ends sessions when the identity provider says so.",
+      "keywords": ["Shared Signals Framework", "SSF", "CAEP", "RISC", "SCIM Events", "Security Event Token", "OpenID", "Spring Boot", "Quarkus", "Java", ".NET", "Go", "Rust", "Python", "FastAPI", "Keycloak"],
       "about": [
         {"@type": "Thing", "name": "OpenID Shared Signals Framework 1.0", "url": "https://openid.net/specs/openid-sharedsignals-framework-1_0.html"},
         {"@type": "Thing", "name": "OpenID CAEP 1.0", "url": "https://openid.net/specs/openid-caep-1_0.html"},
@@ -92,9 +92,9 @@
 
 <div class="hero wrap">
 <div class="hero-text">
-  <h1>Shared Signals Framework<br>support for Java, .NET, Go&nbsp;and&nbsp;Rust</h1>
+  <h1>Shared Signals Framework<br>support for Java, .NET, Go, Rust&nbsp;and&nbsp;Python</h1>
   <p class="lead">easyssf adds an <a href="https://openid.net/specs/openid-sharedsignals-framework-1_0.html">OpenID
-    Shared Signals Framework</a> (SSF) receiver to your Java, .NET, Go or Rust application, so that it reacts when your identity
+    Shared Signals Framework</a> (SSF) receiver to your Java, .NET, Go, Rust or Python application, so that it reacts when your identity
     provider revokes a session, changes a credential, or signals a risk.</p>
   <p class="lead">The receiver verifies the incoming security events, CAEP events about sessions and credentials, RISC events about
     accounts, and SCIM Events about changes to your users, rejects the affected access tokens, ends the affected
@@ -175,7 +175,7 @@
         <h3 id="with-easyssf">With easyssf</h3>
         <p>The receiver verifies the events and acts on them: it rejects the revoked tokens and ends the sessions in the
           security layer of your framework, out of the box. The events it cannot act on alone, it hands to a handler of
-          yours. One library, one behaviour, on the JVM, .NET, Go and Rust. <a href="#start">Get started</a> with
+          yours. One library, one behaviour, on the JVM, .NET, Go, Rust and Python. <a href="#start">Get started</a> with
           the integration for your framework.</p>
       </div>
       <div class="card">
@@ -318,8 +318,8 @@
   <div class="wrap">
     <h2>Use cases</h2>
     <p class="muted intro">What a receiver does with the events. The first three are the example applications,
-      each for Spring Boot, Quarkus, .NET, Go and Rust with a Keycloak setup to run against; the others are handlers
-      of your own.</p>
+      each for Spring Boot, Quarkus, .NET, Go and Rust, the first also for Python, with a Keycloak setup to run
+      against; the others are handlers of your own.</p>
     <div class="grid usecases">
 
       <div class="card usecase">
@@ -354,7 +354,8 @@
           <a href="https://github.com/quarkiverse/quarkus-openid-ssf/tree/main/receiver/examples/example-resource-server">Quarkus</a> ·
           <a href="https://github.com/easyssf/easyssf-dotnet/tree/main/examples/EasySsf.Examples.ResourceServer">.NET</a> ·
           <a href="https://github.com/easyssf/easyssf-go/tree/main/examples/resource-server">Go</a> ·
-          <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-resource-server">Rust</a></p>
+          <a href="https://github.com/easyssf/easyssf-rust/tree/main/examples/example-resource-server">Rust</a> ·
+          <a href="https://github.com/easyssf/easyssf-python/tree/main/examples/fastapi/resource-server">Python</a></p>
       </div>
 
       <div class="card usecase">
@@ -503,8 +504,8 @@
   <div class="wrap">
     <h2>Getting started</h2>
     <p class="muted intro">Each tab shows the steps for one integration,
-      from the Spring Boot starter to the Rust crates. Whichever you choose, it is the same receiver:
-      it verifies, de-duplicates and dispatches events the same way on the JVM, .NET, Go and Rust.</p>
+      from the Spring Boot starter to the Python packages. Whichever you choose, it is the same receiver:
+      it verifies, de-duplicates and dispatches events the same way on the JVM, .NET, Go, Rust and Python.</p>
 
     <div class="switch-row">
       <span class="switch-label" id="label-platform">Select your platform:</span>
@@ -513,6 +514,7 @@
       <button type="button" role="tab" id="tab-dotnet" aria-controls="start-dotnet" aria-selected="false" tabindex="-1">.NET</button>
       <button type="button" role="tab" id="tab-go" aria-controls="start-go" aria-selected="false" tabindex="-1">Go</button>
       <button type="button" role="tab" id="tab-rust" aria-controls="start-rust" aria-selected="false" tabindex="-1">Rust</button>
+      <button type="button" role="tab" id="tab-python" aria-controls="start-python" aria-selected="false" tabindex="-1">Python</button>
       </div>
     </div>
 
@@ -951,6 +953,79 @@ impl SsfCaepEventHandler for StepUp {
     </ul>
     </div>
 
+    <div id="start-python" class="framework" role="tabpanel" aria-labelledby="tab-python" hidden>
+    <p class="muted">Three steps for a Python application on FastAPI, with
+      <a href="https://github.com/easyssf/easyssf-python">easyssf-python</a>, the port of the receiver to Python on
+      asyncio: at feature parity with the Java library, with the same configuration keys and Keycloak setup, released
+      under the version of the Java library it matches. Other frameworks mount the push endpoint as an ASGI or a WSGI
+      app.</p>
+    <div class="two steps">
+      <div class="step">
+        <h3 id="python-add-the-packages">Add the packages</h3>
+<pre><code class="language-sh">pip install easyssf-receiver-fastapi==0.7.0</code></pre>
+        <p class="muted">From <a href="https://pypi.org/project/easyssf-receiver/">PyPI</a>, or with
+          <code>uv add</code>: <code>easyssf-receiver</code> is the receiver without a web framework, which
+          <code>easyssf-receiver-fastapi</code> brings along with the push router, the revocation dependency and the
+          lifespan for FastAPI; <code>easyssf-test</code> is the test transmitter. Python 3.11 or later.</p>
+      </div>
+      <div class="step">
+        <h3 id="python-name-the-transmitter">Name the transmitter</h3>
+<pre><code class="language-yaml">easyssf:
+  receiver:
+    transmitter-issuer: https://idp.example/realms/demo
+    expected-audience: https://my-app.example
+    push:
+      expected-auth-header: "Bearer s3cr3t"</code></pre>
+        <p class="muted">The keys of the Spring Boot starter, read by <code>ReceiverConfig.from_mapping</code> from a
+          parsed YAML, TOML or JSON file or any mapping, and validated when the receiver is built; a key it does not
+          know is an error that names the one it resembles. The audience is required, unless the application creates
+          or looks up its stream, which tells it.</p>
+      </div>
+    </div>
+    <div class="step" style="margin-top:20px">
+      <h3 id="python-create-the-stream">Create the stream</h3>
+      <p class="muted">Create a stream with push delivery at the transmitter that points to
+        <code>https://my-app.example/ssf/push</code> and sends the configured header, or set
+        <code>stream.management: receiver</code> and let the application create it.
+        <code>revocation_dependency</code> then rejects the access tokens of revoked sessions and users behind your
+        token validation, and a <code>session_terminator</code> given to the receiver ends server-side sessions as
+        the event arrives.</p>
+    </div>
+
+    <h3 id="python-react-to-any-event" style="margin-top:28px">React to any event</h3>
+<pre><code class="language-python">from fastapi import FastAPI
+
+from easyssf.core import caep
+from easyssf.fastapi import push_router_for, receiver_lifespan
+from easyssf.receiver import CaepHandler, EventContext, Receiver, ReceiverConfig, caep_handler
+
+
+class StepUp(CaepHandler):
+    async def on_assurance_level_change(self, event: caep.Event, context: EventContext) -&gt; None:
+        if event.change_direction == "decrease":
+            await step_up.require(context.subject.sub, event.current_level)
+
+
+config = ReceiverConfig.from_mapping(settings["easyssf"]["receiver"])
+receiver = Receiver(config, handlers=[caep_handler(StepUp())])  # validates the configuration
+
+app = FastAPI(lifespan=receiver_lifespan(receiver))  # registers the stream, starts polling
+app.include_router(push_router_for(receiver))  # POST /ssf/push: the SET authenticates itself</code></pre>
+    <p class="muted" style="margin-top:12px"><code>CaepHandler</code>, <code>RiscHandler</code> and
+      <code>ScimHandler</code> hand each event of a SET to a method per event type, with its claims typed;
+      <code>for_event</code> takes a function for one event type, and any <code>async def</code>, plain function or
+      object with an <code>async handle(context)</code> method gets every verified SET as it is. Handlers run before
+      the SET is acknowledged. If one raises, the transmitter is expected to deliver the SET again, so a SET is
+      handled at least once and a handler's side effects should be idempotent.</p>
+
+    <h3 id="python-example-applications" style="margin-top:28px">Example applications</h3>
+    <p class="muted">A complete FastAPI application with a Keycloak setup, in the
+      <a href="https://github.com/easyssf/easyssf-python/tree/main/examples/">examples of easyssf-python</a>:</p>
+    <ul class="examples">
+      <li><a href="https://github.com/easyssf/easyssf-python/tree/main/examples/fastapi/resource-server">OAuth2 resource server</a>: rejects the access tokens of revoked sessions, pushed or polled.</li>
+    </ul>
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3 id="subjects-as-the-spec-defines-them">Subjects as the spec defines them</h3>
@@ -978,7 +1053,8 @@ impl SsfCaepEventHandler for StepUp {
       <a href="https://central.sonatype.com/namespace/org.easyssf">Maven Central</a>, the .NET packages on
       <a href="https://www.nuget.org/profiles/easyssf">NuGet</a>, the Go module at
       <a href="https://pkg.go.dev/github.com/easyssf/easyssf-go">pkg.go.dev</a>, the Rust crates on
-      <a href="https://crates.io/crates/easyssf-receiver">crates.io</a> and the source on
+      <a href="https://crates.io/crates/easyssf-receiver">crates.io</a>, the Python packages on
+      <a href="https://pypi.org/project/easyssf-receiver/">PyPI</a> and the source on
       <a href="https://github.com/easyssf">GitHub</a>. See the <a href="https://github.com/easyssf/easyssf-java#readme">README</a> for the
       complete configuration reference of the Spring Boot starter, and the
       <a href="https://github.com/quarkiverse/quarkus-openid-ssf#readme">README of quarkus-openid-ssf</a> for the one
@@ -989,8 +1065,8 @@ impl SsfCaepEventHandler for StepUp {
 <section id="code">
   <div class="wrap">
     <h2>Code</h2>
-    <p class="muted intro">One receiver in five repositories on GitHub, each with its examples, Keycloak setup and tests. The&nbsp;.NET, Go
-      and Rust ports are released under the version of the Java library; the Quarkus extension, a Quarkiverse project,
+    <p class="muted intro">One receiver in six repositories on GitHub, each with its examples, Keycloak setup and tests. The&nbsp;.NET, Go,
+      Rust and Python ports are released under the version of the Java library; the Quarkus extension, a Quarkiverse project,
       has releases of its own.</p>
     <div class="grid repos">
       <div class="card repo">
@@ -1042,6 +1118,16 @@ impl SsfCaepEventHandler for StepUp {
           On crates.io.</p>
         <div class="badges">
           <span class="badge">Rust 1.94+</span>
+        </div>
+      </div>
+      <div class="card repo">
+        <span class="platform">Python</span>
+        <h3 id="repo-easyssf-python"><a href="https://github.com/easyssf/easyssf-python">easyssf-python <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg></a></h3>
+        <p class="version">Latest version: 0.7.0</p>
+        <p>The port for Python 3.11: the asyncio receiver, the FastAPI integration and the test transmitter.
+          On PyPI.</p>
+        <div class="badges">
+          <span class="badge">Python 3.11+</span>
         </div>
       </div>
     </div>
